@@ -1,5 +1,5 @@
 import { IsometricCanvas } from '@elchininet/isometric'
-import { buildCubeGroup } from './cube';
+import { buildCubeGroup, buildCubeGroupWithShadow } from './cube';
 
 
 const container = document.createElement('div')
@@ -16,7 +16,8 @@ const canvas = new IsometricCanvas({
 
 
 canvas.addChildren(
-    buildCubeGroup(0, 0, 0, 1),
-    buildCubeGroup(0, 1, 0, 1),
-    buildCubeGroup(0, 2, 0, .75),
+    buildCubeGroupWithShadow(0, 0, 3, 2),
+    buildCubeGroupWithShadow(0, 5, 2, 2),
+    buildCubeGroupWithShadow(5, 0, 0, 2),
+    buildCubeGroup(4, 2, 0, .75),
 )
