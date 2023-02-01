@@ -1,0 +1,24 @@
+{
+  "name": "iso-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "build": "browserify ./src/index.ts -p [ tsify --noImplicitAny ] > bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dblatcher",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node-fetch": "^2.6.2",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "@elchininet/isometric": "^3.7.1",
+    "@types/node": "^18.7.23",
+    "browserify": "^17.0.0",
+    "dotenv": "^16.0.2",
+    "ts-node": "^10.9.1",
+    "tsify": "^5.0.4"
+  }
+}
