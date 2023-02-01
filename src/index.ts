@@ -24,7 +24,7 @@ const leftPiece = new IsometricRectangle({ ...commonProps, planeView: PlaneView.
 topPiece.top = 1;
 topPiece.addEventListener('click', toggleColor, true);
 
-rightPiece.right = 1.3;
+rightPiece.right = 1.1;
 rightPiece.addEventListener('click', toggleColor, true);
 
 leftPiece.left = 1;
