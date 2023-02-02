@@ -2,7 +2,6 @@ import { IsometricCanvas } from '@elchininet/isometric'
 import { makeBlock } from './blockWithTexture';
 import { buildCubeGroup, buildCubeGroupWithShadow } from './cube';
 
-
 const container = document.createElement('div')
 document.body.appendChild(container)
 
@@ -22,6 +21,6 @@ canvas.addChildren(
     buildCubeGroupWithShadow(5, 0, 0, 2),
     buildCubeGroup(4, 2, 0, .75),
 
-    makeBlock(0,0,0),
-    makeBlock(0,3,0),
+    makeBlock(0, 0, 0),
+    makeBlock(0, 3, 0),
 )
