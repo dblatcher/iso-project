@@ -1,4 +1,4 @@
-import { IsometricGroup, IsometricRectangle, PlaneView } from "@elchininet/isometric";
+import { IsometricGroup, IsometricRectangle, PlaneView, } from "@elchininet/isometric";
 
 function toggleColor() {
     this.fillColor = this.fillColor === 'white' ? 'skyblue' : 'white';
