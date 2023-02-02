@@ -3,8 +3,8 @@ import { IsometricGroup, IsometricRectangle, PlaneView, } from "@elchininet/isom
 function toggleColor() {
     this.fillColor = this.fillColor === 'white' ? 'skyblue' : 'white';
 }
-export const buildCubeGroup = (right: number, left: number, top: number, size = 1) => {
-
+export const buildCubeGroup = (coords: [number, number, number], size = 1) => {
+    const [right, left, top] = coords
     const group = new IsometricGroup({ top, right, left, })
     const commonProps = { height: size, width: size };
     const topPiece = new IsometricRectangle({ ...commonProps, planeView: PlaneView.TOP });
@@ -26,9 +26,9 @@ export const buildCubeGroup = (right: number, left: number, top: number, size = 
     return group
 }
 
-export const buildCubeGroupWithShadow = (right: number, left: number, top: number, size = 1) => {
-
-    const group = buildCubeGroup(right, left, top, size)
+export const buildCubeGroupWithShadow = (coords: [number, number, number], size = 1) => {
+    const [right, left, top] = coords
+    const group = buildCubeGroup(coords, size)
     const shadowSize = size * (1 + (top / 5))
     const shadow = new IsometricRectangle({
         height: shadowSize,

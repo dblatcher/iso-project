@@ -1,14 +1,13 @@
-import { IsometricPath, IsometricRectangle, PlaneView, IsometricGroup } from '@elchininet/isometric'
+import { IsometricRectangle, PlaneView, IsometricGroup } from '@elchininet/isometric'
 
-export const makeSprite = (url: string, planeView: PlaneView, right: number, left: number, top: number, width = 1, height = 1) => {
-
+export const makeSprite = (url: string, planeView: PlaneView, coords: [number, number, number], width = 1, height = 1) => {
+    const [right, left, top] = coords
     const commonTextureProps = {
         url,
         height,
         width,
         pixelated: true
     };
-
 
     const sprite = new IsometricRectangle({
         planeView,

@@ -1,7 +1,7 @@
 import { IsometricPath, IsometricRectangle, PlaneView, Axis, IsometricGroup } from '@elchininet/isometric'
 
-export const makeBlock = (right: number, left: number, top: number) => {
-
+export const makeBlock = (coords: [number, number, number]) => {
+    const [right, left, top] = coords
     const commonTextureProps = {
         height: 1,
         width: 1,
