@@ -14,17 +14,19 @@ export const makeSprite = (url: string, planeView: PlaneView, coords: [number, n
         height,
         width,
         texture: commonTextureProps,
-        // strokeColor: 'none',
+        strokeColor: 'none',
     });
 
     switch (planeView) {
         case 'SIDE':
-            // sprite.left = -width / 2
-            // sprite.right = -width
+            sprite.right = -width / 2
             break;
         case 'FRONT':
-            // sprite.left = -width
-            // sprite.right = -width /2
+            sprite.left = -width / 2
+            break;
+        case 'TOP':
+            sprite.left = -width / 2
+            sprite.right = -width / 2
             break;
 
     }
