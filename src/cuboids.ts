@@ -1,22 +1,23 @@
 import { IsometricGroup, IsometricRectangle, PlaneView, } from "@elchininet/isometric";
 
-function toggleColor() {
-    this.fillColor = this.fillColor === 'white' ? 'skyblue' : 'white';
+export type CuboidConfig = {
+    coords: [number, number, number];
+    size?: number
+    height?: number
 }
-export const buildCubeGroup = (coords: [number, number, number], size = 1) => {
+
+export const buildCuboid = (config: CuboidConfig) => {
+    const { coords, size = 1, height = size } = config
     const [right, left, top] = coords
     const group = new IsometricGroup({ top, right, left, })
-    const commonProps = { height: size, width: size };
-    const topPiece = new IsometricRectangle({ ...commonProps, planeView: PlaneView.TOP });
-    const rightPiece = new IsometricRectangle({ ...commonProps, planeView: PlaneView.FRONT });
-    const leftPiece = new IsometricRectangle({ ...commonProps, planeView: PlaneView.SIDE });
 
-    topPiece.top = size;
-    topPiece.addEventListener('click', toggleColor, true);
+    const topPiece = new IsometricRectangle({ height: size, width: size, planeView: PlaneView.TOP });
+    const rightPiece = new IsometricRectangle({ height: height, width: size, planeView: PlaneView.FRONT });
+    const leftPiece = new IsometricRectangle({ height: height, width: size, planeView: PlaneView.SIDE });
+
+    topPiece.top = height;
     rightPiece.right = size;
-    rightPiece.addEventListener('click', toggleColor, true);
     leftPiece.left = size;
-    leftPiece.addEventListener('click', toggleColor, true);
 
     group
         .addChild(topPiece)
@@ -26,9 +27,11 @@ export const buildCubeGroup = (coords: [number, number, number], size = 1) => {
     return group
 }
 
-export const buildCubeGroupWithShadow = (coords: [number, number, number], size = 1) => {
+export const buildCuboidWithShadow = (config: CuboidConfig) => {
+    const { coords, size = 1, } = config
     const [right, left, top] = coords
-    const group = buildCubeGroup(coords, size)
+    const group = buildCuboid(config)
+
     const shadowSize = size * (1 + (top / 5))
     const shadow = new IsometricRectangle({
         height: shadowSize,
