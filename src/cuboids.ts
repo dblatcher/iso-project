@@ -1,23 +1,36 @@
 import { IsometricGroup, IsometricRectangle, PlaneView, } from "@elchininet/isometric";
+import { makeSideTexture } from "./textures";
 
 export type CuboidConfig = {
     coords: [number, number, number];
     size?: number
     height?: number
+    sideImage?: string
+    topImage?: string
 }
 
 export const buildCuboid = (config: CuboidConfig) => {
-    const { coords, size = 1, height = size } = config
+    const { coords, size = 1, height = size, sideImage, topImage } = config
     const [right, left, top] = coords
     const group = new IsometricGroup({ top, right, left, })
 
-    const topPiece = new IsometricRectangle({ height: size, width: size, planeView: PlaneView.TOP });
-    const rightPiece = new IsometricRectangle({ height: height, width: size, planeView: PlaneView.FRONT });
-    const leftPiece = new IsometricRectangle({ height: height, width: size, planeView: PlaneView.SIDE });
+    const topPiece = new IsometricRectangle({
+        height: size, width: size, planeView: PlaneView.TOP,
+        texture: topImage ? makeSideTexture(topImage, PlaneView.TOP) : undefined
+    });
+    const rightPiece = new IsometricRectangle({
+        height: height, width: size, planeView: PlaneView.FRONT,
+        texture: sideImage ? makeSideTexture(sideImage, PlaneView.FRONT) : undefined
+    });
+    const leftPiece = new IsometricRectangle({
+        height: height, width: size, planeView: PlaneView.SIDE,
+        texture: sideImage ? makeSideTexture(sideImage, PlaneView.SIDE) : undefined
+    });
 
     topPiece.top = height;
     rightPiece.right = size;
     leftPiece.left = size;
+
 
     group
         .addChild(topPiece)
