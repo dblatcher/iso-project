@@ -45,25 +45,24 @@ canvas.addChild(
 
 const mapGrid = new MapGrid([
     [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1 }, { height: 2 }],
-    [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1 }],
-    [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 5.5, textureSide: IMAGES.wall, textureTop: IMAGES.grass }],
+    [{ height: 2 }, { height: 1 }, { height: 1 }, { height: 1 }],
+    [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1.5, textureSide: IMAGES.wall, textureTop: IMAGES.grass }],
     [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1 }],
     [{ height: 0 }, { height: 0 }],
-])
-
-mapGrid.render(canvas)
-
-canvas.addChildren(
-    // makeBlock([3, 0, 0]),
-    // makeSprite('./assets/brick_wall.png', PlaneView.TOP, [2, 2, 0], 4, 4),
-    // makeSprite('./assets/duck.png', PlaneView.SIDE, [2, 2, 0], 4, 4),
-    // makeSprite('./assets/duck.png', PlaneView.FRONT, [6, 2, 0], 4, 4),
-
-    makeSprite('./assets/duck.png', PlaneView.FRONT, mapGrid.surfaceCoord(0, 0), 1, 1),
-    makeSprite('./assets/duck.png', PlaneView.SIDE, mapGrid.surfaceCoord(1, 2), 1, 1),
-    makeSprite('./assets/duck.png', PlaneView.SIDE, mapGrid.surfaceCoord(2, 3), 1, 1),
-    // makeSprite('./assets/duck.png', PlaneView.TOP, [0, 4, 2], 2, 2),
+    [,{ height: 0 }, { height: 0 }],
+],
+    [
+        { image: IMAGES.duck, x: 0, y: 3, planeView: PlaneView.FRONT },
+        { image: IMAGES.duck, x: 1, y: 3, planeView: PlaneView.SIDE },
+        { image: IMAGES.duck, x: 2, y: 3, planeView: PlaneView.SIDE },
+        { image: IMAGES.duck, x: 2, y: 2, planeView: PlaneView.FRONT },
+        { image: IMAGES.duck, x: 3, y: 1, planeView: PlaneView.FRONT },
+        { image: IMAGES.duck, x: 4, y: 1, planeView: PlaneView.FRONT },
+    ]
 );
+
+mapGrid.render(canvas);
+
 
 (window as Record<string, any>).canvas = canvas
 

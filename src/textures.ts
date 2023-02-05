@@ -3,6 +3,7 @@ import { IsometricGraphicProps, PlaneView } from "@elchininet/isometric";
 export const IMAGES = {
     wall: 'assets/brick_wall.png',
     grass: 'assets/grass.jpg',
+    duck: 'assets/duck.png',
 } as const;
 
 
