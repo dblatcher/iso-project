@@ -53,28 +53,60 @@ export class MapGrid {
                         sideImage: cell.textureSide,
                     })
                 )
-                const figureHere = figures.find(figure => figure.x === gridX && figure.y == gridY)
-                if (figureHere) {
+                const figuresHere = figures.filter(figure => figure.x === gridX && figure.y == gridY)
+                figuresHere.forEach(figureHere => {
                     const { image, planeView, x, y } = figureHere
                     const iso = makeSprite(image, planeView, this.surfaceCoord(x, y), 1, 1)
                     canvas.addChild(iso)
                     figureHere.iso = iso
                     figures.splice(figures.indexOf(figureHere), 1)
-                }
+                })
             })
         })
+        figures.forEach(unrenderedFigure => unrenderedFigure.iso = undefined)
     }
 
-    move(canvas: IsometricCanvas, figureIndex:number, xDist: number, yDist: number) {
+    async shiftFigure(canvas: IsometricCanvas, figureIndex: number, xDist: number, yDist: number): Promise<boolean> {
         const figure = this.figures[figureIndex]
 
         if (!figure) {
-            return
+            return false
         }
 
         figure.x += xDist
         figure.y += yDist
+        if (!figure.iso) {
+            return false
+        }
 
+        // TO DO - change ordering at each step
+        canvas.bringChildToFront(figure.iso)
+        const oldZ = figure.iso.top
+        const zDist = this.surfaceCoord(figure.x, figure.y)[2] - oldZ
+        const step = (totalSteps: number) => {
+            figure.iso.right = figure.iso.right + xDist / totalSteps
+            figure.iso.left = figure.iso.left + yDist / totalSteps
+            figure.iso.top = figure.iso.top + zDist / totalSteps // to do - parabella hopping function
+        }
+
+        const pause = async (t: number) => await new Promise(resolve => {
+            setTimeout(resolve, t)
+        })
+
+        const totalSteps = 10
+
+        for (let i = 0; i++, i < totalSteps;) {
+            await step(totalSteps)
+            await pause(100)
+        }
+
+        return true
+    }
+
+
+    async move(canvas: IsometricCanvas, figureIndex: number, xDist: number, yDist: number) {
+        const wasAfigure = await this.shiftFigure(canvas, figureIndex, xDist, yDist)
+        console.log({ wasAfigure })
         this.render(canvas)
     }
 }
