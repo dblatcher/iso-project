@@ -17,31 +17,6 @@ const canvas = new IsometricCanvas({
 });
 
 
-canvas.addChild(
-    new IsometricRectangle({
-        height: 400,
-        width: 400,
-        planeView: PlaneView.TOP,
-        fillColor: 'pink',
-    })
-)
-canvas.addChild(
-    new IsometricRectangle({
-        height: 400,
-        width: 400,
-        planeView: PlaneView.SIDE,
-        fillColor: 'pink',
-    })
-)
-canvas.addChild(
-    new IsometricRectangle({
-        height: 400,
-        width: 400,
-        planeView: PlaneView.FRONT,
-        fillColor: 'pink',
-    })
-)
-
 const mapGrid = new MapGrid([
     [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1 }, { height: 2 }],
     [{ height: 2 }, { height: 1 }, { height: 1 }, { height: 1 }],
@@ -63,5 +38,6 @@ const mapGrid = new MapGrid([
 mapGrid.render(canvas);
 
 
-(window as Record<string, any>).canvas = canvas
+(window as Record<string, any>).canvas = canvas;
+(window as Record<string, any>).mapGrid = mapGrid;
 

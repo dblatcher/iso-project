@@ -14,6 +14,7 @@ export interface FigureSprite {
     y: number,
     planeView: PlaneView,
     image: string,
+    iso?: IsometricGroup,
 }
 
 export class MapGrid {
@@ -31,35 +32,49 @@ export class MapGrid {
                 ? this.data[right][left].height
                 : 0
             : 0;
-
         return [right, left, heightAt]
     }
 
 
     render(canvas: IsometricCanvas) {
-
+        canvas.clear()
         const figures = [...this.figures]
-
-        this.data.map((row, rowIndex) => {
-            row.map((cell, cellIndex) => {
+        this.data.map((row, gridX) => {
+            row.map((cell, gridY) => {
                 if (!cell) {
                     return
                 }
                 canvas.addChild(
                     buildCuboid({
-                        coords: [rowIndex, cellIndex, 0],
+                        coords: [gridX, gridY, 0],
                         size: 1,
                         height: cell.height,
                         topImage: cell.textureTop,
                         sideImage: cell.textureSide,
                     })
                 )
-                const figureHere = figures.find(figure => figure.x === rowIndex && figure.y == cellIndex)
+                const figureHere = figures.find(figure => figure.x === gridX && figure.y == gridY)
                 if (figureHere) {
-                    canvas.addChild(makeSprite(figureHere.image, figureHere.planeView, this.surfaceCoord(figureHere.x, figureHere.y), 1, 1))
+                    const { image, planeView, x, y } = figureHere
+                    const iso = makeSprite(image, planeView, this.surfaceCoord(x, y), 1, 1)
+                    canvas.addChild(iso)
+                    figureHere.iso = iso
                     figures.splice(figures.indexOf(figureHere), 1)
                 }
             })
         })
+    }
+
+    move(canvas: IsometricCanvas, figureIndex:number, xDist: number, yDist: number) {
+        const figure = this.figures[figureIndex]
+
+        if (!figure) {
+            return
+        }
+
+        figure.x += xDist
+        figure.y += yDist
+
+        this.render(canvas)
     }
 }
