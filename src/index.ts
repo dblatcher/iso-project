@@ -3,7 +3,7 @@ import { makeBlock } from './blockWithTexture';
 import { DIRECTION } from './direction';
 import { makeSprite } from './flatSprite';
 import { MapGrid } from './MapGrid';
-import { IMAGES } from './textures';
+import { IMAGES } from './images';
 
 const container = document.createElement('div')
 document.body.appendChild(container)

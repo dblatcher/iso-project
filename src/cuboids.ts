@@ -1,5 +1,5 @@
 import { IsometricGroup, IsometricRectangle, PlaneView, } from "@elchininet/isometric";
-import { makeSideTexture } from "./textures";
+import { makeSideTexture } from "./images";
 
 export type CuboidConfig = {
     coords: [number, number, number];
