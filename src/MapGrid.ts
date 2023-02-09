@@ -10,10 +10,11 @@ export interface MapCell {
     textureSide?: string,
 }
 
+type GridOfCells = Array<Array<MapCell | undefined>>
 
 
 export class MapGrid {
-    data: Array<Array<MapCell | undefined>>
+    data: GridOfCells
     figures: FigureSprite[]
     renderOrientation: Direction
 
@@ -23,19 +24,22 @@ export class MapGrid {
         this.renderOrientation = DIRECTION.north
     }
 
-    surfaceCoord(right: number, left: number): [number, number, number] {
-        const heightAt = this.data[right]
+    heightAt(right: number, left: number): number {
+        return this.data[right]
             ? this.data[right][left]
                 ? this.data[right][left].height
                 : 0
             : 0;
-        return [right, left, heightAt]
+    }
+
+    getCellCoords(cell: MapCell): { x: number, y: number } {
+        const { data: originalGrid } = this
+        const rowContaining = originalGrid.find(row => row.some(cellInRow => cellInRow === cell));
+        if (!rowContaining) { return { x: -1, y: -1 } }
+        return { x: originalGrid.indexOf(rowContaining), y: rowContaining.indexOf(cell) }
     }
 
     renderBackGrounds(canvas: IsometricCanvas, orientation: Direction) {
-
-
-
         const backgroundProps = {
             left: 0,
             right: 0,
@@ -78,31 +82,61 @@ export class MapGrid {
         )
     }
 
+    renderBlock(cell: MapCell, gridX: number, gridY: number, canvas: IsometricCanvas,) {
+        canvas.addChild(
+            buildCuboid({
+                coords: [gridX, gridY, 0],
+                size: 1,
+                height: cell.height,
+                topImage: cell.textureTop,
+                sideImage: cell.textureSide,
+            })
+        )
+    }
+
+    rotateGrid(grid: GridOfCells): GridOfCells {
+        const maxColLength = grid.reduce<number>((previous, currentCol) => { return Math.max(previous, currentCol.length) }, 0)
+        const newGrid: GridOfCells = []
+        let colToRotate = maxColLength
+        while (colToRotate >= 0) {
+            newGrid.push(grid.map(row => row[colToRotate]))
+            colToRotate--
+        }
+        return newGrid
+    }
+    rotateGridBy(orientation: Direction): GridOfCells {
+        switch (orientation.orientation) {
+            case 0:
+                return [...this.data]
+            case 1:
+                return this.rotateGrid(this.data)
+            case 2:
+                return this.rotateGrid(this.rotateGrid(this.data))
+            case 3:
+                return this.rotateGrid(this.rotateGrid(this.rotateGrid(this.data)))
+            default:
+                return []
+        }
+    }
+
     render(canvas: IsometricCanvas, orientation: Direction) {
         this.renderOrientation = orientation
         canvas.clear()
         this.renderBackGrounds(canvas, orientation)
-
         const figures = [...this.figures]
-        this.data.map((row, gridX) => {
+        this.rotateGridBy(orientation).map((row, gridX) => {
             row.map((cell, gridY) => {
                 if (!cell) {
                     return
                 }
-                canvas.addChild(
-                    buildCuboid({
-                        coords: [gridX, gridY, 0],
-                        size: 1,
-                        height: cell.height,
-                        topImage: cell.textureTop,
-                        sideImage: cell.textureSide,
-                    })
-                )
-                const figuresHere = figures.filter(figure => figure.x === gridX && figure.y == gridY)
+                this.renderBlock(cell, gridX, gridY, canvas)
+                const { x: realX, y: realY } = this.getCellCoords(cell)
+                const figuresHere = figures.filter(figure => figure.x === realX && figure.y == realY)
                 figuresHere.forEach(figureHere => {
                     const { sprite, facing, x, y } = figureHere
                     const { image, planeView } = sprite.getView(facing, orientation)
-                    const iso = renderFigure(image, planeView, this.surfaceCoord(x, y), 1, 1)
+                    const height = this.heightAt(x, y)
+                    const iso = renderFigure(image, planeView, [gridX, gridY, height], 1, 1)
                     canvas.addChild(iso)
                     figureHere.iso = iso
                     figures.splice(figures.indexOf(figureHere), 1)
@@ -128,7 +162,7 @@ export class MapGrid {
         // TO DO - change ordering at each step
         canvas.bringChildToFront(figure.iso)
         const oldZ = figure.iso.top
-        const zDist = this.surfaceCoord(figure.x, figure.y)[2] - oldZ
+        const zDist = this.heightAt(figure.x, figure.y) - oldZ
         const step = (totalSteps: number) => {
             figure.iso.right = figure.iso.right + xDist / totalSteps
             figure.iso.left = figure.iso.left + yDist / totalSteps
