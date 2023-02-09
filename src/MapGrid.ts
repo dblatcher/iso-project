@@ -148,7 +148,6 @@ export class MapGrid {
 
     async shiftFigure(canvas: IsometricCanvas, figureIndex: number, xDist: number, yDist: number): Promise<boolean> {
         const figure = this.figures[figureIndex]
-
         if (!figure) {
             return false
         }
@@ -159,13 +158,30 @@ export class MapGrid {
             return false
         }
 
+        let xDistRel = xDist;
+        let yDistRel = yDist;
+        switch (this.renderOrientation.orientation) {
+            case 0:
+                xDistRel = xDist;
+                yDistRel = yDist;
+            case 1:
+                xDistRel = -yDist;
+                yDistRel = xDist;
+            case 2:
+                xDistRel = -xDist;
+                yDistRel = -yDist;
+            case 3:
+                xDistRel = yDist;
+                yDistRel = -xDist;
+        }
+
         // TO DO - change ordering at each step
         canvas.bringChildToFront(figure.iso)
         const oldZ = figure.iso.top
         const zDist = this.heightAt(figure.x, figure.y) - oldZ
         const step = (totalSteps: number) => {
-            figure.iso.right = figure.iso.right + xDist / totalSteps
-            figure.iso.left = figure.iso.left + yDist / totalSteps
+            figure.iso.right = figure.iso.right + xDistRel / totalSteps
+            figure.iso.left = figure.iso.left + yDistRel / totalSteps
             figure.iso.top = figure.iso.top + zDist / totalSteps // to do - parabella hopping function
         }
 

@@ -14,7 +14,7 @@ function createScene(orientation:Direction) {
     const canvas = new IsometricCanvas({
         container,
         backgroundColor: '#CCC',
-        scale: 40,
+        scale: 30,
         width: 400,
         height: 400,
     });
@@ -49,6 +49,6 @@ function createScene(orientation:Direction) {
 }
 
 createScene(DIRECTION.north)
-createScene(DIRECTION.west)
-createScene(DIRECTION.south)
 createScene(DIRECTION.east)
+// createScene(DIRECTION.south)
+// createScene(DIRECTION.east)
