@@ -1,5 +1,6 @@
 import { IsometricCanvas, IsometricGroup, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
 import { buildCuboid } from "./cuboids"
+import { antiClockwise, DIRECTION, Direction } from "./direction"
 import { makeSprite } from "./flatSprite"
 
 
@@ -20,10 +21,12 @@ export interface FigureSprite {
 export class MapGrid {
     data: Array<Array<MapCell | undefined>>
     figures: FigureSprite[]
+    renderOrientation: Direction
 
     constructor(data: (MapCell | undefined)[][], figures: FigureSprite[] = []) {
         this.data = data
         this.figures = figures
+        this.renderOrientation = DIRECTION.north
     }
 
     surfaceCoord(right: number, left: number): [number, number, number] {
@@ -35,7 +38,9 @@ export class MapGrid {
         return [right, left, heightAt]
     }
 
-    renderBackGrounds(canvas: IsometricCanvas) {
+    renderBackGrounds(canvas: IsometricCanvas, orientation: Direction) {
+
+
 
         const backgroundProps = {
             left: 0,
@@ -56,7 +61,7 @@ export class MapGrid {
         })
         const sideLabel = new IsometricText({
             planeView: PlaneView.SIDE,
-            text: 'N',
+            text: orientation.label[0],
             right: 4,
             ...labelProps,
         })
@@ -66,7 +71,7 @@ export class MapGrid {
         })
         const frontLabel = new IsometricText({
             planeView: PlaneView.FRONT,
-            text: 'W',
+            text: antiClockwise(orientation).label[0],
             left: 4,
             ...labelProps,
         })
@@ -79,9 +84,10 @@ export class MapGrid {
         )
     }
 
-    render(canvas: IsometricCanvas) {
+    render(canvas: IsometricCanvas, orientation: Direction) {
+        this.renderOrientation = orientation
         canvas.clear()
-        this.renderBackGrounds(canvas)
+        this.renderBackGrounds(canvas, orientation)
 
         const figures = [...this.figures]
         this.data.map((row, gridX) => {
@@ -152,6 +158,6 @@ export class MapGrid {
     async move(canvas: IsometricCanvas, figureIndex: number, xDist: number, yDist: number) {
         const wasAfigure = await this.shiftFigure(canvas, figureIndex, xDist, yDist)
         console.log({ wasAfigure })
-        this.render(canvas)
+        this.render(canvas, this.renderOrientation)
     }
 }

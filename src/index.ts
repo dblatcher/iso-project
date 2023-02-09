@@ -1,5 +1,6 @@
 import { IsometricCanvas, IsometricRectangle, PlaneView } from '@elchininet/isometric'
 import { makeBlock } from './blockWithTexture';
+import { DIRECTION } from './direction';
 import { makeSprite } from './flatSprite';
 import { MapGrid } from './MapGrid';
 import { IMAGES } from './textures';
@@ -35,7 +36,7 @@ const mapGrid = new MapGrid([
     ]
 );
 
-mapGrid.render(canvas);
+mapGrid.render(canvas, DIRECTION.north);
 
 
 (window as Record<string, any>).canvas = canvas;
