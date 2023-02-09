@@ -1,4 +1,4 @@
-import { IsometricCanvas, IsometricGroup, PlaneView } from "@elchininet/isometric"
+import { IsometricCanvas, IsometricGroup, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
 import { buildCuboid } from "./cuboids"
 import { makeSprite } from "./flatSprite"
 
@@ -35,9 +35,54 @@ export class MapGrid {
         return [right, left, heightAt]
     }
 
+    renderBackGrounds(canvas: IsometricCanvas) {
+
+        const backgroundProps = {
+            left: 0,
+            right: 0,
+            top: 0,
+            width: 100,
+            height: 100,
+            fillColor: 'blue',
+        }
+        const labelProps = {
+            top: 4,
+            fontSize: 100,
+        }
+
+        const sideBackground = new IsometricRectangle({
+            planeView: PlaneView.SIDE,
+            ...backgroundProps,
+        })
+        const sideLabel = new IsometricText({
+            planeView: PlaneView.SIDE,
+            text: 'N',
+            right: 4,
+            ...labelProps,
+        })
+        const frontBackground = new IsometricRectangle({
+            planeView: PlaneView.FRONT,
+            ...backgroundProps,
+        })
+        const frontLabel = new IsometricText({
+            planeView: PlaneView.FRONT,
+            text: 'W',
+            left: 4,
+            ...labelProps,
+        })
+
+        canvas.addChildren(
+            sideBackground,
+            sideLabel,
+            frontBackground,
+            frontLabel,
+        )
+    }
 
     render(canvas: IsometricCanvas) {
         canvas.clear()
+        this.renderBackGrounds(canvas)
+
         const figures = [...this.figures]
         this.data.map((row, gridX) => {
             row.map((cell, gridY) => {

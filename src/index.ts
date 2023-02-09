@@ -26,12 +26,12 @@ const mapGrid = new MapGrid([
     [,{ height: 0 }, { height: 0 }],
 ],
     [
-        { image: IMAGES.duck, x: 0, y: 3, planeView: PlaneView.FRONT },
-        { image: IMAGES.duck, x: 1, y: 3, planeView: PlaneView.SIDE },
+        // { image: IMAGES.duck, x: 0, y: 3, planeView: PlaneView.FRONT },
+        // { image: IMAGES.duck, x: 1, y: 3, planeView: PlaneView.SIDE },
         { image: IMAGES.duck, x: 2, y: 3, planeView: PlaneView.SIDE },
-        { image: IMAGES.duckBack, x: 2, y: 2, planeView: PlaneView.FRONT },
-        { image: IMAGES.duckBack, x: 3, y: 1, planeView: PlaneView.SIDE },
-        { image: IMAGES.duck, x: 4, y: 1, planeView: PlaneView.FRONT },
+        // { image: IMAGES.duckBack, x: 2, y: 2, planeView: PlaneView.FRONT },
+        // { image: IMAGES.duckBack, x: 3, y: 1, planeView: PlaneView.SIDE },
+        // { image: IMAGES.duck, x: 4, y: 1, planeView: PlaneView.FRONT },
     ]
 );
 
