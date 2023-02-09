@@ -45,7 +45,6 @@ export const renderFigure = (url: string, planeView: PlaneView, coords: [number,
 
     const group = new IsometricGroup({ top, right, left, })
     group.addChildren(sprite)
-    sprite.drag = 'TOP'
     return group
 
 }
