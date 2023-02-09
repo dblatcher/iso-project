@@ -1,7 +1,7 @@
-import { IsometricCanvas, IsometricGroup, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
+import { IsometricCanvas, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
 import { buildCuboid } from "./cuboids"
 import { antiClockwise, DIRECTION, Direction } from "./direction"
-import { makeSprite } from "./flatSprite"
+import { FigureSprite, renderFigure } from "./figures"
 
 
 export interface MapCell {
@@ -10,13 +10,7 @@ export interface MapCell {
     textureSide?: string,
 }
 
-export interface FigureSprite {
-    x: number,
-    y: number,
-    planeView: PlaneView,
-    image: string,
-    iso?: IsometricGroup,
-}
+
 
 export class MapGrid {
     data: Array<Array<MapCell | undefined>>
@@ -106,8 +100,9 @@ export class MapGrid {
                 )
                 const figuresHere = figures.filter(figure => figure.x === gridX && figure.y == gridY)
                 figuresHere.forEach(figureHere => {
-                    const { image, planeView, x, y } = figureHere
-                    const iso = makeSprite(image, planeView, this.surfaceCoord(x, y), 1, 1)
+                    const { sprite, facing, x, y } = figureHere
+                    const { image, planeView } = sprite.getView(facing, orientation)
+                    const iso = renderFigure(image, planeView, this.surfaceCoord(x, y), 1, 1)
                     canvas.addChild(iso)
                     figureHere.iso = iso
                     figures.splice(figures.indexOf(figureHere), 1)

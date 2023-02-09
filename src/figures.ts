@@ -1,6 +1,16 @@
 import { IsometricRectangle, PlaneView, IsometricGroup } from '@elchininet/isometric'
+import { Direction } from './direction';
+import { DirectionalSprite } from './DirectionalSprite';
 
-export const makeSprite = (url: string, planeView: PlaneView, coords: [number, number, number], width = 1, height = 1) => {
+export interface FigureSprite {
+    x: number,
+    y: number,
+    facing: Direction,
+    sprite: DirectionalSprite,
+    iso?: IsometricGroup,
+}
+
+export const renderFigure = (url: string, planeView: PlaneView, coords: [number, number, number], width = 1, height = 1) => {
     const [right, left, top] = coords
     const commonTextureProps = {
         url,
