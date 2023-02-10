@@ -1,6 +1,6 @@
 export interface Direction {
     label: string,
-    orientation: number,
+    orientation: 0 | 1 | 2 | 3,
 
 }
 
@@ -33,4 +33,25 @@ export const antiClockwise = (direction: Direction): Direction => {
 export const clockwise = (direction: Direction): Direction => {
     const { orientation } = direction
     return Object.values(DIRECTION).find(d => d.orientation === orientation - 1) || DIRECTION.east
+}
+
+export const rotateVector = (x: number, y: number, orientation: Direction): { x: number, y: number } => {
+    switch (orientation.orientation) {
+        case 0:
+            return {
+                x, y
+            }
+        case 1:
+            return {
+                x: -y, y: x
+            }
+        case 2:
+            return {
+                x: -x, y: -y
+            }
+        case 3:
+            return {
+                x: y, y: -x
+            }
+    }
 }

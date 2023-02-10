@@ -1,6 +1,6 @@
 import { IsometricCanvas, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
 import { buildCuboid } from "./cuboids"
-import { antiClockwise, DIRECTION, Direction } from "./direction"
+import { antiClockwise, DIRECTION, Direction, rotateVector } from "./direction"
 import { FigureSprite, renderFigure } from "./figures"
 
 
@@ -22,6 +22,7 @@ export class MapGrid {
         this.data = data
         this.figures = figures
         this.renderOrientation = DIRECTION.north
+        this.handleClickOnCell = this.handleClickOnCell.bind(this)
     }
 
     heightAt(right: number, left: number): number {
@@ -82,15 +83,27 @@ export class MapGrid {
         )
     }
 
+    handleClickOnCell(cell: MapCell, canvas: IsometricCanvas) {
+        const coords = this.getCellCoords(cell)
+        const [figure] = this.figures
+        this.move(canvas, 0, coords.x - figure.x, coords.y - figure.y)
+    }
+
     renderBlock(cell: MapCell, gridX: number, gridY: number, canvas: IsometricCanvas,) {
+        const cuboid = buildCuboid({
+            coords: [gridX, gridY, 0],
+            size: 1,
+            height: cell.height,
+            topImage: cell.textureTop,
+            sideImage: cell.textureSide,
+        })
+
+        cuboid.addEventListener('click', () => {
+            this.handleClickOnCell(cell, canvas)
+        })
+
         canvas.addChild(
-            buildCuboid({
-                coords: [gridX, gridY, 0],
-                size: 1,
-                height: cell.height,
-                topImage: cell.textureTop,
-                sideImage: cell.textureSide,
-            })
+            cuboid
         )
     }
 
@@ -120,7 +133,7 @@ export class MapGrid {
     }
 
     render(canvas: IsometricCanvas, orientation: Direction) {
-        this.renderOrientation = orientation
+        this.renderOrientation = { ...orientation }
         canvas.clear()
         this.renderBackGrounds(canvas, orientation)
         const figures = [...this.figures]
@@ -158,30 +171,15 @@ export class MapGrid {
             return false
         }
 
-        let xDistRel = xDist;
-        let yDistRel = yDist;
-        switch (this.renderOrientation.orientation) {
-            case 0:
-                xDistRel = xDist;
-                yDistRel = yDist;
-            case 1:
-                xDistRel = -yDist;
-                yDistRel = xDist;
-            case 2:
-                xDistRel = -xDist;
-                yDistRel = -yDist;
-            case 3:
-                xDistRel = yDist;
-                yDistRel = -xDist;
-        }
+        const { x, y } = rotateVector(xDist, yDist, this.renderOrientation)
 
         // TO DO - change ordering at each step
         canvas.bringChildToFront(figure.iso)
         const oldZ = figure.iso.top
         const zDist = this.heightAt(figure.x, figure.y) - oldZ
         const step = (totalSteps: number) => {
-            figure.iso.right = figure.iso.right + xDistRel / totalSteps
-            figure.iso.left = figure.iso.left + yDistRel / totalSteps
+            figure.iso.right = figure.iso.right + x / totalSteps
+            figure.iso.left = figure.iso.left + y / totalSteps
             figure.iso.top = figure.iso.top + zDist / totalSteps // to do - parabella hopping function
         }
 

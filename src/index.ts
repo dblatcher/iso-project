@@ -50,5 +50,5 @@ function createScene(orientation:Direction) {
 
 createScene(DIRECTION.north)
 createScene(DIRECTION.east)
-// createScene(DIRECTION.south)
-// createScene(DIRECTION.east)
+createScene(DIRECTION.south)
+createScene(DIRECTION.west)
