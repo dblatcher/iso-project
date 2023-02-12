@@ -86,7 +86,7 @@ export class MapGrid {
     handleClickOnCell(cell: MapCell, canvas: IsometricCanvas) {
         const coords = this.getCellCoords(cell)
         const [figure] = this.figures
-        this.move(canvas, 0, coords.x - figure.x, coords.y - figure.y)
+        this.moveSingleFigure(canvas, 0, coords.x - figure.x, coords.y - figure.y)
     }
 
     renderBlock(cell: MapCell, gridX: number, gridY: number, canvas: IsometricCanvas,) {
@@ -167,6 +167,7 @@ export class MapGrid {
 
         figure.x += xDist
         figure.y += yDist
+
         if (!figure.iso) {
             return false
         }
@@ -175,17 +176,13 @@ export class MapGrid {
 
         // TO DO - change ordering at each step
         canvas.bringChildToFront(figure.iso)
-        const oldZ = figure.iso.top
-        const zDist = this.heightAt(figure.x, figure.y) - oldZ
+        const { top, left, right } = figure.iso
+        const zDist = this.heightAt(figure.x, figure.y) - top
 
         const hop = (step: number, totalSteps: number): number => {
             const x = step / totalSteps
-            const z = (-2 * x ** 2) + (2 * x)
-            return z
+            return (-2 * x ** 2) + (2 * x)
         }
-
-
-        const { top, left, right } = figure.iso
 
         const step = (step: number, totalSteps: number) => {
             figure.iso.right = right + (step * x / totalSteps)
@@ -208,7 +205,7 @@ export class MapGrid {
     }
 
 
-    async move(canvas: IsometricCanvas, figureIndex: number, xDist: number, yDist: number) {
+    async moveSingleFigure(canvas: IsometricCanvas, figureIndex: number, xDist: number, yDist: number) {
         const wasAfigure = await this.shiftFigure(canvas, figureIndex, xDist, yDist)
         console.log({ wasAfigure })
         this.render(canvas, this.renderOrientation)
