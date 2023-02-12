@@ -1,4 +1,4 @@
-import { IsometricRectangle, PlaneView, IsometricGroup } from '@elchininet/isometric'
+import { IsometricRectangle, PlaneView, IsometricGroup, IsometricCircle } from '@elchininet/isometric'
 import { Direction } from './direction';
 import { DirectionalSprite } from './DirectionalSprite';
 
@@ -44,7 +44,9 @@ export const renderFigure = (url: string, planeView: PlaneView, coords: [number,
     }
 
     const group = new IsometricGroup({ top, right, left, })
-    group.addChildren(sprite)
+
+    const shadow = new IsometricCircle({ radius: width / 4, left: 0.5, right: 0.5, top: 0, planeView: PlaneView.TOP, fillColor: 'black' })
+    group.addChildren(shadow, sprite,)
     return group
 
 }
