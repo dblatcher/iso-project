@@ -1,7 +1,7 @@
 import { IsometricCanvas } from '@elchininet/isometric'
 import { clockwise, Direction, DIRECTION } from './direction';
 import { FigureSprite } from './figures';
-import { MapGrid } from './MapGrid';
+import { MapGridCanvas } from './MapGrid';
 import { IMAGES } from './images';
 
 import { duckSprite } from './DirectionalSprite'
@@ -28,21 +28,22 @@ function createScene(orientation: Direction) {
         { sprite: duckSprite, x: 0, y: 5, facing: DIRECTION.east },
     ];
 
-    const mapGrid = new MapGrid([
-        [{ height: 1 }, { height: 1.2 }, { height: 1.4 }, { height: 1.6 }, { height: 1.8 }, { height: 2 }],
-        [{ height: 2 }, { height: 1 }, { height: 1 }, { height: 1 }],
-        [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 3.5, textureSide: IMAGES.wall, textureTop: IMAGES.grass }],
-        [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1 }],
-        [{ height: 0.8 }, { height: 0.8 }],
-        [, { height: 0.6 }, { height: 0.8 }],
-        [, { height: 0.6 }, { height: 0.8 }],
-    ],
+    const mapGrid = new MapGridCanvas(canvas,
+        [
+            [{ height: 1 }, { height: 1.2 }, { height: 1.4 }, { height: 1.6 }, { height: 1.8 }, { height: 2 }],
+            [{ height: 2 }, { height: 1 }, { height: 1 }, { height: 1 }],
+            [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 3.5, textureSide: IMAGES.wall, textureTop: IMAGES.grass }],
+            [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1 }],
+            [{ height: 0.8 }, { height: 0.8 }],
+            [, { height: 0.6 }, { height: 0.8 }],
+            [, { height: 0.6 }, { height: 0.8 }],
+        ],
         [
             ...myDucks
         ]
     );
 
-    mapGrid.render(canvas, orientation);
+    mapGrid.render(orientation);
     return { canvas, mapGrid }
 }
 
@@ -54,10 +55,10 @@ const { canvas, mapGrid } = createScene(DIRECTION.west);
 const button = document.createElement('button')
 button.innerText = 'rotate';
 button.addEventListener('click', () => {
-    mapGrid.render(canvas, clockwise(mapGrid.renderOrientation))
+    mapGrid.render(clockwise(mapGrid.renderOrientation))
 })
 document.body.appendChild(button)
 
-;
+    ;
 (window as Record<string, any>).canvas = canvas;
 (window as Record<string, any>).mapGrid = mapGrid;

@@ -13,12 +13,14 @@ export interface MapCell {
 type GridOfCells = Array<Array<MapCell | undefined>>
 
 
-export class MapGrid {
+export class MapGridCanvas {
     data: GridOfCells
     figures: FigureSprite[]
     renderOrientation: Direction
+    canvas: IsometricCanvas
 
-    constructor(data: (MapCell | undefined)[][], figures: FigureSprite[] = []) {
+    constructor(canvas: IsometricCanvas, data: (MapCell | undefined)[][], figures: FigureSprite[] = []) {
+        this.canvas = canvas
         this.data = data
         this.figures = figures
         this.renderOrientation = DIRECTION.north
@@ -40,7 +42,7 @@ export class MapGrid {
         return { x: originalGrid.indexOf(rowContaining), y: rowContaining.indexOf(cell) }
     }
 
-    renderBackGrounds(canvas: IsometricCanvas, orientation: Direction) {
+    renderBackGrounds( orientation: Direction) {
         const backgroundProps = {
             left: 0,
             right: 0,
@@ -75,7 +77,7 @@ export class MapGrid {
             ...labelProps,
         })
 
-        canvas.addChildren(
+        this.canvas.addChildren(
             sideBackground,
             sideLabel,
             frontBackground,
@@ -83,13 +85,13 @@ export class MapGrid {
         )
     }
 
-    handleClickOnCell(cell: MapCell, canvas: IsometricCanvas) {
+    handleClickOnCell(cell: MapCell) {
         const coords = this.getCellCoords(cell)
         const [figure] = this.figures
-        this.moveSingleFigure(canvas, 0, coords.x - figure.x, coords.y - figure.y)
+        this.moveSingleFigure(0, coords.x - figure.x, coords.y - figure.y)
     }
 
-    renderBlock(cell: MapCell, gridX: number, gridY: number, canvas: IsometricCanvas,) {
+    renderBlock(cell: MapCell, gridX: number, gridY: number) {
         const cuboid = buildCuboid({
             coords: [gridX, gridY, 0],
             size: 1,
@@ -99,10 +101,10 @@ export class MapGrid {
         })
 
         cuboid.addEventListener('click', () => {
-            this.handleClickOnCell(cell, canvas)
+            this.handleClickOnCell(cell)
         })
 
-        canvas.addChild(
+        this.canvas.addChild(
             cuboid
         )
     }
@@ -132,17 +134,17 @@ export class MapGrid {
         }
     }
 
-    render(canvas: IsometricCanvas, orientation: Direction) {
+    render(orientation: Direction) {
         this.renderOrientation = { ...orientation }
-        canvas.clear()
-        this.renderBackGrounds(canvas, orientation)
+        this.canvas.clear()
+        this.renderBackGrounds(orientation)
         const figures = [...this.figures]
         this.rotateGridBy(orientation).map((row, gridX) => {
             row.map((cell, gridY) => {
                 if (!cell) {
                     return
                 }
-                this.renderBlock(cell, gridX, gridY, canvas)
+                this.renderBlock(cell, gridX, gridY)
                 const { x: realX, y: realY } = this.getCellCoords(cell)
                 const figuresHere = figures.filter(figure => figure.x === realX && figure.y == realY)
                 figuresHere.forEach(figureHere => {
@@ -150,7 +152,7 @@ export class MapGrid {
                     const { image, planeView } = sprite.getView(facing, orientation)
                     const height = this.heightAt(x, y)
                     const iso = renderFigure(image, planeView, [gridX, gridY, height], 1, 1)
-                    canvas.addChild(iso)
+                    this.canvas.addChild(iso)
                     figureHere.iso = iso
                     figures.splice(figures.indexOf(figureHere), 1)
                 })
@@ -159,7 +161,8 @@ export class MapGrid {
         figures.forEach(unrenderedFigure => unrenderedFigure.iso = undefined)
     }
 
-    async shiftFigure(canvas: IsometricCanvas, figureIndex: number, xDist: number, yDist: number): Promise<boolean> {
+    async shiftFigure(figureIndex: number, xDist: number, yDist: number): Promise<boolean> {
+        const { canvas } = this
         const figure = this.figures[figureIndex]
         if (!figure) {
             return false
@@ -205,9 +208,9 @@ export class MapGrid {
     }
 
 
-    async moveSingleFigure(canvas: IsometricCanvas, figureIndex: number, xDist: number, yDist: number) {
-        const wasAfigure = await this.shiftFigure(canvas, figureIndex, xDist, yDist)
+    async moveSingleFigure(figureIndex: number, xDist: number, yDist: number) {
+        const wasAfigure = await this.shiftFigure(figureIndex, xDist, yDist)
         console.log({ wasAfigure })
-        this.render(canvas, this.renderOrientation)
+        this.render(this.renderOrientation)
     }
 }
