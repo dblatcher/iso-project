@@ -12,20 +12,47 @@ export interface MapCell {
 
 type GridOfCells = Array<Array<MapCell | undefined>>
 
+type CellClickHandler<T> = { (mapGridCanvas: MapGridCanvas): { (cell: MapCell): Promise<T> } }
+type FigureClickHandler<T> = { (mapGridCanvas: MapGridCanvas): { (figure: FigureSprite): Promise<T> } }
+
+type MapGridCanvasConfig = {
+    renderOrientation?: Direction,
+    figures?: FigureSprite[],
+}
 
 export class MapGridCanvas {
     data: GridOfCells
     figures: FigureSprite[]
     renderOrientation: Direction
     canvas: IsometricCanvas
+    onClick: {
+        cell?: CellClickHandler<any>,
+        figure?: FigureClickHandler<any>,
+    }
 
-    constructor(canvas: IsometricCanvas, data: (MapCell | undefined)[][], figures: FigureSprite[] = []) {
+    constructor(canvas: IsometricCanvas, data: (MapCell | undefined)[][], config: MapGridCanvasConfig) {
+        const { figures = [], renderOrientation = DIRECTION.north } = config
         this.canvas = canvas
         this.data = data
         this.figures = figures
-        this.renderOrientation = DIRECTION.north
+        this.renderOrientation = renderOrientation
+        this.onClick = {}
         this.handleClickOnCell = this.handleClickOnCell.bind(this)
+        this.handleClickOnFigure = this.handleClickOnFigure.bind(this)
+        this.render(this.renderOrientation);
     }
+
+    handleClickOnCell(cell: MapCell) {
+        if (this.onClick.cell) {
+            this.onClick.cell(this)(cell);
+        }
+    }
+    handleClickOnFigure(figure: FigureSprite) {
+        if (this.onClick.figure) {
+            this.onClick.figure(this)(figure);
+        }
+    }
+
 
     heightAt(right: number, left: number): number {
         return this.data[right]
@@ -42,7 +69,7 @@ export class MapGridCanvas {
         return { x: originalGrid.indexOf(rowContaining), y: rowContaining.indexOf(cell) }
     }
 
-    renderBackGrounds( orientation: Direction) {
+    renderBackGrounds(orientation: Direction) {
         const backgroundProps = {
             left: 0,
             right: 0,
@@ -85,12 +112,6 @@ export class MapGridCanvas {
         )
     }
 
-    handleClickOnCell(cell: MapCell) {
-        const coords = this.getCellCoords(cell)
-        const [figure] = this.figures
-        this.moveSingleFigure(0, coords.x - figure.x, coords.y - figure.y)
-    }
-
     renderBlock(cell: MapCell, gridX: number, gridY: number) {
         const cuboid = buildCuboid({
             coords: [gridX, gridY, 0],
@@ -107,6 +128,20 @@ export class MapGridCanvas {
         this.canvas.addChild(
             cuboid
         )
+    }
+
+    renderFigureSprite(figureHere: FigureSprite, gridX: number, gridY: number,) {
+        const { sprite, facing, x, y } = figureHere
+        const { image, planeView } = sprite.getView(facing, this.renderOrientation)
+        const height = this.heightAt(x, y)
+        const iso = renderFigure(image, planeView, [gridX, gridY, height], 1, 1)
+
+        iso.addEventListener('click', () => {
+            this.handleClickOnFigure(figureHere)
+        })
+
+        this.canvas.addChild(iso)
+        figureHere.iso = iso
     }
 
     rotateGrid(grid: GridOfCells): GridOfCells {
@@ -148,12 +183,7 @@ export class MapGridCanvas {
                 const { x: realX, y: realY } = this.getCellCoords(cell)
                 const figuresHere = figures.filter(figure => figure.x === realX && figure.y == realY)
                 figuresHere.forEach(figureHere => {
-                    const { sprite, facing, x, y } = figureHere
-                    const { image, planeView } = sprite.getView(facing, orientation)
-                    const height = this.heightAt(x, y)
-                    const iso = renderFigure(image, planeView, [gridX, gridY, height], 1, 1)
-                    this.canvas.addChild(iso)
-                    figureHere.iso = iso
+                    this.renderFigureSprite(figureHere, gridX, gridY)
                     figures.splice(figures.indexOf(figureHere), 1)
                 })
             })

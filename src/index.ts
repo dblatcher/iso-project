@@ -1,7 +1,7 @@
 import { IsometricCanvas } from '@elchininet/isometric'
 import { clockwise, Direction, DIRECTION } from './direction';
 import { FigureSprite } from './figures';
-import { MapGridCanvas } from './MapGrid';
+import { MapCell, MapGridCanvas } from './MapGrid';
 import { IMAGES } from './images';
 
 import { duckSprite } from './DirectionalSprite'
@@ -38,18 +38,28 @@ function createScene(orientation: Direction) {
             [, { height: 0.6 }, { height: 0.8 }],
             [, { height: 0.6 }, { height: 0.8 }],
         ],
-        [
-            ...myDucks
-        ]
+        {
+
+            figures: [
+                ...myDucks
+            ],
+            renderOrientation: orientation,
+        }
     );
 
-    mapGrid.render(orientation);
+    mapGrid.onClick.cell = (that) => async (cell: MapCell) => {
+        const coords = that.getCellCoords(cell)
+        const [figure] = that.figures
+        that.moveSingleFigure(0, coords.x - figure.x, coords.y - figure.y)
+    }
+
+    mapGrid.onClick.figure = (that) => async (figure: FigureSprite) => {
+        console.log(`figure is facing ${figure.facing.label}`)
+    }
+
     return { canvas, mapGrid }
 }
 
-// createScene(DIRECTION.north)
-// createScene(DIRECTION.east)
-// createScene(DIRECTION.south)
 const { canvas, mapGrid } = createScene(DIRECTION.west);
 
 const button = document.createElement('button')
