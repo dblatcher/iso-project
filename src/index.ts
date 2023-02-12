@@ -21,9 +21,9 @@ function createScene(orientation: Direction) {
 
 
     const myDucks: FigureSprite[] = [
-        { sprite: duckSprite, x: 1, y: 3, facing: DIRECTION.north },
-        { sprite: duckSprite, x: 3, y: 3, facing: DIRECTION.north },
         { sprite: duckSprite, x: 3, y: 1, facing: DIRECTION.south },
+        { sprite: duckSprite, x: 1, y: 3, facing: DIRECTION.west },
+        { sprite: duckSprite, x: 3, y: 3, facing: DIRECTION.north },
         { sprite: duckSprite, x: 3, y: 2, facing: DIRECTION.south },
         { sprite: duckSprite, x: 0, y: 5, facing: DIRECTION.east },
     ];
@@ -47,14 +47,17 @@ function createScene(orientation: Direction) {
         }
     );
 
+    let selectedDuckIndex = 0
+
     mapGrid.onClick.cell = (that) => async (cell: MapCell) => {
         const coords = that.getCellCoords(cell)
-        const [figure] = that.figures
-        that.moveSingleFigure(0, coords.x - figure.x, coords.y - figure.y)
+        const figure = that.figures[selectedDuckIndex]
+        that.moveSingleFigure(selectedDuckIndex, coords.x - figure.x, coords.y - figure.y)
     }
 
     mapGrid.onClick.figure = (that) => async (figure: FigureSprite) => {
         console.log(`figure is facing ${figure.facing.label}`)
+        selectedDuckIndex = that.figures.indexOf(figure)
     }
 
     return { canvas, mapGrid }
