@@ -177,21 +177,31 @@ export class MapGrid {
         canvas.bringChildToFront(figure.iso)
         const oldZ = figure.iso.top
         const zDist = this.heightAt(figure.x, figure.y) - oldZ
-        const step = (totalSteps: number) => {
-            figure.iso.right = figure.iso.right + x / totalSteps
-            figure.iso.left = figure.iso.left + y / totalSteps
-            figure.iso.top = figure.iso.top + zDist / totalSteps // to do - parabella hopping function
+
+        const hop = (step: number, totalSteps: number): number => {
+            const x = step / totalSteps
+            const z = (-2 * x ** 2) + (2 * x)
+            return z
+        }
+
+
+        const { top, left, right } = figure.iso
+
+        const step = (step: number, totalSteps: number) => {
+            figure.iso.right = right + (step * x / totalSteps)
+            figure.iso.left = left + (step * y / totalSteps)
+            figure.iso.top = top + hop(step, totalSteps) + (step * zDist / totalSteps)
         }
 
         const pause = async (t: number) => await new Promise(resolve => {
             setTimeout(resolve, t)
         })
 
-        const totalSteps = 10
+        const totalSteps = 100
 
         for (let i = 0; i++, i < totalSteps;) {
-            await step(totalSteps)
-            await pause(100)
+            await step(i, totalSteps)
+            await pause(5)
         }
 
         return true
