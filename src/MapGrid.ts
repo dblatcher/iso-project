@@ -53,7 +53,6 @@ export class MapGridCanvas {
         }
     }
 
-
     heightAt(right: number, left: number): number {
         return this.data[right]
             ? this.data[right][left]
