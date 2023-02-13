@@ -29,6 +29,7 @@ export class MapGridCanvas {
         cell?: CellClickHandler<any>,
         figure?: FigureClickHandler<any>,
     }
+    animationInProgress: boolean
 
     constructor(canvas: IsometricCanvas, data: (MapCell | undefined)[][], config: MapGridCanvasConfig) {
         const { figures = [], renderOrientation = DIRECTION.north } = config
@@ -39,15 +40,22 @@ export class MapGridCanvas {
         this.onClick = {}
         this.handleClickOnCell = this.handleClickOnCell.bind(this)
         this.handleClickOnFigure = this.handleClickOnFigure.bind(this)
+        this.animationInProgress = false
         this.render(this.renderOrientation);
     }
 
     handleClickOnCell(cell: MapCell) {
+        if (this.animationInProgress) {
+            return
+        }
         if (this.onClick.cell) {
             this.onClick.cell(this)(cell);
         }
     }
     handleClickOnFigure(figure: FigureSprite) {
+        if (this.animationInProgress) {
+            return
+        }
         if (this.onClick.figure) {
             this.onClick.figure(this)(figure);
         }
@@ -190,17 +198,13 @@ export class MapGridCanvas {
         figures.forEach(unrenderedFigure => unrenderedFigure.iso = undefined)
     }
 
-    async shiftFigure(figureIndex: number, xDist: number, yDist: number): Promise<boolean> {
+    private async shiftFigure(figure: FigureSprite, xDist: number, yDist: number): Promise<boolean> {
         const { canvas } = this
-        const figure = this.figures[figureIndex]
-        if (!figure) {
-            return false
-        }
 
         figure.x += xDist
         figure.y += yDist
 
-        if (!figure.iso) {
+        if (!figure.iso || !canvas.children.includes(figure.iso)) {
             return false
         }
 
@@ -237,9 +241,22 @@ export class MapGridCanvas {
     }
 
 
-    async moveSingleFigure(figureIndex: number, xDist: number, yDist: number) {
-        const wasAfigure = await this.shiftFigure(figureIndex, xDist, yDist)
-        console.log({ wasAfigure })
+    async moveSingleFigure(figure: FigureSprite, xDist: number, yDist: number) {
+        if (!figure?.iso || !this.canvas.children.includes(figure.iso)) {
+            return false
+        }
+        this.animationInProgress = true
+        await this.shiftFigure(figure, xDist, yDist)
         this.render(this.renderOrientation)
+        this.animationInProgress = false
+    }
+
+    async moveAllFigures() {
+        this.animationInProgress = true
+        await Promise.all(this.figures.map(figure => {
+            return this.shiftFigure(figure, 0, -1)
+        }))
+        this.render(this.renderOrientation)
+        this.animationInProgress = false
     }
 }
