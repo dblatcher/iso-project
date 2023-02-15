@@ -13,9 +13,13 @@ mapGrid.onClick.cell = (that) => async (cell: MapCell) => {
 }
 
 mapGrid.onClick.figure = (that) => async (figure: FigureSprite) => {
-    that.setSelectedFigure(figure)
-    that.rotateSingleFigure(figure, clockwise( figure.facing))
-    console.log(`figure is facing ${figure.facing.label}`)
+
+    if (that.getSelectedFigure() === figure) {
+        that.rotateSingleFigure(figure, clockwise(figure.facing))
+        console.log(`figure is facing ${figure.facing.label}`)
+    } else {
+        that.setSelectedFigure(figure)
+    }
 }
 
 const clockwiseButton = document.createElement('button')
