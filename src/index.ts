@@ -6,15 +6,16 @@ import { createScene } from './createScene';
 const { canvas, mapGrid } = createScene(DIRECTION.west);
 
 mapGrid.onClick.cell = (that) => async (cell: MapCell) => {
-    const coords = that.getCellCoords(cell)
     const figure = that.getSelectedFigure()
     if (!figure) { return }
+    const coords = that.getCellCoords(cell)
     that.moveSingleFigure(figure, coords.x - figure.x, coords.y - figure.y)
 }
 
 mapGrid.onClick.figure = (that) => async (figure: FigureSprite) => {
-    console.log(`figure is facing ${figure.facing.label}`)
     that.setSelectedFigure(figure)
+    that.rotateSingleFigure(figure, clockwise( figure.facing))
+    console.log(`figure is facing ${figure.facing.label}`)
 }
 
 const clockwiseButton = document.createElement('button')

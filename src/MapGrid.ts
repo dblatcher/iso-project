@@ -260,6 +260,16 @@ export class MapGridCanvas {
         return true
     }
 
+    async rotateSingleFigure(figure: FigureSprite, direction: Direction) {
+        if (!figure?.iso || !this.canvas.children.includes(figure.iso)) {
+            return false
+        }
+        this.animationInProgress = true
+        figure.facing = direction
+        this.render(this.renderOrientation)
+        this.animationInProgress = false
+    }
+
     async moveSingleFigure(figure: FigureSprite, xDist: number, yDist: number) {
         if (!figure?.iso || !this.canvas.children.includes(figure.iso)) {
             return false
