@@ -43,9 +43,11 @@ export const renderFigure = (url: string, planeView: PlaneView, coords: [number,
 
     }
 
-    const group = new IsometricGroup({ top, right, left, })
+    sprite.getElement().classList.add('sprite','figure')
 
     const shadow = new IsometricCircle({ radius: width / 4, left: 0.5, right: 0.5, top: 0, planeView: PlaneView.TOP, fillColor: 'black' })
+
+    const group = new IsometricGroup({ top, right, left, })
     group.addChildren(shadow, sprite,)
     return group
 

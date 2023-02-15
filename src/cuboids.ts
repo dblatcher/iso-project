@@ -31,6 +31,7 @@ export const buildCuboid = (config: CuboidConfig) => {
     rightPiece.right = size;
     leftPiece.left = size;
 
+    topPiece.getElement().classList.add('block','top')
 
     group
         .addChild(topPiece)

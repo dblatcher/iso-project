@@ -1,0 +1,13 @@
+.block.top:hover {
+    stroke: red;
+    stroke-width: 3;
+    stroke-linejoin: bevel;
+    stroke-dasharray: 4,1;
+}
+
+.sprite.figure:hover {
+    filter: brightness(1.5);
+    transform: scale(1.2);
+    transform-origin: center;
+}
+
