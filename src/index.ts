@@ -4,17 +4,17 @@ import { MapCell } from './MapGrid';
 import { createScene } from './createScene';
 
 const { canvas, mapGrid } = createScene(DIRECTION.west);
-let selectedDuckIndex = 0
 
 mapGrid.onClick.cell = (that) => async (cell: MapCell) => {
     const coords = that.getCellCoords(cell)
-    const figure = that.figures[selectedDuckIndex]
+    const figure = that.getSelectedFigure()
+    if (!figure) { return }
     that.moveSingleFigure(figure, coords.x - figure.x, coords.y - figure.y)
 }
 
 mapGrid.onClick.figure = (that) => async (figure: FigureSprite) => {
     console.log(`figure is facing ${figure.facing.label}`)
-    selectedDuckIndex = that.figures.indexOf(figure)
+    that.setSelectedFigure(figure)
 }
 
 const clockwiseButton = document.createElement('button')

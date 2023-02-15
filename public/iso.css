@@ -7,7 +7,11 @@
 
 .sprite.figure:hover {
     filter: brightness(1.5);
-    transform: scale(1.2);
-    transform-origin: center;
+}
+
+.sprite.figure.selected {
+    stroke: red;
+    stroke-width: 2;
+    stroke-dasharray: 2,1;
 }
 

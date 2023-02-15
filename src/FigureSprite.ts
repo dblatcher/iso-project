@@ -8,4 +8,5 @@ export interface FigureSprite {
     facing: Direction,
     sprite: DirectionalSprite,
     iso?: IsometricGroup,
+    className?: string,
 }

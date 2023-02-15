@@ -1,7 +1,7 @@
 import { IsometricCanvas, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
 import { buildCuboid } from "./cuboids"
 import { antiClockwise, DIRECTION, Direction, rotateVector } from "./direction"
-import { FigureSprite} from "./FigureSprite"
+import { FigureSprite } from "./FigureSprite"
 import { renderIsometricImage } from "./renderImage"
 
 
@@ -45,7 +45,7 @@ export class MapGridCanvas {
         this.render(this.renderOrientation);
     }
 
-    handleClickOnCell(cell: MapCell) {
+    private handleClickOnCell(cell: MapCell) {
         if (this.animationInProgress) {
             return
         }
@@ -53,7 +53,7 @@ export class MapGridCanvas {
             this.onClick.cell(this)(cell);
         }
     }
-    handleClickOnFigure(figure: FigureSprite) {
+    private handleClickOnFigure(figure: FigureSprite) {
         if (this.animationInProgress) {
             return
         }
@@ -139,17 +139,36 @@ export class MapGridCanvas {
     }
 
     renderFigureSprite(figure: FigureSprite, gridX: number, gridY: number,) {
-        const { sprite, facing, x, y } = figure
+        const { sprite, facing, x, y, className = 'default', iso } = figure
+
+        if (iso && this.canvas.children.includes(iso)) {
+            this.canvas.removeChild(iso)
+        }
+
         const { image, planeView } = sprite.getView(facing, this.renderOrientation)
         const height = this.heightAt(x, y)
-        const iso = renderIsometricImage({ url: image, planeView, classes: ['figure', 'sprite'], coords: [gridX, gridY, height] },)
+        const newImage = renderIsometricImage({ url: image, planeView, classes: ['figure', 'sprite', className], coords: [gridX, gridY, height] },)
 
-        iso.addEventListener('click', () => {
+        newImage.addEventListener('click', () => {
             this.handleClickOnFigure(figure)
         })
 
-        this.canvas.addChild(iso)
-        figure.iso = iso
+        this.canvas.addChild(newImage)
+        figure.iso = newImage
+    }
+
+    setSelectedFigure(newlySelectedFigure: FigureSprite) {
+        if (!newlySelectedFigure?.iso || !this.canvas.children.includes(newlySelectedFigure.iso)) {
+            return false
+        }
+        this.figures.forEach(figure => {
+            figure.className = figure === newlySelectedFigure ? 'selected' : undefined
+        })
+        this.render(this.renderOrientation)
+    }
+
+    getSelectedFigure(): FigureSprite | undefined {
+        return this.figures.find(figure => figure.className === 'selected') as FigureSprite | undefined
     }
 
     rotateGrid(grid: GridOfCells): GridOfCells {
@@ -240,7 +259,6 @@ export class MapGridCanvas {
 
         return true
     }
-
 
     async moveSingleFigure(figure: FigureSprite, xDist: number, yDist: number) {
         if (!figure?.iso || !this.canvas.children.includes(figure.iso)) {
