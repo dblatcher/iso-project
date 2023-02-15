@@ -22,7 +22,7 @@ type MapGridCanvasConfig = {
 }
 
 export class MapGridCanvas {
-    data: GridOfCells
+    cells: GridOfCells
     figures: FigureSprite[]
     renderOrientation: Direction
     canvas: IsometricCanvas
@@ -32,10 +32,10 @@ export class MapGridCanvas {
     }
     animationInProgress: boolean
 
-    constructor(canvas: IsometricCanvas, data: (MapCell | undefined)[][], config: MapGridCanvasConfig) {
+    constructor(canvas: IsometricCanvas, cells: (MapCell | undefined)[][], config: MapGridCanvasConfig) {
         const { figures = [], renderOrientation = DIRECTION.north } = config
         this.canvas = canvas
-        this.data = data
+        this.cells = cells
         this.figures = figures
         this.renderOrientation = renderOrientation
         this.onClick = {}
@@ -63,15 +63,15 @@ export class MapGridCanvas {
     }
 
     heightAt(right: number, left: number): number {
-        return this.data[right]
-            ? this.data[right][left]
-                ? this.data[right][left].height
+        return this.cells[right]
+            ? this.cells[right][left]
+                ? this.cells[right][left].height
                 : 0
             : 0;
     }
 
     getCellCoords(cell: MapCell): { x: number, y: number } {
-        const { data: originalGrid } = this
+        const { cells: originalGrid } = this
         const rowContaining = originalGrid.find(row => row.some(cellInRow => cellInRow === cell));
         if (!rowContaining) { return { x: -1, y: -1 } }
         return { x: originalGrid.indexOf(rowContaining), y: rowContaining.indexOf(cell) }
@@ -184,13 +184,13 @@ export class MapGridCanvas {
     rotateGridBy(orientation: Direction): GridOfCells {
         switch (orientation.orientation) {
             case 0:
-                return [...this.data]
+                return [...this.cells]
             case 1:
-                return this.rotateGrid(this.data)
+                return this.rotateGrid(this.cells)
             case 2:
-                return this.rotateGrid(this.rotateGrid(this.data))
+                return this.rotateGrid(this.rotateGrid(this.cells))
             case 3:
-                return this.rotateGrid(this.rotateGrid(this.rotateGrid(this.data)))
+                return this.rotateGrid(this.rotateGrid(this.rotateGrid(this.cells)))
             default:
                 return []
         }
