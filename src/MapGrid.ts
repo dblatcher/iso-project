@@ -235,15 +235,15 @@ export class MapGridCanvas {
         const { top, left, right } = figure.iso
         const zDist = this.heightAt(figure.x, figure.y) - top
 
-        const hop = (step: number, totalSteps: number): number => {
+        const hop = (step: number, totalSteps: number, hopHeight: number): number => {
             const x = step / totalSteps
-            return (-2 * x ** 2) + (2 * x)
+            return ((-2 * x ** 2) + (2 * x)) * hopHeight
         }
 
         const step = (step: number, totalSteps: number) => {
             figure.iso.right = right + (step * x / totalSteps)
             figure.iso.left = left + (step * y / totalSteps)
-            figure.iso.top = top + hop(step, totalSteps) + (step * zDist / totalSteps)
+            figure.iso.top = top + hop(step, totalSteps, .5 + Math.abs(zDist * 2)) + (step * zDist / totalSteps)
         }
 
         const pause = async (t: number) => await new Promise(resolve => {
