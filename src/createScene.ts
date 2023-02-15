@@ -1,7 +1,7 @@
 import { IsometricCanvas } from "@elchininet/isometric";
 import { Direction, DIRECTION } from "./direction";
 import { duckSprite } from "./DirectionalSprite";
-import { FigureSprite } from "./figures";
+import { FigureSprite } from "./FigureSprite";
 import { IMAGES } from "./images";
 import { MapGridCanvas } from "./MapGrid";
 

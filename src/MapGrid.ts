@@ -1,7 +1,8 @@
 import { IsometricCanvas, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
 import { buildCuboid } from "./cuboids"
 import { antiClockwise, DIRECTION, Direction, rotateVector } from "./direction"
-import { FigureSprite, renderFigure } from "./figures"
+import { FigureSprite} from "./FigureSprite"
+import { renderIsometricImage } from "./renderImage"
 
 
 export interface MapCell {
@@ -137,18 +138,18 @@ export class MapGridCanvas {
         )
     }
 
-    renderFigureSprite(figureHere: FigureSprite, gridX: number, gridY: number,) {
-        const { sprite, facing, x, y } = figureHere
+    renderFigureSprite(figure: FigureSprite, gridX: number, gridY: number,) {
+        const { sprite, facing, x, y } = figure
         const { image, planeView } = sprite.getView(facing, this.renderOrientation)
         const height = this.heightAt(x, y)
-        const iso = renderFigure(image, planeView, [gridX, gridY, height], 1, 1)
+        const iso = renderIsometricImage({ url: image, planeView, classes: ['figure', 'sprite'], coords: [gridX, gridY, height] },)
 
         iso.addEventListener('click', () => {
-            this.handleClickOnFigure(figureHere)
+            this.handleClickOnFigure(figure)
         })
 
         this.canvas.addChild(iso)
-        figureHere.iso = iso
+        figure.iso = iso
     }
 
     rotateGrid(grid: GridOfCells): GridOfCells {

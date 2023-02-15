@@ -1,5 +1,5 @@
 import { clockwise, DIRECTION } from './direction';
-import { FigureSprite } from './figures';
+import { FigureSprite } from './FigureSprite';
 import { MapCell } from './MapGrid';
 import { createScene } from './createScene';
 

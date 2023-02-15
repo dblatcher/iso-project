@@ -1,16 +1,14 @@
-import { IsometricRectangle, PlaneView, IsometricGroup, IsometricCircle } from '@elchininet/isometric'
-import { Direction } from './direction';
-import { DirectionalSprite } from './DirectionalSprite';
+import { PlaneView, IsometricRectangle, IsometricCircle, IsometricGroup } from "@elchininet/isometric";
 
-export interface FigureSprite {
-    x: number,
-    y: number,
-    facing: Direction,
-    sprite: DirectionalSprite,
-    iso?: IsometricGroup,
-}
-
-export const renderFigure = (url: string, planeView: PlaneView, coords: [number, number, number], width = 1, height = 1) => {
+export const renderIsometricImage = (input: {
+    url: string, 
+    planeView: PlaneView, 
+    coords: [number, number, number],
+    width?: number, 
+    height?: number, 
+    classes?: string[]
+}) => {
+    const { url, planeView, width = 1, height = 1, classes = [],coords } = input
     const [right, left, top] = coords
     const commonTextureProps = {
         url,
@@ -43,7 +41,7 @@ export const renderFigure = (url: string, planeView: PlaneView, coords: [number,
 
     }
 
-    sprite.getElement().classList.add('sprite','figure')
+    sprite.getElement().classList.add(...classes)
 
     const shadow = new IsometricCircle({ radius: width / 4, left: 0.5, right: 0.5, top: 0, planeView: PlaneView.TOP, fillColor: 'black' })
 
