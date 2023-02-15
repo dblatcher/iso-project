@@ -15,14 +15,13 @@ export class DirectionalSprite {
     }
 
     getView(facing: Direction, orientation: Direction): { image: string, planeView: PlaneView } {
-
-        if (facing == orientation) {
+        if (facing.orientation == orientation.orientation) {
             return { image: this.backImage, planeView: PlaneView.SIDE }
         }
-        if (facing == clockwise(orientation)) {
+        if (facing.orientation == clockwise(orientation).orientation) {
             return { image: this.frontImage, planeView: PlaneView.FRONT }
         }
-        if (facing == antiClockwise(orientation)) {
+        if (facing.orientation == antiClockwise(orientation).orientation) {
             return { image: this.backImage, planeView: PlaneView.FRONT }
         }
 
