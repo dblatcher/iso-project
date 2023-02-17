@@ -1,8 +1,8 @@
 import { IsometricCanvas, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
-import { buildCuboid } from "./cuboids"
+import { buildCuboid } from "./builders/cuboids"
 import { antiClockwise, DIRECTION, Direction, rotateVector } from "./direction"
 import { FigureSprite } from "./FigureSprite"
-import { renderIsometricImage } from "./renderImage"
+import { renderIsometricImage } from "./builders/renderImage"
 
 
 export interface MapCell {
