@@ -1,4 +1,4 @@
-import { IsometricCanvas } from "@elchininet/isometric"
+import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
 import { DIRECTION, CardinalDirection, rotateVector } from "./direction"
 import { FigureSprite } from "./FigureSprite"
@@ -34,9 +34,9 @@ export class MapGridCanvas {
     }
     animationInProgress: boolean
 
-    constructor(canvas: IsometricCanvas, cells: (MapCell | undefined)[][], config: MapGridCanvasConfig) {
+    constructor(canvasProps: IsometricCanvasProps, cells: (MapCell | undefined)[][], config: MapGridCanvasConfig) {
         const { figures = [], renderOrientation = DIRECTION.north } = config
-        this.canvas = canvas
+        this.canvas = new IsometricCanvas(canvasProps)
         this.cells = cells
         this.figures = figures
         this.renderOrientation = renderOrientation

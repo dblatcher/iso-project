@@ -1,21 +1,10 @@
-import { IsometricCanvas } from "@elchininet/isometric";
 import { CardinalDirection, DIRECTION } from "./direction";
 import { duckSprite } from "./DirectionalSprite";
 import { FigureSprite } from "./FigureSprite";
 import { IMAGES } from "./images";
 import { MapGridCanvas } from "./MapGrid";
 
-export function createScene(orientation: CardinalDirection) {
-    const container = document.createElement('span')
-    document.body.appendChild(container)
-
-    const canvas = new IsometricCanvas({
-        container,
-        backgroundColor: '#CCC',
-        scale: 30,
-        width: 400,
-        height: 400,
-    });
+export function createScene(orientation: CardinalDirection, container: string | HTMLElement): MapGridCanvas {
 
     const myDucks: FigureSprite[] = [
         { sprite: duckSprite, x: 3, y: 1, facing: DIRECTION.south },
@@ -25,7 +14,14 @@ export function createScene(orientation: CardinalDirection) {
         { sprite: duckSprite, x: 0, y: 5, facing: DIRECTION.east },
     ];
 
-    const mapGrid = new MapGridCanvas(canvas,
+    const mapGrid = new MapGridCanvas(
+        {
+            container,
+            backgroundColor: '#CCC',
+            scale: 30,
+            width: 400,
+            height: 400,
+        },
         [
             [{ height: 1 }, { height: 1.2 }, { height: 1.4 }, { height: 1.6 }, { height: 1.8 }, { height: 2 }],
             [{ height: 2 }, { height: 1 }, { height: 1 }, { height: 1 }],
@@ -43,5 +39,5 @@ export function createScene(orientation: CardinalDirection) {
         }
     );
 
-    return { canvas, mapGrid }
+    return mapGrid
 }
