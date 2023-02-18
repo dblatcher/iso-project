@@ -122,7 +122,7 @@ export class MapGridCanvas {
     }
 
     renderBlock(cell: MapCell, gridX: number, gridY: number) {
-        const cuboid = buildCuboid({
+        const { group: cuboid, topPiece } = buildCuboid({
             coords: [gridX, gridY, 0],
             size: 1,
             height: cell.height,
@@ -130,7 +130,7 @@ export class MapGridCanvas {
             sideImage: cell.textureSide,
         })
 
-        cuboid.addEventListener('click', () => {
+        topPiece.addEventListener('click', () => {
             this.handleClickOnCell(cell)
         })
 

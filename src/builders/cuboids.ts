@@ -38,13 +38,13 @@ export const buildCuboid = (config: CuboidConfig) => {
         .addChild(rightPiece)
         .addChild(leftPiece);
 
-    return group
+    return {group, topPiece}
 }
 
 export const buildCuboidWithShadow = (config: CuboidConfig) => {
     const { coords, size = 1, } = config
     const [right, left, top] = coords
-    const group = buildCuboid(config)
+    const {group} = buildCuboid(config)
 
     const shadowSize = size * (1 + (top / 5))
     const shadow = new IsometricRectangle({
@@ -63,5 +63,5 @@ export const buildCuboidWithShadow = (config: CuboidConfig) => {
     group.addChild(shadow)
     group.sendChildToBack(shadow)
 
-    return group
+    return {group}
 }
