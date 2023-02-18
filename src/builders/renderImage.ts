@@ -1,4 +1,4 @@
-import { PlaneView, IsometricRectangle, IsometricCircle, IsometricGroup } from "@elchininet/isometric";
+import { PlaneView, IsometricRectangle, IsometricGroup } from "@elchininet/isometric";
 
 export const renderIsometricImage = (input: {
     url: string,
@@ -7,7 +7,6 @@ export const renderIsometricImage = (input: {
     width?: number,
     height?: number,
     classes?: string[]
-    renderShadow?: boolean,
 }) => {
     const { url, planeView, width = 1, height = 1, classes = [], coords } = input
     const [right, left, top] = coords
@@ -45,20 +44,6 @@ export const renderIsometricImage = (input: {
     }
 
     sprite.getElement().classList.add(...classes)
-
-    if (input.renderShadow) {
-        const shadow = new IsometricCircle({ 
-            radius: width / 4, 
-            left: 0.5, 
-            right: 0.5, 
-            top: 0, 
-            planeView: PlaneView.TOP, 
-            fillColor: 'black' 
-        })
-        shadow.getElement().classList.add('shadow')
-        group.addChild(shadow)
-    }
-
     group.addChild(sprite)
     return group
 }

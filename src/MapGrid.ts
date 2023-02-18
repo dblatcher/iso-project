@@ -3,6 +3,7 @@ import { buildCuboid } from "./builders/cuboids"
 import { antiClockwise, clockwise, DIRECTION, Direction, rotateVector } from "./direction"
 import { FigureSprite } from "./FigureSprite"
 import { renderIsometricImage } from "./builders/renderImage"
+import { renderIsometricShadow } from "./builders/renderIsometricShadow"
 
 
 export interface MapCell {
@@ -139,7 +140,7 @@ export class MapGridCanvas {
     }
 
     renderFigureSprite(figure: FigureSprite, gridX: number, gridY: number,) {
-        const { sprite, facing, x, y, className = 'default', iso } = figure
+        const { sprite, facing, x, y, className = 'default', spriteIsoGroup: iso } = figure
 
         if (iso && this.canvas.children.includes(iso)) {
             this.canvas.removeChild(iso)
@@ -152,19 +153,23 @@ export class MapGridCanvas {
             planeView,
             classes: ['figure', 'sprite', className],
             coords: [gridX, gridY, height],
-            renderShadow: true
         })
 
         newImage.addEventListener('click', () => {
             this.handleClickOnFigure(figure)
         })
 
-        this.canvas.addChild(newImage)
-        figure.iso = newImage
+        const newShadow = renderIsometricShadow({
+            coords: [gridX, gridY, height],
+        })
+
+        this.canvas.addChildren(newShadow, newImage)
+        figure.spriteIsoGroup = newImage
+        figure.shadowIsoGroup = newShadow
     }
 
     setSelectedFigure(newlySelectedFigure: FigureSprite) {
-        if (!newlySelectedFigure?.iso || !this.canvas.children.includes(newlySelectedFigure.iso)) {
+        if (!newlySelectedFigure?.spriteIsoGroup || !this.canvas.children.includes(newlySelectedFigure.spriteIsoGroup)) {
             return false
         }
         this.figures.forEach(figure => {
@@ -221,29 +226,35 @@ export class MapGridCanvas {
                 })
             })
         })
-        figures.forEach(unrenderedFigure => unrenderedFigure.iso = undefined)
+        figures.forEach(unrenderedFigure => {
+            unrenderedFigure.spriteIsoGroup = undefined
+            unrenderedFigure.shadowIsoGroup = undefined
+        })
     }
 
     private async shiftFigure(figure: FigureSprite, xDist: number, yDist: number): Promise<boolean> {
         const { canvas } = this
 
-        const { x: startX, y: startY } = figure
+        const { x: startX, y: startY, spriteIsoGroup, shadowIsoGroup } = figure
 
         figure.x += xDist
         figure.y += yDist
 
-        if (!figure.iso || !canvas.children.includes(figure.iso)) {
+        if (!spriteIsoGroup || !canvas.children.includes(spriteIsoGroup)) {
             return false
         }
 
         const { x, y } = rotateVector(xDist, yDist, this.renderOrientation)
         // to do - find the shadow better?
         // should it be a separate property of figure?
-        const shadow = figure.iso.children.find(c => c.getElement().classList.contains('shadow')) as IsometricCircle | undefined
+
 
         // TO DO - change ordering at each step
-        canvas.bringChildToFront(figure.iso)
-        const { top, left, right } = figure.iso
+        if (shadowIsoGroup) {
+            canvas.bringChildToFront(shadowIsoGroup)
+        }
+        canvas.bringChildToFront(spriteIsoGroup)
+        const { top, left, right } = figure.spriteIsoGroup
         const zDist = this.heightAt(figure.x, figure.y) - top
 
         const hop = (step: number, totalSteps: number, hopHeight: number): number => {
@@ -253,15 +264,19 @@ export class MapGridCanvas {
 
         const step = (step: number, totalSteps: number) => {
             const altitude = hop(step, totalSteps, .5 + Math.abs(zDist * 2)) + (step * zDist / totalSteps)
-            figure.iso.right = right + (step * x / totalSteps)
-            figure.iso.left = left + (step * y / totalSteps)
-            figure.iso.top = top + altitude
+            spriteIsoGroup.right = right + (step * x / totalSteps)
+            spriteIsoGroup.left = left + (step * y / totalSteps)
+            spriteIsoGroup.top = top + altitude
 
-            if (shadow) {
+            if (shadowIsoGroup) {
+
+                shadowIsoGroup.right = right + (step * x / totalSteps)
+                shadowIsoGroup.left = left + (step * y / totalSteps)
+
                 const cellX = Math.round(startX + (step * xDist / totalSteps))
                 const cellY = Math.round(startY + (step * yDist / totalSteps))
                 const floorLevel = this.heightAt(cellX, cellY)
-                shadow.top = floorLevel - top - altitude
+                shadowIsoGroup.top = floorLevel
             }
         }
 
@@ -280,7 +295,7 @@ export class MapGridCanvas {
     }
 
     async rotateSingleFigure(figure: FigureSprite, direction: Direction) {
-        if (!figure?.iso || !this.canvas.children.includes(figure.iso)) {
+        if (!figure?.spriteIsoGroup || !this.canvas.children.includes(figure.spriteIsoGroup)) {
             return false
         }
         this.animationInProgress = true
@@ -290,7 +305,7 @@ export class MapGridCanvas {
     }
 
     async moveSingleFigure(figure: FigureSprite, xDist: number, yDist: number) {
-        if (!figure?.iso || !this.canvas.children.includes(figure.iso)) {
+        if (!figure?.spriteIsoGroup || !this.canvas.children.includes(figure.spriteIsoGroup)) {
             return false
         }
         this.animationInProgress = true

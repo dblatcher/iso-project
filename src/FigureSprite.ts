@@ -7,6 +7,7 @@ export interface FigureSprite {
     y: number,
     facing: Direction,
     sprite: DirectionalSprite,
-    iso?: IsometricGroup,
+    spriteIsoGroup?: IsometricGroup,
+    shadowIsoGroup?: IsometricGroup,
     className?: string,
 }
