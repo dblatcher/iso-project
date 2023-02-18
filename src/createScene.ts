@@ -1,11 +1,11 @@
 import { IsometricCanvas } from "@elchininet/isometric";
-import { Direction, DIRECTION } from "./direction";
+import { CardinalDirection, DIRECTION } from "./direction";
 import { duckSprite } from "./DirectionalSprite";
 import { FigureSprite } from "./FigureSprite";
 import { IMAGES } from "./images";
 import { MapGridCanvas } from "./MapGrid";
 
-export function createScene(orientation: Direction) {
+export function createScene(orientation: CardinalDirection) {
     const container = document.createElement('span')
     document.body.appendChild(container)
 

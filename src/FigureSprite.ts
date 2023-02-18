@@ -1,11 +1,11 @@
 import { IsometricGroup } from '@elchininet/isometric'
-import { Direction } from './direction';
+import { CardinalDirection } from './direction';
 import { DirectionalSprite } from './DirectionalSprite';
 
 export interface FigureSprite {
     x: number,
     y: number,
-    facing: Direction,
+    facing: CardinalDirection,
     sprite: DirectionalSprite,
     spriteIsoGroup?: IsometricGroup,
     shadowIsoGroup?: IsometricGroup,

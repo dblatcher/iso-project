@@ -1,6 +1,6 @@
-import { IsometricCanvas, IsometricCircle, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
+import { IsometricCanvas } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
-import { antiClockwise, clockwise, DIRECTION, Direction, rotateVector } from "./direction"
+import { DIRECTION, CardinalDirection, rotateVector } from "./direction"
 import { FigureSprite } from "./FigureSprite"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"
@@ -19,14 +19,14 @@ type CellClickHandler<T> = { (mapGridCanvas: MapGridCanvas): { (cell: MapCell): 
 type FigureClickHandler<T> = { (mapGridCanvas: MapGridCanvas): { (figure: FigureSprite): Promise<T> } }
 
 type MapGridCanvasConfig = {
-    renderOrientation?: Direction,
+    renderOrientation?: CardinalDirection,
     figures?: FigureSprite[],
 }
 
 export class MapGridCanvas {
     cells: GridOfCells
     figures: FigureSprite[]
-    renderOrientation: Direction
+    renderOrientation: CardinalDirection
     canvas: IsometricCanvas
     onClick: {
         cell?: CellClickHandler<any>,
@@ -79,7 +79,7 @@ export class MapGridCanvas {
         return { x: originalGrid.indexOf(rowContaining), y: rowContaining.indexOf(cell) }
     }
 
-    renderBackGrounds(orientation: Direction) {
+    renderBackGrounds(orientation: CardinalDirection) {
         const { sideBackground, sideLabel, frontBackground, frontLabel } = buildBackgrounds({ orientation })
 
         this.canvas.addChildren(
@@ -161,8 +161,8 @@ export class MapGridCanvas {
         }
         return newGrid
     }
-    rotateGridBy(orientation: Direction): GridOfCells {
-        switch (orientation.orientation) {
+    rotateGridBy(orientation: CardinalDirection): GridOfCells {
+        switch (orientation.rotation) {
             case 0:
                 return [...this.cells]
             case 1:
@@ -176,7 +176,7 @@ export class MapGridCanvas {
         }
     }
 
-    render(orientation: Direction) {
+    render(orientation: CardinalDirection) {
         this.renderOrientation = { ...orientation }
         this.canvas.clear()
         this.renderBackGrounds(orientation)
@@ -263,7 +263,7 @@ export class MapGridCanvas {
         return true
     }
 
-    async rotateSingleFigure(figure: FigureSprite, direction: Direction) {
+    async rotateSingleFigure(figure: FigureSprite, direction: CardinalDirection) {
         if (!figure?.spriteIsoGroup || !this.canvas.children.includes(figure.spriteIsoGroup)) {
             return false
         }

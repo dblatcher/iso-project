@@ -1,7 +1,7 @@
 import { IsometricRectangle, PlaneView, IsometricText } from "@elchininet/isometric"
-import { antiClockwise, Direction } from "../direction"
+import { antiClockwise, CardinalDirection } from "../direction"
 
-export const buildBackgrounds = (input: { orientation: Direction, fillColor?: string }) => {
+export const buildBackgrounds = (input: { orientation: CardinalDirection, fillColor?: string }) => {
 
     const { orientation, fillColor = 'skyblue' } = input
 

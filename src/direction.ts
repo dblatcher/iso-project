@@ -1,42 +1,41 @@
-export interface Direction {
+export type CardinalDirection = Readonly<{
     label: string,
-    orientation: 0 | 1 | 2 | 3,
+    rotation: 0 | 1 | 2 | 3,
+}>
 
-}
-
-const north: Direction = {
+const north: CardinalDirection = {
     label: 'North',
-    orientation: 0,
+    rotation: 0,
 }
-const west: Direction = {
+const west: CardinalDirection = {
     label: 'West',
-    orientation: 1,
+    rotation: 1,
 }
-const south: Direction = {
+const south: CardinalDirection = {
     label: 'South',
-    orientation: 2,
+    rotation: 2,
 }
-const east: Direction = {
+const east: CardinalDirection = {
     label: 'East',
-    orientation: 3,
+    rotation: 3,
 }
 
 export const DIRECTION = {
     north, west, south, east
 }
 
-export const antiClockwise = (direction: Direction): Direction => {
-    const { orientation } = direction
-    return Object.values(DIRECTION).find(d => d.orientation === orientation + 1) || DIRECTION.north
+export const antiClockwise = (direction: CardinalDirection): CardinalDirection => {
+    const { rotation } = direction
+    return Object.values(DIRECTION).find(d => d.rotation === rotation + 1) || DIRECTION.north
 }
 
-export const clockwise = (direction: Direction): Direction => {
-    const { orientation } = direction
-    return Object.values(DIRECTION).find(d => d.orientation === orientation - 1) || DIRECTION.east
+export const clockwise = (direction: CardinalDirection): CardinalDirection => {
+    const { rotation } = direction
+    return Object.values(DIRECTION).find(d => d.rotation === rotation - 1) || DIRECTION.east
 }
 
-export const rotateVector = (x: number, y: number, orientation: Direction): { x: number, y: number } => {
-    switch (orientation.orientation) {
+export const rotateVector = (x: number, y: number, orientation: CardinalDirection): { x: number, y: number } => {
+    switch (orientation.rotation) {
         case 0:
             return {
                 x, y

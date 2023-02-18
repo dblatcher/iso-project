@@ -1,5 +1,5 @@
 import { PlaneView } from "@elchininet/isometric"
-import { antiClockwise, clockwise, Direction } from "./direction"
+import { antiClockwise, clockwise, CardinalDirection } from "./direction"
 import { IMAGES } from './images'
 
 export class DirectionalSprite {
@@ -14,14 +14,14 @@ export class DirectionalSprite {
         this.backImage = data.backImage
     }
 
-    getView(facing: Direction, orientation: Direction): { image: string, planeView: PlaneView } {
-        if (facing.orientation == orientation.orientation) {
+    getView(facing: CardinalDirection, orientation: CardinalDirection): { image: string, planeView: PlaneView } {
+        if (facing.rotation == orientation.rotation) {
             return { image: this.backImage, planeView: PlaneView.SIDE }
         }
-        if (facing.orientation == clockwise(orientation).orientation) {
+        if (facing.rotation == clockwise(orientation).rotation) {
             return { image: this.frontImage, planeView: PlaneView.FRONT }
         }
-        if (facing.orientation == antiClockwise(orientation).orientation) {
+        if (facing.rotation == antiClockwise(orientation).rotation) {
             return { image: this.backImage, planeView: PlaneView.FRONT }
         }
 
