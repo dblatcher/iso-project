@@ -15,19 +15,19 @@ export interface MapCell {
 
 type GridOfCells = Array<Array<MapCell | undefined>>
 
-type CellClickHandler<T> = { (mapGridCanvas: MapGridCanvas): { (cell: MapCell): Promise<T> } }
-type FigureClickHandler<T> = { (mapGridCanvas: MapGridCanvas): { (figure: FigureSprite): Promise<T> } }
+type CellClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (cell: MapCell): Promise<T> } }
+type FigureClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: FigureSprite): Promise<T> } }
 
 type MapGridCanvasConfig = {
     renderOrientation?: CardinalDirection,
     figures?: FigureSprite[],
 }
 
-export class MapGridCanvas {
+export class MapGridIsometricCanvas extends IsometricCanvas {
     cells: GridOfCells
     figures: FigureSprite[]
     renderOrientation: CardinalDirection
-    canvas: IsometricCanvas
+
     onClick: {
         cell?: CellClickHandler<any>,
         figure?: FigureClickHandler<any>,
@@ -35,8 +35,8 @@ export class MapGridCanvas {
     animationInProgress: boolean
 
     constructor(canvasProps: IsometricCanvasProps, cells: (MapCell | undefined)[][], config: MapGridCanvasConfig) {
+        super(canvasProps)
         const { figures = [], renderOrientation = DIRECTION.north } = config
-        this.canvas = new IsometricCanvas(canvasProps)
         this.cells = cells
         this.figures = figures
         this.renderOrientation = renderOrientation
@@ -82,7 +82,7 @@ export class MapGridCanvas {
     renderBackGrounds(orientation: CardinalDirection) {
         const { sideBackground, sideLabel, frontBackground, frontLabel } = buildBackgrounds({ orientation })
 
-        this.canvas.addChildren(
+        this.addChildren(
             sideBackground,
             sideLabel,
             frontBackground,
@@ -103,7 +103,7 @@ export class MapGridCanvas {
             this.handleClickOnCell(cell)
         })
 
-        this.canvas.addChild(
+        this.addChild(
             cuboid
         )
     }
@@ -111,8 +111,8 @@ export class MapGridCanvas {
     renderFigureSprite(figure: FigureSprite, gridX: number, gridY: number,) {
         const { sprite, facing, x, y, className = 'default', spriteIsoGroup: iso } = figure
 
-        if (iso && this.canvas.children.includes(iso)) {
-            this.canvas.removeChild(iso)
+        if (iso && this.children.includes(iso)) {
+            this.removeChild(iso)
         }
 
         const { image, planeView } = sprite.getView(facing, this.renderOrientation)
@@ -132,13 +132,13 @@ export class MapGridCanvas {
             coords: [gridX, gridY, height],
         })
 
-        this.canvas.addChildren(newShadow, newImage)
+        this.addChildren(newShadow, newImage)
         figure.spriteIsoGroup = newImage
         figure.shadowIsoGroup = newShadow
     }
 
     setSelectedFigure(newlySelectedFigure: FigureSprite) {
-        if (!newlySelectedFigure?.spriteIsoGroup || !this.canvas.children.includes(newlySelectedFigure.spriteIsoGroup)) {
+        if (!newlySelectedFigure?.spriteIsoGroup || !this.children.includes(newlySelectedFigure.spriteIsoGroup)) {
             return false
         }
         this.figures.forEach(figure => {
@@ -178,7 +178,7 @@ export class MapGridCanvas {
 
     render(orientation: CardinalDirection) {
         this.renderOrientation = { ...orientation }
-        this.canvas.clear()
+        this.clear()
         this.renderBackGrounds(orientation)
         const figures = [...this.figures]
         this.rotateGridBy(orientation).map((row, gridX) => {
@@ -202,14 +202,13 @@ export class MapGridCanvas {
     }
 
     private async shiftFigure(figure: FigureSprite, xDist: number, yDist: number): Promise<boolean> {
-        const { canvas } = this
 
         const { x: startX, y: startY, spriteIsoGroup, shadowIsoGroup } = figure
 
         figure.x += xDist
         figure.y += yDist
 
-        if (!spriteIsoGroup || !canvas.children.includes(spriteIsoGroup)) {
+        if (!spriteIsoGroup || !this.children.includes(spriteIsoGroup)) {
             return false
         }
 
@@ -220,9 +219,9 @@ export class MapGridCanvas {
 
         // TO DO - change ordering at each step
         if (shadowIsoGroup) {
-            canvas.bringChildToFront(shadowIsoGroup)
+            this.bringChildToFront(shadowIsoGroup)
         }
-        canvas.bringChildToFront(spriteIsoGroup)
+        this.bringChildToFront(spriteIsoGroup)
         const { top, left, right } = figure.spriteIsoGroup
         const zDist = this.heightAt(figure.x, figure.y) - top
 
@@ -264,7 +263,7 @@ export class MapGridCanvas {
     }
 
     async rotateSingleFigure(figure: FigureSprite, direction: CardinalDirection) {
-        if (!figure?.spriteIsoGroup || !this.canvas.children.includes(figure.spriteIsoGroup)) {
+        if (!figure?.spriteIsoGroup || !this.children.includes(figure.spriteIsoGroup)) {
             return false
         }
         this.animationInProgress = true
@@ -274,7 +273,7 @@ export class MapGridCanvas {
     }
 
     async moveSingleFigure(figure: FigureSprite, xDist: number, yDist: number) {
-        if (!figure?.spriteIsoGroup || !this.canvas.children.includes(figure.spriteIsoGroup)) {
+        if (!figure?.spriteIsoGroup || !this.children.includes(figure.spriteIsoGroup)) {
             return false
         }
         this.animationInProgress = true

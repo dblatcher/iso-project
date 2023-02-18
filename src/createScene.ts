@@ -2,9 +2,9 @@ import { CardinalDirection, DIRECTION } from "./direction";
 import { duckSprite } from "./DirectionalSprite";
 import { FigureSprite } from "./FigureSprite";
 import { IMAGES } from "./images";
-import { MapGridCanvas } from "./MapGrid";
+import { MapGridIsometricCanvas } from "./MapGrid";
 
-export function createScene(orientation: CardinalDirection, container: string | HTMLElement): MapGridCanvas {
+export function createScene(orientation: CardinalDirection, container: string | HTMLElement): MapGridIsometricCanvas {
 
     const myDucks: FigureSprite[] = [
         { sprite: duckSprite, x: 3, y: 1, facing: DIRECTION.south },
@@ -14,7 +14,7 @@ export function createScene(orientation: CardinalDirection, container: string | 
         { sprite: duckSprite, x: 0, y: 5, facing: DIRECTION.east },
     ];
 
-    const mapGrid = new MapGridCanvas(
+    const mapGrid = new MapGridIsometricCanvas(
         {
             container,
             backgroundColor: '#CCC',
