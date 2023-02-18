@@ -4,6 +4,7 @@ import { antiClockwise, clockwise, DIRECTION, Direction, rotateVector } from "./
 import { FigureSprite } from "./FigureSprite"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"
+import { buildBackgrounds } from "./builders/backgrounds"
 
 
 export interface MapCell {
@@ -79,39 +80,7 @@ export class MapGridCanvas {
     }
 
     renderBackGrounds(orientation: Direction) {
-        const backgroundProps = {
-            left: 0,
-            right: 0,
-            top: 0,
-            width: 100,
-            height: 100,
-            fillColor: 'blue',
-        }
-        const labelProps = {
-            top: 4,
-            fontSize: 100,
-        }
-
-        const sideBackground = new IsometricRectangle({
-            planeView: PlaneView.SIDE,
-            ...backgroundProps,
-        })
-        const sideLabel = new IsometricText({
-            planeView: PlaneView.SIDE,
-            text: orientation.label[0],
-            right: 4,
-            ...labelProps,
-        })
-        const frontBackground = new IsometricRectangle({
-            planeView: PlaneView.FRONT,
-            ...backgroundProps,
-        })
-        const frontLabel = new IsometricText({
-            planeView: PlaneView.FRONT,
-            text: antiClockwise(orientation).label[0],
-            left: 4,
-            ...labelProps,
-        })
+        const { sideBackground, sideLabel, frontBackground, frontLabel } = buildBackgrounds({ orientation })
 
         this.canvas.addChildren(
             sideBackground,
