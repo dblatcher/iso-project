@@ -4,6 +4,9 @@ import { FigureSprite } from "./FigureSprite";
 import { IMAGES } from "./images";
 import { MapCell, MapGridIsometricCanvas } from "./MapGrid";
 
+const stoney = { textureSide: IMAGES.wall, colorTop: 'slategray' }
+const sandy = { colorSide: 'sandybrown', colorTop: 'yellow', }
+
 export function createScene(orientation: CardinalDirection, container: string | HTMLElement): MapGridIsometricCanvas {
 
     const myDucks: FigureSprite[] = [
@@ -17,11 +20,11 @@ export function createScene(orientation: CardinalDirection, container: string | 
     const cells: MapCell[][] = [
         [{ height: 1 }, { height: 1.2 }, { height: 1.4 }, { height: 1.6 }, { height: 1.8 }, { height: 2 }],
         [{ height: 2 }, { height: 1 }, { height: 1 }, { height: 1 }],
-        [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 3.5, textureSide: IMAGES.wall, textureTop: IMAGES.grass }],
+        [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 3.5, ...stoney }],
         [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1 }],
-        [{ height: 0.8 }, { height: 0.8 }],
-        [, { height: 0.6 }, { height: 0.8 }],
-        [, { height: 0.6 }, { height: 0.8, colorSide: 'gray', colorTop: 'yellow', }],
+        [{ height: 0.8 }, { height: 0.8, ...stoney }],
+        [, { height: 0.6, ...sandy }, { height: 0.8, ...sandy }],
+        [, { height: 0.6, ...sandy }, { height: 0.8, ...sandy }],
     ]
 
     const mapGrid = new MapGridIsometricCanvas(
