@@ -1,6 +1,6 @@
-import { IsometricCanvas, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
+import { IsometricCanvas, IsometricCircle, IsometricRectangle, IsometricText, PlaneView } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
-import { antiClockwise, DIRECTION, Direction, rotateVector } from "./direction"
+import { antiClockwise, clockwise, DIRECTION, Direction, rotateVector } from "./direction"
 import { FigureSprite } from "./FigureSprite"
 import { renderIsometricImage } from "./builders/renderImage"
 
@@ -147,7 +147,13 @@ export class MapGridCanvas {
 
         const { image, planeView } = sprite.getView(facing, this.renderOrientation)
         const height = this.heightAt(x, y)
-        const newImage = renderIsometricImage({ url: image, planeView, classes: ['figure', 'sprite', className], coords: [gridX, gridY, height] },)
+        const newImage = renderIsometricImage({
+            url: image,
+            planeView,
+            classes: ['figure', 'sprite', className],
+            coords: [gridX, gridY, height],
+            renderShadow: true
+        })
 
         newImage.addEventListener('click', () => {
             this.handleClickOnFigure(figure)
@@ -221,6 +227,8 @@ export class MapGridCanvas {
     private async shiftFigure(figure: FigureSprite, xDist: number, yDist: number): Promise<boolean> {
         const { canvas } = this
 
+        const { x: startX, y: startY } = figure
+
         figure.x += xDist
         figure.y += yDist
 
@@ -229,6 +237,9 @@ export class MapGridCanvas {
         }
 
         const { x, y } = rotateVector(xDist, yDist, this.renderOrientation)
+        // to do - find the shadow better?
+        // should it be a separate property of figure?
+        const shadow = figure.iso.children.find(c => c.getElement().classList.contains('shadow')) as IsometricCircle | undefined
 
         // TO DO - change ordering at each step
         canvas.bringChildToFront(figure.iso)
@@ -236,14 +247,22 @@ export class MapGridCanvas {
         const zDist = this.heightAt(figure.x, figure.y) - top
 
         const hop = (step: number, totalSteps: number, hopHeight: number): number => {
-            const x = step / totalSteps
-            return ((-2 * x ** 2) + (2 * x)) * hopHeight
+            const d = step / totalSteps
+            return ((-2 * d ** 2) + (2 * d)) * hopHeight
         }
 
         const step = (step: number, totalSteps: number) => {
+            const altitude = hop(step, totalSteps, .5 + Math.abs(zDist * 2)) + (step * zDist / totalSteps)
             figure.iso.right = right + (step * x / totalSteps)
             figure.iso.left = left + (step * y / totalSteps)
-            figure.iso.top = top + hop(step, totalSteps, .5 + Math.abs(zDist * 2)) + (step * zDist / totalSteps)
+            figure.iso.top = top + altitude
+
+            if (shadow) {
+                const cellX = Math.round(startX + (step * xDist / totalSteps))
+                const cellY = Math.round(startY + (step * yDist / totalSteps))
+                const floorLevel = this.heightAt(cellX, cellY)
+                shadow.top = floorLevel - top - altitude
+            }
         }
 
         const pause = async (t: number) => await new Promise(resolve => {
