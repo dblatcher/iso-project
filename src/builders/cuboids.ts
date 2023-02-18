@@ -7,6 +7,8 @@ export type CuboidConfig = {
     height?: number
     sideImage?: string
     topImage?: string
+    sideColor?: string
+    topColor?: string
 }
 
 export const buildCuboid = (config: CuboidConfig) => {
@@ -16,35 +18,38 @@ export const buildCuboid = (config: CuboidConfig) => {
 
     const topPiece = new IsometricRectangle({
         height: size, width: size, planeView: PlaneView.TOP,
-        texture: topImage ? makeSideTexture(topImage, PlaneView.TOP) : undefined
+        texture: topImage ? makeSideTexture(topImage, PlaneView.TOP) : undefined,
+        fillColor: config.topColor || 'white',
     });
     const rightPiece = new IsometricRectangle({
         height: height, width: size, planeView: PlaneView.FRONT,
-        texture: sideImage ? makeSideTexture(sideImage, PlaneView.FRONT) : undefined
+        texture: sideImage ? makeSideTexture(sideImage, PlaneView.FRONT) : undefined,
+        fillColor: config.sideColor || 'white',
     });
     const leftPiece = new IsometricRectangle({
         height: height, width: size, planeView: PlaneView.SIDE,
-        texture: sideImage ? makeSideTexture(sideImage, PlaneView.SIDE) : undefined
+        texture: sideImage ? makeSideTexture(sideImage, PlaneView.SIDE) : undefined,
+        fillColor: config.sideColor || 'white',
     });
 
     topPiece.top = height;
     rightPiece.right = size;
     leftPiece.left = size;
 
-    topPiece.getElement().classList.add('block','top')
+    topPiece.getElement().classList.add('block', 'top')
 
     group
         .addChild(topPiece)
         .addChild(rightPiece)
         .addChild(leftPiece);
 
-    return {group, topPiece}
+    return { group, topPiece }
 }
 
 export const buildCuboidWithShadow = (config: CuboidConfig) => {
     const { coords, size = 1, } = config
     const [right, left, top] = coords
-    const {group} = buildCuboid(config)
+    const { group } = buildCuboid(config)
 
     const shadowSize = size * (1 + (top / 5))
     const shadow = new IsometricRectangle({
@@ -63,5 +68,5 @@ export const buildCuboidWithShadow = (config: CuboidConfig) => {
     group.addChild(shadow)
     group.sendChildToBack(shadow)
 
-    return {group}
+    return { group }
 }

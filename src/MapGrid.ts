@@ -11,6 +11,8 @@ export interface MapCell {
     height: number,
     textureTop?: string,
     textureSide?: string,
+    colorTop?: string,
+    colorSide?: string,
 }
 
 type GridOfCells = Array<Array<MapCell | undefined>>
@@ -19,14 +21,19 @@ type CellClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (cell: M
 type FigureClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: FigureSprite): Promise<T> } }
 
 type MapGridCanvasConfig = {
-    renderOrientation?: CardinalDirection,
-    figures?: FigureSprite[],
+    renderOrientation?: CardinalDirection;
+    figures?: FigureSprite[];
+    defaultBlockSideColor?: string;
+    defaultBlockTopColor?: string;
+    defaultBlockTextureTop?: string;
+    defaultBlockTextureSide?: string;
 }
 
 export class MapGridIsometricCanvas extends IsometricCanvas {
     cells: GridOfCells
     figures: FigureSprite[]
     renderOrientation: CardinalDirection
+    private config: Readonly<MapGridCanvasConfig>
 
     onClick: {
         cell?: CellClickHandler<any>,
@@ -44,6 +51,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
         this.handleClickOnCell = this.handleClickOnCell.bind(this)
         this.handleClickOnFigure = this.handleClickOnFigure.bind(this)
         this.animationInProgress = false
+        this.config = config
         this.render(this.renderOrientation);
     }
 
@@ -91,12 +99,16 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
     }
 
     renderBlock(cell: MapCell, gridX: number, gridY: number) {
+        const { defaultBlockSideColor, defaultBlockTextureTop, defaultBlockTopColor, defaultBlockTextureSide } = this.config
+
         const { group: cuboid, topPiece } = buildCuboid({
             coords: [gridX, gridY, 0],
             size: 1,
             height: cell.height,
-            topImage: cell.textureTop,
-            sideImage: cell.textureSide,
+            topImage: (cell.colorTop && !cell.textureTop) ? undefined : cell.textureTop || defaultBlockTextureTop,
+            sideImage: (cell.colorSide && !cell.textureSide) ? undefined : cell.textureSide || defaultBlockTextureSide,
+            sideColor: cell.colorSide || defaultBlockSideColor,
+            topColor: cell.colorTop || defaultBlockTopColor,
         })
 
         topPiece.addEventListener('click', () => {
