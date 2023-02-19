@@ -1,16 +1,35 @@
-import { IsometricRectangle, PlaneView, IsometricText } from "@elchininet/isometric"
+import { IsometricRectangle, PlaneView, IsometricText, IsometricGraphicProps, } from "@elchininet/isometric"
 import { antiClockwise, CardinalDirection } from "../CardinalDirection"
 
-export const buildBackgrounds = (input: { orientation: CardinalDirection, fillColor?: string }) => {
+const buildTexture = (planeView: PlaneView, imageUrl: string, rotation = 0): IsometricGraphicProps['texture'] => {
+    return {
+        height: 10,
+        width: 10,
+        pixelated: false,
+        url: imageUrl,
+        planeView,
+        rotation: {
+            axis: 'TOP',
+            value: rotation,
+        },
+    }
+}
 
-    const { orientation, fillColor = 'skyblue' } = input
-
+export const buildBackgrounds = (input: {
+    orientation: CardinalDirection,
+    fillColor?: string,
+    backdropSide?: string
+    backdropFront?: string
+    backdropFloor?: string
+    floorRotation?: number
+}) => {
+    const { orientation, fillColor = 'skyblue', backdropFront, backdropSide, backdropFloor, floorRotation } = input
     const backgroundProps = {
         left: 0,
         right: 0,
         top: 0,
-        width: 100,
-        height: 100,
+        width: 10,
+        height: 10,
         fillColor,
     }
     const labelProps = {
@@ -21,6 +40,7 @@ export const buildBackgrounds = (input: { orientation: CardinalDirection, fillCo
     const sideBackground = new IsometricRectangle({
         planeView: PlaneView.SIDE,
         ...backgroundProps,
+        texture: backdropSide ? buildTexture(PlaneView.SIDE, backdropSide) : undefined,
     })
     const sideLabel = new IsometricText({
         planeView: PlaneView.SIDE,
@@ -31,6 +51,7 @@ export const buildBackgrounds = (input: { orientation: CardinalDirection, fillCo
     const frontBackground = new IsometricRectangle({
         planeView: PlaneView.FRONT,
         ...backgroundProps,
+        texture: backdropFront ? buildTexture(PlaneView.FRONT, backdropFront) : undefined,
     })
     const frontLabel = new IsometricText({
         planeView: PlaneView.FRONT,
@@ -39,7 +60,13 @@ export const buildBackgrounds = (input: { orientation: CardinalDirection, fillCo
         ...labelProps,
     })
 
+    const floor = new IsometricRectangle({
+        ...backgroundProps,
+        planeView: PlaneView.TOP,
+        texture: backdropFloor ? buildTexture(PlaneView.TOP, backdropFloor, floorRotation) : undefined,
+    })
+
     return {
-        sideBackground, sideLabel, frontBackground, frontLabel
+        sideBackground, sideLabel, frontBackground, frontLabel, floor
     }
 }

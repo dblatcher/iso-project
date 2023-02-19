@@ -1,4 +1,4 @@
-import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
+import { IsometricCanvas, PlaneView, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
 import { DIRECTION, CardinalDirection, rotateVector } from "./CardinalDirection"
 import { FigureSprite } from "./FigureSprite"
@@ -27,6 +27,13 @@ type MapGridCanvasConfig = {
     defaultBlockTopColor?: string;
     defaultBlockTextureTop?: string;
     defaultBlockTextureSide?: string;
+    backdropImage?: {
+        north?: string
+        east?: string
+        south?: string
+        west?: string
+        floor?: string
+    };
 }
 
 export class MapGridIsometricCanvas extends IsometricCanvas {
@@ -88,9 +95,39 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
     }
 
     renderBackGrounds(orientation: CardinalDirection) {
-        const { sideBackground, sideLabel, frontBackground, frontLabel } = buildBackgrounds({ orientation })
+        const { backdropImage = {} } = this.config
+        let backdropSide: string | undefined;
+        let backdropFront: string | undefined;
+
+        switch (this.renderOrientation.rotation) {
+            case (DIRECTION.north.rotation):
+                backdropSide = backdropImage.north
+                backdropFront = backdropImage.west
+                break;
+            case (DIRECTION.west.rotation):
+                backdropSide = backdropImage.west
+                backdropFront = backdropImage.south
+                break;
+            case (DIRECTION.south.rotation):
+                backdropSide = backdropImage.south
+                backdropFront = backdropImage.east
+                break;
+            case (DIRECTION.east.rotation):
+                backdropSide = backdropImage.east
+                backdropFront = backdropImage.north
+                break;
+        }
+
+        const { sideBackground, sideLabel, frontBackground, frontLabel, floor, } = buildBackgrounds({
+            orientation,
+            backdropSide,
+            backdropFront,
+            backdropFloor: backdropImage.floor,
+            floorRotation: 90 * this.renderOrientation.rotation,
+        })
 
         this.addChildren(
+            floor,
             sideBackground,
             sideLabel,
             frontBackground,

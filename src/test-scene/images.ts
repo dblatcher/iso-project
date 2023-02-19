@@ -4,4 +4,6 @@ export const IMAGES = {
     duck: 'assets/duck/walk/front/1.png',
     duckBack: 'assets/duck/walk/back/1.png',
     barrell:'assets/barrell.png',
+    hillside: 'assets/hillside.png',
+    sky1: 'assets/sky1.png',
 } as const;

@@ -34,8 +34,8 @@ export function createScene(orientation: CardinalDirection, container: string | 
             container,
             backgroundColor: '#CCC',
             scale: 30,
-            width: 400,
-            height: 400,
+            width: 600,
+            height: 500,
         },
         cells,
         {
@@ -46,6 +46,11 @@ export function createScene(orientation: CardinalDirection, container: string | 
             defaultBlockSideColor: 'brown',
             defaultBlockTopColor: 'limegreen',
             defaultBlockTextureTop: IMAGES.grass,
+            backdropImage: { 
+                south: IMAGES.hillside, 
+                north: IMAGES.sky1, 
+                floor: IMAGES.wall,
+            }
         }
     );
 
