@@ -46,11 +46,12 @@ export function createScene(orientation: CardinalDirection, container: string | 
             defaultBlockSideColor: 'brown',
             defaultBlockTopColor: 'limegreen',
             defaultBlockTextureTop: IMAGES.grass,
-            backdropImage: { 
-                south: IMAGES.hillside, 
-                north: IMAGES.sky1, 
+            backdropImage: {
+                south: IMAGES.hillside,
+                north: IMAGES.sky1,
                 floor: IMAGES.wall,
-            }
+            },
+            renderCompass: true,
         }
     );
 

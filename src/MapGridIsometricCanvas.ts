@@ -5,6 +5,7 @@ import { FigureSprite } from "./FigureSprite"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"
 import { buildBackgrounds } from "./builders/backgrounds"
+import { buildCompass } from "./builders/compass"
 
 
 export interface MapCell {
@@ -34,6 +35,7 @@ type MapGridCanvasConfig = {
         west?: string
         floor?: string
     };
+    renderCompass?: boolean
 }
 
 export class MapGridIsometricCanvas extends IsometricCanvas {
@@ -118,8 +120,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
                 break;
         }
 
-        const { sideBackground, sideLabel, frontBackground, frontLabel, floor, } = buildBackgrounds({
-            orientation,
+        const { sideBackground, frontBackground, floor, } = buildBackgrounds({
             backdropSide,
             backdropFront,
             backdropFloor: backdropImage.floor,
@@ -129,9 +130,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
         this.addChildren(
             floor,
             sideBackground,
-            sideLabel,
             frontBackground,
-            frontLabel,
         )
     }
 
@@ -226,7 +225,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
     }
 
     render(orientation: CardinalDirection) {
-        this.renderOrientation = { ...orientation }
+        this.renderOrientation = orientation
         this.clear()
         this.renderBackGrounds(orientation)
         const figures = [...this.figures]
@@ -248,6 +247,14 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
             unrenderedFigure.spriteIsoGroup = undefined
             unrenderedFigure.shadowIsoGroup = undefined
         })
+
+        if (this.config.renderCompass) {
+            const { group: compass } = buildCompass(this.renderOrientation)
+            compass.top = 10
+            compass.left = 0
+            compass.right = 10
+            this.addChild(compass)
+        }
     }
 
     private async shiftFigure(figure: FigureSprite, xDist: number, yDist: number): Promise<boolean> {
