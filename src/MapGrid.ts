@@ -17,8 +17,8 @@ export interface MapCell {
 
 type GridOfCells = Array<Array<MapCell | undefined>>
 
-type CellClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (cell: MapCell): Promise<T> } }
-type FigureClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: FigureSprite): Promise<T> } }
+export type CellClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (cell: MapCell): Promise<T> } }
+export type FigureClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: FigureSprite): Promise<T> } }
 
 type MapGridCanvasConfig = {
     renderOrientation?: CardinalDirection;

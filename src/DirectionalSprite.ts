@@ -1,6 +1,5 @@
 import { PlaneView } from "@elchininet/isometric"
 import { antiClockwise, clockwise, CardinalDirection } from "./direction"
-import { IMAGES } from './images'
 
 export class DirectionalSprite {
     frontImage: string
@@ -29,4 +28,4 @@ export class DirectionalSprite {
     }
 }
 
-export const duckSprite = new DirectionalSprite({ frontImage: IMAGES.duck, backImage: IMAGES.duckBack })
+

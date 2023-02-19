@@ -1,5 +1,14 @@
-import { IsometricGroup, IsometricRectangle, PlaneView, } from "@elchininet/isometric";
-import { makeSideTexture } from "../images";
+import { IsometricGraphicProps, IsometricGroup, IsometricRectangle, PlaneView, } from "@elchininet/isometric";
+
+export const makeSideTexture = (imageUrl: string, planeView: PlaneView): IsometricGraphicProps['texture'] => {
+    return {
+        height: 5,
+        width: 5,
+        pixelated: true,
+        url: imageUrl,
+        planeView,
+    }
+}
 
 export type CuboidConfig = {
     coords: [number, number, number];
