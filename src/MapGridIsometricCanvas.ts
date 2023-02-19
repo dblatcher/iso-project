@@ -1,4 +1,4 @@
-import { IsometricCanvas, PlaneView, type IsometricCanvasProps } from "@elchininet/isometric"
+import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
 import { DIRECTION, CardinalDirection, rotateVector } from "./CardinalDirection"
 import { FigureSprite } from "./FigureSprite"
@@ -19,11 +19,11 @@ export interface MapCell {
 type GridOfCells = Array<Array<MapCell | undefined>>
 
 export type CellClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (cell: MapCell): Promise<T> } }
-export type FigureClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: FigureSprite): Promise<T> } }
+export type FigureClickHandler<T, Figure extends FigureSprite> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: Figure): Promise<T> } }
 
-type MapGridCanvasConfig = {
+type MapGridCanvasConfig<Figure extends FigureSprite = FigureSprite> = {
     renderOrientation?: CardinalDirection;
-    figures?: FigureSprite[];
+    figures?: Figure[];
     defaultBlockSideColor?: string;
     defaultBlockTopColor?: string;
     defaultBlockTextureTop?: string;
@@ -38,19 +38,19 @@ type MapGridCanvasConfig = {
     renderCompass?: boolean
 }
 
-export class MapGridIsometricCanvas extends IsometricCanvas {
+export class MapGridIsometricCanvas<Figure extends FigureSprite = FigureSprite> extends IsometricCanvas {
     cells: GridOfCells
-    figures: FigureSprite[]
+    figures: Figure[]
     renderOrientation: CardinalDirection
     private config: Readonly<MapGridCanvasConfig>
 
     onClick: {
         cell?: CellClickHandler<any>,
-        figure?: FigureClickHandler<any>,
+        figure?: FigureClickHandler<any, Figure>,
     }
     animationInProgress: boolean
 
-    constructor(canvasProps: IsometricCanvasProps, cells: (MapCell | undefined)[][], config: MapGridCanvasConfig) {
+    constructor(canvasProps: IsometricCanvasProps, cells: (MapCell | undefined)[][], config: MapGridCanvasConfig<Figure>) {
         super(canvasProps)
         const { figures = [], renderOrientation = DIRECTION.north } = config
         this.cells = cells
@@ -72,7 +72,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
             this.onClick.cell(this)(cell);
         }
     }
-    private handleClickOnFigure(figure: FigureSprite) {
+    private handleClickOnFigure(figure: Figure) {
         if (this.animationInProgress) {
             return
         }
@@ -156,7 +156,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
         )
     }
 
-    renderFigureSprite(figure: FigureSprite, gridX: number, gridY: number,) {
+    renderFigureSprite(figure: Figure, gridX: number, gridY: number,) {
         const { sprite, facing, x, y, className = 'default', spriteIsoGroup: iso } = figure
 
         if (iso && this.children.includes(iso)) {
@@ -185,7 +185,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
         figure.shadowIsoGroup = newShadow
     }
 
-    setSelectedFigure(newlySelectedFigure: FigureSprite) {
+    setSelectedFigure(newlySelectedFigure: Figure) {
         if (!newlySelectedFigure?.spriteIsoGroup || !this.children.includes(newlySelectedFigure.spriteIsoGroup)) {
             return false
         }
@@ -195,8 +195,8 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
         this.render(this.renderOrientation)
     }
 
-    getSelectedFigure(): FigureSprite | undefined {
-        return this.figures.find(figure => figure.className === 'selected') as FigureSprite | undefined
+    getSelectedFigure(): Figure | undefined {
+        return this.figures.find(figure => figure.className === 'selected') as Figure | undefined
     }
 
     rotateGrid(grid: GridOfCells): GridOfCells {
@@ -257,7 +257,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
         }
     }
 
-    private async shiftFigure(figure: FigureSprite, xDist: number, yDist: number): Promise<boolean> {
+    private async shiftFigure(figure: Figure, xDist: number, yDist: number): Promise<boolean> {
 
         const { x: startX, y: startY, spriteIsoGroup, shadowIsoGroup } = figure
 
@@ -318,7 +318,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
         return true
     }
 
-    async rotateSingleFigure(figure: FigureSprite, direction: CardinalDirection) {
+    async rotateSingleFigure(figure: Figure, direction: CardinalDirection) {
         if (!figure?.spriteIsoGroup || !this.children.includes(figure.spriteIsoGroup)) {
             return false
         }
@@ -328,7 +328,7 @@ export class MapGridIsometricCanvas extends IsometricCanvas {
         this.animationInProgress = false
     }
 
-    async moveSingleFigure(figure: FigureSprite, xDist: number, yDist: number) {
+    async moveSingleFigure(figure: Figure, xDist: number, yDist: number) {
         if (!figure?.spriteIsoGroup || !this.children.includes(figure.spriteIsoGroup)) {
             return false
         }

@@ -1,18 +1,19 @@
 import { CardinalDirection, DIRECTION } from "../CardinalDirection";
 import { DirectionalSprite } from "../DirectionalSprite";
-import { FigureSprite } from "../FigureSprite";
 import { IMAGES } from "./images";
 import { MapCell, MapGridIsometricCanvas } from "../MapGridIsometricCanvas";
+import { MyFigure } from "./MyFigure";
 
-const duckSprite = new DirectionalSprite({ frontImage: IMAGES.duck, backImage: IMAGES.duckBack })
+export const duckSprite = new DirectionalSprite({ frontImage: IMAGES.duck, backImage: IMAGES.duckBack })
 const barrelSprite = new DirectionalSprite({ frontImage: IMAGES.barrell, backImage: IMAGES.barrell })
 const stoney = { textureSide: IMAGES.wall, colorTop: 'slategray' }
 const sandy = { colorSide: 'sandybrown', colorTop: 'yellow', }
 
+
 export function createScene(orientation: CardinalDirection, container: string | HTMLElement): MapGridIsometricCanvas {
 
-    const myDucks: FigureSprite[] = [
-        { sprite: duckSprite, x: 3, y: 1, facing: DIRECTION.south },
+    const myDucks: MyFigure[] = [
+        { sprite: duckSprite, x: 3, y: 1, facing: DIRECTION.south, name: 'Bob' },
         { sprite: duckSprite, x: 1, y: 3, facing: DIRECTION.west },
         { sprite: barrelSprite, x: 3, y: 3, facing: DIRECTION.north },
         { sprite: duckSprite, x: 3, y: 2, facing: DIRECTION.south },
@@ -29,7 +30,7 @@ export function createScene(orientation: CardinalDirection, container: string | 
         [, { height: 0.6, ...sandy }, { height: 0.8, ...sandy }],
     ]
 
-    const mapGrid = new MapGridIsometricCanvas(
+    const mapGrid = new MapGridIsometricCanvas<MyFigure>(
         {
             container,
             backgroundColor: '#CCC',
