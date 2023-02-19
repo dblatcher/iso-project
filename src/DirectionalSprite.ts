@@ -1,5 +1,5 @@
 import { PlaneView } from "@elchininet/isometric"
-import { antiClockwise, clockwise, CardinalDirection } from "./direction"
+import { antiClockwise, clockwise, CardinalDirection } from "./CardinalDirection"
 
 export class DirectionalSprite {
     frontImage: string

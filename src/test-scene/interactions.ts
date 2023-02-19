@@ -1,6 +1,6 @@
-import { clockwise } from '../direction'
+import { clockwise } from '../CardinalDirection'
 import { FigureSprite } from '../FigureSprite'
-import type { FigureClickHandler, CellClickHandler } from '../MapGrid'
+import type { FigureClickHandler, CellClickHandler } from '../MapGridIsometricCanvas'
 
 export const moveSelectedFigureToCell: CellClickHandler<boolean> = (that) => async (cell) => {
     const figure = that.getSelectedFigure()

@@ -1,4 +1,4 @@
-import { clockwise, DIRECTION } from './direction';
+import { clockwise, DIRECTION } from './CardinalDirection';
 import { createScene } from './test-scene/createScene';
 import { moveSelectedFigureToCell, selectOrRotateFigure } from './test-scene/interactions';
 

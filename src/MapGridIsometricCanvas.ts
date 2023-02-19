@@ -1,6 +1,6 @@
 import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
-import { DIRECTION, CardinalDirection, rotateVector } from "./direction"
+import { DIRECTION, CardinalDirection, rotateVector } from "./CardinalDirection"
 import { FigureSprite } from "./FigureSprite"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"

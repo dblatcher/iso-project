@@ -1,5 +1,5 @@
 import { IsometricRectangle, PlaneView, IsometricText } from "@elchininet/isometric"
-import { antiClockwise, CardinalDirection } from "../direction"
+import { antiClockwise, CardinalDirection } from "../CardinalDirection"
 
 export const buildBackgrounds = (input: { orientation: CardinalDirection, fillColor?: string }) => {
 

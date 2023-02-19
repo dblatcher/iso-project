@@ -1,8 +1,8 @@
-import { CardinalDirection, DIRECTION } from "../direction";
+import { CardinalDirection, DIRECTION } from "../CardinalDirection";
 import { DirectionalSprite } from "../DirectionalSprite";
 import { FigureSprite } from "../FigureSprite";
 import { IMAGES } from "./images";
-import { MapCell, MapGridIsometricCanvas } from "../MapGrid";
+import { MapCell, MapGridIsometricCanvas } from "../MapGridIsometricCanvas";
 
 const duckSprite = new DirectionalSprite({ frontImage: IMAGES.duck, backImage: IMAGES.duckBack })
 const barrelSprite = new DirectionalSprite({ frontImage: IMAGES.barrell, backImage: IMAGES.barrell })

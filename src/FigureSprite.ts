@@ -1,5 +1,5 @@
 import { IsometricGroup } from '@elchininet/isometric'
-import { CardinalDirection } from './direction';
+import { CardinalDirection } from './CardinalDirection';
 import { DirectionalSprite } from './DirectionalSprite';
 
 export interface FigureSprite {
