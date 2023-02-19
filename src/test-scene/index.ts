@@ -1,6 +1,6 @@
-import { antiClockwise, clockwise, DIRECTION } from './CardinalDirection';
-import { createScene } from './test-scene/createScene';
-import { moveSelectedFigureToCell, selectOrRotateFigure } from './test-scene/interactions';
+import { antiClockwise, clockwise, DIRECTION } from '../CardinalDirection';
+import { createScene } from './createScene';
+import { moveSelectedFigureToCell, selectOrRotateFigure } from './interactions';
 
 const container = document.createElement('div')
 document.body.appendChild(container)
