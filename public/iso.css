@@ -1,15 +1,15 @@
-.block.top:hover {
+.test-scene__top:hover {
     stroke: red;
     stroke-width: 3;
     stroke-linejoin: bevel;
     stroke-dasharray: 4,1;
 }
 
-.sprite.figure:hover {
+.test-scene__figure:hover {
     filter: brightness(1.5);
 }
 
-.sprite.figure.selected {
+.test-scene__figure.selected {
     stroke: red;
     stroke-width: 2;
     stroke-dasharray: 2,1;

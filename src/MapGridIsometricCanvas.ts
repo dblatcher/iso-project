@@ -35,6 +35,8 @@ type MapGridCanvasConfig = {
         floor?: string
     };
     renderCompass?: boolean
+    cssPrefix?: string
+
 }
 
 export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> extends IsometricCanvas {
@@ -51,7 +53,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
 
     constructor(
         canvasProps: IsometricCanvasProps,
-        cells: (MapCell | undefined)[][],
+        cells: GridOfCells,
         figures: Figure[],
         config: MapGridCanvasConfig
     ) {
@@ -85,6 +87,11 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         }
     }
 
+    prefixCssClassNames(classNames: string[]): string[] {
+        if (!this.config.cssPrefix) { return classNames }
+        return classNames.map(className => `${this.config.cssPrefix}${className}`)
+    }
+
     heightAt(right: number, left: number): number {
         return this.cells[right]
             ? this.cells[right][left]
@@ -100,7 +107,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         return { x: originalGrid.indexOf(rowContaining), y: rowContaining.indexOf(cell) }
     }
 
-    renderBackGrounds(orientation: CardinalDirection) {
+    renderBackGrounds() {
         const { backdropImage = {} } = this.config
         let backdropSide: string | undefined;
         let backdropFront: string | undefined;
@@ -149,6 +156,8 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
             sideImage: (cell.colorSide && !cell.textureSide) ? undefined : cell.textureSide || defaultBlockTextureSide,
             sideColor: cell.colorSide || defaultBlockSideColor,
             topColor: cell.colorTop || defaultBlockTopColor,
+            groupClasses: this.prefixCssClassNames(['block']),
+            topClasses: this.prefixCssClassNames(['top']),
         })
 
         topPiece.addEventListener('click', () => {
@@ -161,10 +170,15 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     renderFigureSprite(figure: Figure, gridX: number, gridY: number,) {
-        const { sprite, facing, x, y, className = 'default', spriteIsoGroup: iso } = figure
+        const { sprite, facing, x, y, className, spriteIsoGroup: iso } = figure
 
         if (iso && this.children.includes(iso)) {
             this.removeChild(iso)
+        }
+
+        const classes = this.prefixCssClassNames(['figure'])
+        if (className) {
+            classes.push(className)
         }
 
         const { image, planeView } = sprite.getView(facing, this.renderOrientation)
@@ -172,7 +186,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         const newImage = renderIsometricImage({
             url: image,
             planeView,
-            classes: ['figure', 'sprite', className],
+            classes,
             coords: [gridX, gridY, height],
         })
 
@@ -231,7 +245,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     render(orientation: CardinalDirection) {
         this.renderOrientation = orientation
         this.clear()
-        this.renderBackGrounds(orientation)
+        this.renderBackGrounds()
         const figures = [...this.figures]
         this.rotateGridBy(orientation).map((row, gridX) => {
             row.map((cell, gridY) => {

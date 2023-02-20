@@ -18,10 +18,12 @@ export type CuboidConfig = {
     topImage?: string
     sideColor?: string
     topColor?: string
+    groupClasses?: string[]
+    topClasses?: string[]
 }
 
 export const buildCuboid = (config: CuboidConfig) => {
-    const { coords, size = 1, height = size, sideImage, topImage } = config
+    const { coords, size = 1, height = size, sideImage, topImage, topClasses = [], groupClasses = [] } = config
     const [right, left, top] = coords
     const group = new IsometricGroup({ top, right, left, })
 
@@ -45,7 +47,8 @@ export const buildCuboid = (config: CuboidConfig) => {
     rightPiece.right = size;
     leftPiece.left = size;
 
-    topPiece.getElement().classList.add('block', 'top')
+    topPiece.getElement().classList.add(...topClasses)
+    group.getElement().classList.add(...groupClasses)
 
     group
         .addChild(topPiece)

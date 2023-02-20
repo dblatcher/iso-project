@@ -53,6 +53,7 @@ export function createScene(orientation: CardinalDirection, container: string | 
                 floor: IMAGES.wall,
             },
             renderCompass: true,
+            cssPrefix: "test-scene__",
         }
     );
 
