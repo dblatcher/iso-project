@@ -21,9 +21,8 @@ type GridOfCells = Array<Array<MapCell | undefined>>
 export type CellClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (cell: MapCell): Promise<T> } }
 export type FigureClickHandler<T, Figure extends BaseFigure> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: Figure): Promise<T> } }
 
-type MapGridCanvasConfig<Figure extends BaseFigure = BaseFigure> = {
+type MapGridCanvasConfig = {
     renderOrientation?: CardinalDirection;
-    figures?: Figure[];
     defaultBlockSideColor?: string;
     defaultBlockTopColor?: string;
     defaultBlockTextureTop?: string;
@@ -42,7 +41,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     cells: GridOfCells
     figures: Figure[]
     renderOrientation: CardinalDirection
-    private config: Readonly<MapGridCanvasConfig>
+    private config: MapGridCanvasConfig
 
     onClick: {
         cell?: CellClickHandler<any>,
@@ -50,9 +49,14 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
     animationInProgress: boolean
 
-    constructor(canvasProps: IsometricCanvasProps, cells: (MapCell | undefined)[][], config: MapGridCanvasConfig<Figure>) {
+    constructor(
+        canvasProps: IsometricCanvasProps,
+        cells: (MapCell | undefined)[][],
+        figures: Figure[],
+        config: MapGridCanvasConfig
+    ) {
         super(canvasProps)
-        const { figures = [], renderOrientation = DIRECTION.north } = config
+        const { renderOrientation = DIRECTION.north } = config
         this.cells = cells
         this.figures = figures
         this.renderOrientation = renderOrientation

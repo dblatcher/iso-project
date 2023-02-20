@@ -39,10 +39,10 @@ export function createScene(orientation: CardinalDirection, container: string | 
             height: 500,
         },
         cells,
+        [
+            ...myDucks
+        ],
         {
-            figures: [
-                ...myDucks
-            ],
             renderOrientation: orientation,
             defaultBlockSideColor: 'brown',
             defaultBlockTopColor: 'limegreen',
