@@ -1,7 +1,7 @@
-import { FigureSprite } from "../FigureSprite";
+import { BaseFigure } from "../BaseFigure";
 
 
 
-export type MyFigure = FigureSprite & {
+export type MyFigure = BaseFigure & {
     name?: string;
 }

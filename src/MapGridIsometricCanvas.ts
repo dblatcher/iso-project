@@ -1,7 +1,7 @@
 import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
 import { DIRECTION, CardinalDirection, rotateVector } from "./CardinalDirection"
-import { FigureSprite } from "./FigureSprite"
+import { BaseFigure } from "./BaseFigure"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"
 import { buildBackgrounds } from "./builders/backgrounds"
@@ -19,9 +19,9 @@ export interface MapCell {
 type GridOfCells = Array<Array<MapCell | undefined>>
 
 export type CellClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (cell: MapCell): Promise<T> } }
-export type FigureClickHandler<T, Figure extends FigureSprite> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: Figure): Promise<T> } }
+export type FigureClickHandler<T, Figure extends BaseFigure> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: Figure): Promise<T> } }
 
-type MapGridCanvasConfig<Figure extends FigureSprite = FigureSprite> = {
+type MapGridCanvasConfig<Figure extends BaseFigure = BaseFigure> = {
     renderOrientation?: CardinalDirection;
     figures?: Figure[];
     defaultBlockSideColor?: string;
@@ -38,7 +38,7 @@ type MapGridCanvasConfig<Figure extends FigureSprite = FigureSprite> = {
     renderCompass?: boolean
 }
 
-export class MapGridIsometricCanvas<Figure extends FigureSprite = FigureSprite> extends IsometricCanvas {
+export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> extends IsometricCanvas {
     cells: GridOfCells
     figures: Figure[]
     renderOrientation: CardinalDirection

@@ -2,7 +2,7 @@ import { IsometricGroup } from '@elchininet/isometric'
 import { CardinalDirection } from './CardinalDirection';
 import { DirectionalSprite } from './DirectionalSprite';
 
-export interface FigureSprite {
+export interface BaseFigure {
     x: number,
     y: number,
     facing: CardinalDirection,
