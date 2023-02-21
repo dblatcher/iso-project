@@ -256,7 +256,6 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     private async shiftFigure(figure: Figure, xDist: number, yDist: number): Promise<boolean> {
-
         const { x: startX, y: startY, spriteIsoGroup, shadowIsoGroup } = figure
 
         figure.x += xDist
@@ -317,7 +316,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     async rotateSingleFigure(figure: Figure, direction: CardinalDirection) {
-        if (!figure?.spriteIsoGroup || !this.children.includes(figure.spriteIsoGroup)) {
+        if (!this.figures.includes(figure)) {
             return false
         }
         this.animationInProgress = true
@@ -327,7 +326,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     async moveSingleFigure(figure: Figure, xDist: number, yDist: number) {
-        if (!figure?.spriteIsoGroup || !this.children.includes(figure.spriteIsoGroup)) {
+        if (!this.figures.includes(figure)) {
             return false
         }
         this.animationInProgress = true
