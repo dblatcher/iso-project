@@ -170,15 +170,9 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     renderFigureSprite(figure: Figure, gridX: number, gridY: number,) {
-        const { sprite, facing, x, y, className, spriteIsoGroup: iso } = figure
-
+        const { sprite, facing, x, y, classNames = [], spriteIsoGroup: iso } = figure
         if (iso && this.children.includes(iso)) {
             this.removeChild(iso)
-        }
-
-        const classes = this.prefixCssClassNames(['figure'])
-        if (className) {
-            classes.push(className)
         }
 
         const { image, planeView } = sprite.getView(facing, this.renderOrientation)
@@ -186,7 +180,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         const newImage = renderIsometricImage({
             url: image,
             planeView,
-            classes,
+            classes: [...this.prefixCssClassNames(['figure']), ...classNames],
             coords: [gridX, gridY, height],
         })
 
@@ -201,20 +195,6 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         this.addChildren(newShadow, newImage)
         figure.spriteIsoGroup = newImage
         figure.shadowIsoGroup = newShadow
-    }
-
-    setSelectedFigure(newlySelectedFigure: Figure) {
-        if (!newlySelectedFigure?.spriteIsoGroup || !this.children.includes(newlySelectedFigure.spriteIsoGroup)) {
-            return false
-        }
-        this.figures.forEach(figure => {
-            figure.className = figure === newlySelectedFigure ? 'selected' : undefined
-        })
-        this.render(this.renderOrientation)
-    }
-
-    getSelectedFigure(): Figure | undefined {
-        return this.figures.find(figure => figure.className === 'selected') as Figure | undefined
     }
 
     rotateGrid(grid: GridOfCells): GridOfCells {

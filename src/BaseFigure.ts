@@ -9,5 +9,5 @@ export interface BaseFigure {
     sprite: DirectionalSprite,
     spriteIsoGroup?: IsometricGroup,
     shadowIsoGroup?: IsometricGroup,
-    className?: string,
+    classNames?: string[],
 }
