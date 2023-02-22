@@ -50,7 +50,11 @@ export class Battle {
         const { selectedFigure, currentTeam } = this
 
         render(
-            h(Panel, { team: currentTeam, selectedFigure: selectedFigure }),
+            h(Panel, {
+                team: currentTeam,
+                selectedFigure: selectedFigure,
+                endTurn: () => { this.endTurn() },
+            }),
             this.panel
         );
     }
@@ -69,6 +73,13 @@ export class Battle {
     private redraw() {
         this.canvas.render(this.canvas.renderOrientation)
         this.updatePanel()
+    }
+
+    endTurn() {
+        const teamindex = this.teams.indexOf(this.currentTeam)
+        this.currentTeam = this.teams[teamindex+1] || this.teams[0]
+        this.canvas.figures.map(figure => figure.remainingMoves = figure.attributes.move)
+        this.redraw()
     }
 
     manageFigureClick = (canvas: MapGridIsometricCanvas) => async (figure: CharacterFigure) => {
