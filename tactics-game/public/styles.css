@@ -1,3 +1,20 @@
 body {
     background-color: beige;
 }
+
+.panel {
+    background-color: aqua;
+    padding: 1rem;
+}
+
+.figure.current-team {
+    filter: brightness(1.5);
+}
+
+.figure.current-team.selected {
+    stroke: red;
+}
+
+.figure.no-moves {
+    filter: grayscale(1);
+}
