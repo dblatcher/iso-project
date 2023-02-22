@@ -1,5 +1,8 @@
 import { MapCell, MapGridIsometricCanvas } from "../../src/MapGridIsometricCanvas";
 import { CharacterFigure } from "./CharacterFigure";
+import { Panel } from "./components/Panel";
+import { h, render } from 'preact'
+
 
 export type Team = {
     id: string,
@@ -44,19 +47,12 @@ export class Battle {
     }
 
     updatePanel() {
-        const { selectedFigure } = this
+        const { selectedFigure, currentTeam } = this
 
-        const selectedFigureDescription = selectedFigure ? `
-        <p>
-            ${selectedFigure.remainingMoves} / ${selectedFigure.attributes.move} moves
-        </p>
-        <img src=${selectedFigure.sprite.frontImage} width=100 height=100/> 
-        `.trim() : ''
-
-        this.panel.innerHTML = `
-            <p>${this.currentTeam.name}'s turn</p>
-            ${selectedFigureDescription}
-        `.trim()
+        render(
+            h(Panel, { team: currentTeam, selectedFigure: selectedFigure }),
+            this.panel
+        );
     }
 
     get selectedFigure(): CharacterFigure | undefined {

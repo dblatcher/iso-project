@@ -7,6 +7,14 @@ body {
     padding: 1rem;
 }
 
+.panel .row {
+    display: flex;
+}
+
+.panel p {
+    margin: 0;
+}
+
 .figure.current-team {
     filter: brightness(1.5);
 }
