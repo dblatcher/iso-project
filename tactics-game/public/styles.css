@@ -5,6 +5,9 @@ body {
 .panel {
     background-color: aqua;
     padding: 1rem;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .panel .row {

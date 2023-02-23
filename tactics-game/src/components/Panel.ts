@@ -7,14 +7,19 @@ interface Props {
     team: Team;
     selectedFigure?: CharacterFigure;
     endTurn: { (): void }
+    allFiguresMoved: boolean
 }
 
-export const Panel: FunctionalComponent<Props> = ({ team, selectedFigure, endTurn }) => {
+const buttonStyle = (highlight: boolean) => ({
+    fontWeight: highlight ? 'bold' : 'normal',
+})
+
+export const Panel: FunctionalComponent<Props> = ({ team, selectedFigure, endTurn, allFiguresMoved }) => {
+
     return html`
     <div>
         <div class="row">
             <span>TEAM: ${team.name}</span>
-            <button onclick=${endTurn}>END OF TURN</button>
         </div>
         ${selectedFigure && html`
         <div class="row">
@@ -24,6 +29,9 @@ export const Panel: FunctionalComponent<Props> = ({ team, selectedFigure, endTur
             <img src=${selectedFigure.sprite.frontImage} height=50 />
         </div>
         `}
+        <div class="row">
+            <button style=${buttonStyle(allFiguresMoved)} onclick=${endTurn}>END OF TURN</button>
+        </div>
     </div>
     `
 }

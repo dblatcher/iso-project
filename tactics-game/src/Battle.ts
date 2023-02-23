@@ -47,16 +47,21 @@ export class Battle {
     }
 
     updatePanel() {
-        const { selectedFigure, currentTeam } = this
+        const { selectedFigure, currentTeam, allFiguresMoved } = this
 
         render(
             h(Panel, {
                 team: currentTeam,
                 selectedFigure: selectedFigure,
+                allFiguresMoved,
                 endTurn: () => { this.endTurn() },
             }),
             this.panel
         );
+    }
+
+    get allFiguresMoved():boolean {
+        return this.canvas.figures.every(figure => figure.remainingMoves === 0 || !figure.isOnCurrentTeam)
     }
 
     get selectedFigure(): CharacterFigure | undefined {
