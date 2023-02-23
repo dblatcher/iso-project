@@ -4,7 +4,8 @@ import type { DirectionalSprite } from "../../src/DirectionalSprite";
 import type { Battle } from "./Battle";
 
 export type Attributes = {
-    move: number
+    name: string;
+    move: number;
 }
 
 const CSS_CLASSES = {

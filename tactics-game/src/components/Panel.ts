@@ -1,5 +1,6 @@
 import { FunctionalComponent } from 'preact';
 import { html } from 'htm/preact'
+import {CharacterView} from './CharacterView'
 import { CharacterFigure } from '../CharacterFigure';
 import { Team } from '../Battle';
 
@@ -22,12 +23,7 @@ export const Panel: FunctionalComponent<Props> = ({ team, selectedFigure, endTur
             <span>TEAM: ${team.name}</span>
         </div>
         ${selectedFigure && html`
-        <div class="row">
-            <p>
-                ${selectedFigure.remainingMoves} / ${selectedFigure.attributes.move} moves
-            </p>
-            <img src=${selectedFigure.sprite.frontImage} height=50 />
-        </div>
+            <${CharacterView} figure=${selectedFigure}/>
         `}
         <div class="row">
             <button style=${buttonStyle(allFiguresMoved)} onclick=${endTurn}>END OF TURN</button>
