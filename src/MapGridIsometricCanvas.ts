@@ -36,7 +36,8 @@ export type MapGridCanvasConfig = {
     };
     renderCompass?: boolean
     cssPrefix?: string
-
+    frameChangeInterval?: number
+    startWithoutAnimatedFrames?: boolean
 }
 
 export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> extends IsometricCanvas {
@@ -44,6 +45,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     figures: Figure[]
     renderOrientation: CardinalDirection
     private config: MapGridCanvasConfig
+    private frameTimer: number | undefined
 
     onClick: {
         cell?: CellClickHandler<any>,
@@ -68,7 +70,9 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         this.animationInProgress = false
         this.config = config
         this.render(this.renderOrientation);
-        window.setInterval(this.changeSpriteFrames.bind(this), 100)
+        if (!this.config.startWithoutAnimatedFrames) {
+            this.frameTimer = window.setInterval(this.changeSpriteFrames.bind(this), this.config.frameChangeInterval || 200)
+        }
     }
 
     private handleClickOnCell(cell: MapCell) {
@@ -88,7 +92,20 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         }
     }
 
-    changeSpriteFrames() {
+    stopFrameAnimation() {
+        if (typeof this.frameTimer === 'undefined') {
+            return
+        }
+        window.clearInterval(this.frameTimer)
+        this.frameTimer = undefined
+    }
+
+    startFrameAnimation(delay = this.config.frameChangeInterval) {
+        this.stopFrameAnimation()
+        this.frameTimer = window.setInterval(this.changeSpriteFrames.bind(this), delay)
+    }
+
+    private changeSpriteFrames() {
         this.figures.forEach(figure => {
             const { sprite, facing, frameIndex: currentFrameIndex = 0 } = figure
             const { images } = sprite.getView(facing, this.renderOrientation)
@@ -102,7 +119,6 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
                 })
             }
         })
-        
     }
 
     prefixCssClassNames(classNames: string[]): string[] {

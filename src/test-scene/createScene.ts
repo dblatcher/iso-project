@@ -5,8 +5,8 @@ import { MapCell, MapGridIsometricCanvas } from "../MapGridIsometricCanvas";
 import { MyFigure } from "./MyFigure";
 
 export const duckSprite = new DirectionalSprite({
-    frontImage: [IMAGES.duck, IMAGES.duck2, IMAGES.duck3, IMAGES.duck4], 
-    backImage: [IMAGES.duckBack, IMAGES.duckBack2,IMAGES.duckBack3,IMAGES.duckBack4]
+    frontImage: [IMAGES.duck, IMAGES.duck2, IMAGES.duck3, IMAGES.duck4],
+    backImage: [IMAGES.duckBack, IMAGES.duckBack2, IMAGES.duckBack3, IMAGES.duckBack4]
 })
 const barrelSprite = new DirectionalSprite({ frontImage: [IMAGES.barrell], backImage: [IMAGES.barrell] })
 const stoney = { textureSide: IMAGES.wall, colorTop: 'slategray' }
@@ -57,6 +57,7 @@ export function createScene(orientation: CardinalDirection, container: string | 
             },
             renderCompass: true,
             cssPrefix: "test-scene__",
+            frameChangeInterval: 150,
         }
     );
 
