@@ -1,4 +1,5 @@
 const ASSET_FOLDER = "../assets/"
+const MAN_SUB = "man/walk/"
 
 export const IMAGES = {
     wall: `${ASSET_FOLDER}brick_wall.png`,
@@ -14,4 +15,10 @@ export const IMAGES = {
     barrell: `${ASSET_FOLDER}barrell.png`,
     hillside: `${ASSET_FOLDER}hillside.png`,
     sky1: `${ASSET_FOLDER}sky1.png`,
+    manf1: `${ASSET_FOLDER}${MAN_SUB}f1.png`,
+    manf2: `${ASSET_FOLDER}${MAN_SUB}f2.png`,
+    manf3: `${ASSET_FOLDER}${MAN_SUB}f3.png`,
+    manb1: `${ASSET_FOLDER}${MAN_SUB}b1.png`,
+    manb2: `${ASSET_FOLDER}${MAN_SUB}b2.png`,
+    manb3: `${ASSET_FOLDER}${MAN_SUB}b3.png`,
 } as const;

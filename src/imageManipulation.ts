@@ -44,8 +44,11 @@ export const imgToSprites = async (img: HTMLImageElement, cols: number, rows: nu
     }
 
     return Promise.all([
-        makeCellCanvas(1, 0),
         makeCellCanvas(0, 0),
-        makeCellCanvas(0, 1),
+        makeCellCanvas(1, 0),
+        makeCellCanvas(2, 0),
+        makeCellCanvas(0, 2),
+        makeCellCanvas(1, 2),
+        makeCellCanvas(2, 2),
     ])
 }
