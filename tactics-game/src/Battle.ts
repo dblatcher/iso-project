@@ -30,9 +30,10 @@ export class Battle {
         this.canvas = new MapGridIsometricCanvas(
             {
                 container,
-                width: 500,
-                height: 500,
-                scale: 25
+                width: 600,
+                height: 600,
+                scale: 30,
+                backgroundColor: 'transparent'
             },
             terrain,
             characterFigures,
