@@ -18,7 +18,7 @@ export const CharacterView: FunctionalComponent<Props> = ({ figure }) => {
             <p>${name}</p>
             <p>${remainingMoves} / ${move} moves</p>
         </div>
-        <img src=${sprite.frontImage} height=50 />
+        <img src=${sprite.frontImage[0]} height=50 />
     </div>
     `
 }
