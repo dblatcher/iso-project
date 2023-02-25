@@ -8,6 +8,7 @@ export const duckSprite = new DirectionalSprite({
 export const manSprite = new DirectionalSprite({
     frontImage: [IMAGES.manf1, IMAGES.manf2, IMAGES.manf3,],
     backImage: [IMAGES.manb1, IMAGES.manb2, IMAGES.manb3],
+    height: 2,
 })
 export const barrelSprite = new DirectionalSprite({
     frontImage: [IMAGES.barrell],

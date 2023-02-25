@@ -210,12 +210,13 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         }
 
         const { images, planeView } = sprite.getView(facing, this.renderOrientation)
-        const height = this.heightAt(x, y)
+        const groundLevel = this.heightAt(x, y)
         const { group: newImage, frameRectangles } = renderIsometricImage({
             imageUrls: images,
             planeView,
+            height: sprite.height,
             classes: [...this.prefixCssClassNames(['figure']), ...classNames],
-            coords: [gridX, gridY, height],
+            coords: [gridX, gridY, groundLevel],
         })
 
         newImage.addEventListener('click', () => {
@@ -223,7 +224,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         })
 
         const newShadow = renderIsometricShadow({
-            coords: [gridX, gridY, height],
+            coords: [gridX, gridY, groundLevel],
             classes: [...this.prefixCssClassNames(['shadow']), ...classNames],
         })
 

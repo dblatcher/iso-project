@@ -4,13 +4,16 @@ import { antiClockwise, clockwise, CardinalDirection } from "./CardinalDirection
 export class DirectionalSprite {
     frontImage: string[]
     backImage: string[]
+    height?: number
 
     constructor(data: {
         frontImage: string[]
         backImage: string[]
+        height?: number
     }) {
         this.frontImage = data.frontImage
         this.backImage = data.backImage
+        this.height = data.height
     }
 
     getView(facing: CardinalDirection, orientation: CardinalDirection): { images: string[], planeView: PlaneView } {
