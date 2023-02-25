@@ -1,6 +1,6 @@
 import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
-import { DIRECTION, CardinalDirection, rotateVector } from "./CardinalDirection"
+import { DIRECTION, CardinalDirection, rotateVector, clockwise } from "./CardinalDirection"
 import { BaseFigure } from "./BaseFigure"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"
@@ -68,6 +68,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         this.animationInProgress = false
         this.config = config
         this.render(this.renderOrientation);
+        window.setInterval(this.changeSpriteFrames.bind(this), 100)
     }
 
     private handleClickOnCell(cell: MapCell) {
@@ -85,6 +86,16 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         if (this.onClick.figure) {
             this.onClick.figure(this)(figure);
         }
+    }
+
+    changeSpriteFrames() {
+        if (this.animationInProgress) { return }
+        this.figures.forEach(figure => {
+            const { sprite, facing, frameIndex: currentFrameIndex = 0 } = figure
+            const { images } = sprite.getView(facing, this.renderOrientation)
+            figure.frameIndex = currentFrameIndex + 1 >= images.length ? 0 : currentFrameIndex + 1
+        })
+        this.render(this.renderOrientation)
     }
 
     prefixCssClassNames(classNames: string[]): string[] {
@@ -170,15 +181,15 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     renderFigureSprite(figure: Figure, gridX: number, gridY: number,) {
-        const { sprite, facing, x, y, classNames = [], spriteIsoGroup: iso } = figure
+        const { sprite, facing, x, y, classNames = [], spriteIsoGroup: iso, frameIndex = 0 } = figure
         if (iso && this.children.includes(iso)) {
             this.removeChild(iso)
         }
 
-        const { image, planeView } = sprite.getView(facing, this.renderOrientation)
+        const { images, planeView } = sprite.getView(facing, this.renderOrientation)
         const height = this.heightAt(x, y)
-        const newImage = renderIsometricImage({
-            url: image,
+        const { group: newImage } = renderIsometricImage({
+            imageUrl: images[frameIndex],
             planeView,
             classes: [...this.prefixCssClassNames(['figure']), ...classNames],
             coords: [gridX, gridY, height],
@@ -222,7 +233,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         }
     }
 
-    render(orientation: CardinalDirection) {
+    render(orientation = this.renderOrientation) {
         this.renderOrientation = orientation
         this.clear()
         this.renderBackGrounds()

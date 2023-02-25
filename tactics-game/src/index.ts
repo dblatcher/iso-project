@@ -40,7 +40,7 @@ const cells: MapCell[][] = [
 ]
 
 const figures = [
-    new CharacterFigure({ x: 2, y: 2, sprite: duckSprite, facing: DIRECTION.south }, 'team1', { name: 'Bob', move: 4 }),
+    new CharacterFigure({ x: 2, y: 2, sprite: duckSprite, facing: DIRECTION.south, }, 'team1', { name: 'Bob', move: 4 }),
     new CharacterFigure({ x: 3, y: 2, sprite: barrelSprite, facing: DIRECTION.south }, 'team1', { name: 'Tun', move: 2 }),
     new CharacterFigure({ x: 4, y: 2, sprite: duckSprite, facing: DIRECTION.south }, 'team1', { name: 'Abdul', move: 4 }),
     new CharacterFigure({ x: 3, y: 6, sprite: duckSprite, facing: DIRECTION.north }, 'team2', { name: 'Mary', move: 4 }),

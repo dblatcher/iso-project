@@ -7,6 +7,7 @@ export interface BaseFigure {
     y: number,
     facing: CardinalDirection,
     sprite: DirectionalSprite,
+    frameIndex?: number,
     spriteIsoGroup?: IsometricGroup,
     shadowIsoGroup?: IsometricGroup,
     classNames?: string[],

@@ -4,8 +4,11 @@ import { IMAGES } from "./images";
 import { MapCell, MapGridIsometricCanvas } from "../MapGridIsometricCanvas";
 import { MyFigure } from "./MyFigure";
 
-export const duckSprite = new DirectionalSprite({ frontImage: IMAGES.duck, backImage: IMAGES.duckBack })
-const barrelSprite = new DirectionalSprite({ frontImage: IMAGES.barrell, backImage: IMAGES.barrell })
+export const duckSprite = new DirectionalSprite({
+    frontImage: [IMAGES.duck, IMAGES.duck2, IMAGES.duck3, IMAGES.duck4], 
+    backImage: [IMAGES.duckBack, IMAGES.duckBack2,IMAGES.duckBack3,IMAGES.duckBack4]
+})
+const barrelSprite = new DirectionalSprite({ frontImage: [IMAGES.barrell], backImage: [IMAGES.barrell] })
 const stoney = { textureSide: IMAGES.wall, colorTop: 'slategray' }
 const sandy = { colorSide: 'sandybrown', colorTop: 'yellow', }
 
@@ -16,8 +19,8 @@ export function createScene(orientation: CardinalDirection, container: string | 
         { sprite: duckSprite, x: 3, y: 1, facing: DIRECTION.south, name: 'Bob' },
         { sprite: duckSprite, x: 1, y: 3, facing: DIRECTION.west },
         { sprite: barrelSprite, x: 3, y: 3, facing: DIRECTION.north },
-        { sprite: duckSprite, x: 3, y: 2, facing: DIRECTION.south },
-        { sprite: duckSprite, x: 0, y: 5, facing: DIRECTION.east },
+        { sprite: duckSprite, x: 3, y: 2, facing: DIRECTION.west },
+        { sprite: duckSprite, x: 0, y: 0, facing: DIRECTION.east },
     ];
 
     const cells: MapCell[][] = [
@@ -34,9 +37,9 @@ export function createScene(orientation: CardinalDirection, container: string | 
         {
             container,
             backgroundColor: '#CCC',
-            scale: 30,
-            width: 600,
-            height: 500,
+            scale: 40,
+            width: 1000,
+            height: 1000,
         },
         cells,
         [
