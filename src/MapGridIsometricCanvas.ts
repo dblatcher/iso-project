@@ -21,7 +21,7 @@ type GridOfCells = Array<Array<MapCell | undefined>>
 export type CellClickHandler<T> = { (mapGridCanvas: MapGridIsometricCanvas): { (cell: MapCell): Promise<T> } }
 export type FigureClickHandler<T, Figure extends BaseFigure> = { (mapGridCanvas: MapGridIsometricCanvas): { (figure: Figure): Promise<T> } }
 
-type MapGridCanvasConfig = {
+export type MapGridCanvasConfig = {
     renderOrientation?: CardinalDirection;
     defaultBlockSideColor?: string;
     defaultBlockTopColor?: string;

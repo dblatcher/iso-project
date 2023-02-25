@@ -48,10 +48,15 @@ const figures = [
 ]
 
 const teams: Team[] = [
-    { id: 'team1', name: 'Red Team', color:'crimson' },
+    { id: 'team1', name: 'Red Team', color: 'crimson' },
     { id: 'team2', name: 'Blue Squad', color: 'skyblue' },
 ]
 
-const battle = new Battle(container, teams, figures, cells, panel)
+const battle = new Battle(container, panel, teams, figures, cells, {
+    renderCompass: true,
+    renderOrientation: DIRECTION.west,
+    defaultBlockTopColor: 'lightgreen',
+    defaultBlockSideColor: 'rosybrown',
+})
 
 

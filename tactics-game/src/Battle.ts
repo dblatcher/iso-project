@@ -1,4 +1,4 @@
-import { MapCell, MapGridIsometricCanvas } from "../../src/MapGridIsometricCanvas";
+import { MapCell, MapGridIsometricCanvas, MapGridCanvasConfig } from "../../src/MapGridIsometricCanvas";
 import { CharacterFigure } from "./CharacterFigure";
 import { Panel } from "./components/Panel";
 import { h, render } from 'preact'
@@ -18,10 +18,11 @@ export class Battle {
 
     constructor(
         container: HTMLElement,
+        panel: HTMLElement,
         teams: Team[],
         characterFigures: CharacterFigure[],
         terrain: MapCell[][],
-        panel: HTMLElement,
+        mapGridCanvasConfig: MapGridCanvasConfig = {}
     ) {
         characterFigures.forEach(figure => figure.battle = this)
         this.teams = teams
@@ -35,9 +36,7 @@ export class Battle {
             },
             terrain,
             characterFigures,
-            {
-                renderCompass: true
-            }
+            mapGridCanvasConfig,
         )
 
         this.canvas.onClick.figure = this.manageFigureClick
