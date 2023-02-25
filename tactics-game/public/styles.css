@@ -18,12 +18,22 @@ body {
     margin: 0;
 }
 
-.figure.current-team {
-    filter: brightness(1.5);
+.figure:not(.current-team) {
+    filter: brightness(.75);
+}
+
+@keyframes flash {
+    from {
+        filter: brightness(1);
+    }
+
+    to {
+        filter: brightness(1.75);
+    }
 }
 
 .figure.current-team.selected {
-    stroke: red;
+    animation: infinite flash 1s linear 0s alternate;
 }
 
 .figure.no-moves {
