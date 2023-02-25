@@ -39,7 +39,7 @@ export const renderIsometricImage = (input: {
     }));
 
 
-    frameRectangles.forEach(sprite => sprite.getElement().classList.add(...classes))
+    group.getElement().classList.add(...classes)
 
     frameRectangles.forEach((sprite, index) => {
         if (index > 0) {
