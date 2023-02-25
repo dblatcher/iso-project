@@ -24,22 +24,25 @@ body {
     margin: 0;
 }
 
-.figure:not(.current-team) {
-    filter: brightness(.75);
-}
-
-@keyframes flash {
+@keyframes outline {
     from {
-        filter: brightness(1);
-    }
+        stroke-width: 0;
+        stroke: white;
 
+    }
+    
     to {
-        filter: brightness(1.75);
+        stroke-width: 3;
+        stroke: white;
     }
 }
 
-.figure.current-team.selected {
-    animation: infinite flash 1s linear 0s alternate;
+.shadow.current-team.current-team:not(.no-moves) {
+    animation: infinite outline 2s linear 0s alternate;
+}
+
+.shadow.current-team.selected:not(.no-moves) {
+    animation: infinite outline .5s linear 0s alternate;
 }
 
 .figure.no-moves {

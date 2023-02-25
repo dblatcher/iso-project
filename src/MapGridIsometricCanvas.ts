@@ -224,6 +224,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
 
         const newShadow = renderIsometricShadow({
             coords: [gridX, gridY, height],
+            classes: [...this.prefixCssClassNames(['shadow']), ...classNames],
         })
 
         this.addChildren(newShadow, newImage)
