@@ -18,9 +18,19 @@ const buttonStyle = (highlight: boolean) => ({
 export const Panel: FunctionalComponent<Props> = ({ team, selectedFigure, endTurn, allFiguresMoved }) => {
 
     return html`
-    <div>
-        <div class="row">
-            <span>TEAM: ${team.name}</span>
+    <div style=${{
+        borderColor:team.color,
+        borderWidth: ".25rem",
+        borderStyle: "ridge",
+        padding: ".25rem",
+        flex:1,
+    }}>
+        <div class="row" style=${{
+            borderBottomColor: team.color,
+            borderBottomWidth: ".25rem",
+            borderBottomStyle: "double",
+        }}>
+            <span>${team.name}</span>
         </div>
         ${selectedFigure && html`
             <${CharacterView} figure=${selectedFigure}/>

@@ -1,17 +1,23 @@
 body {
     background-color: beige;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .panel {
-    background-color: aqua;
-    padding: 1rem;
+    background-color: white;
+    padding: .25rem;
     position: absolute;
     top: 0;
     right: 0;
+    min-width: 12rem;
+    min-height: 12rem;
+    display: flex;
+    flex-direction: column;
 }
 
 .panel .row {
     display: flex;
+    margin: .125rem 0;
 }
 
 .panel p {

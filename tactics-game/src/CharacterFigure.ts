@@ -1,3 +1,4 @@
+import { IsometricGroup } from "@elchininet/isometric";
 import type { BaseFigure } from "../../src/BaseFigure";
 import type { CardinalDirection } from "../../src/CardinalDirection";
 import type { DirectionalSprite } from "../../src/DirectionalSprite";
@@ -19,6 +20,7 @@ export class CharacterFigure implements BaseFigure {
     y: number;
     facing: CardinalDirection
     sprite: DirectionalSprite
+    spriteIsoGroup?: IsometricGroup;
     attributes: Attributes
     teamId: string
     selected: boolean;

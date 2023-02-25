@@ -7,6 +7,7 @@ import { h, render } from 'preact'
 export type Team = {
     id: string,
     name: string,
+    color: string,
 }
 
 export class Battle {
@@ -83,6 +84,7 @@ export class Battle {
     endTurn() {
         const teamindex = this.teams.indexOf(this.currentTeam)
         this.currentTeam = this.teams[teamindex+1] || this.teams[0]
+        this.selectedFigure = undefined
         this.canvas.figures.map(figure => figure.remainingMoves = figure.attributes.move)
         this.redraw()
     }

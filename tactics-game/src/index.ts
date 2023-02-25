@@ -48,8 +48,8 @@ const figures = [
 ]
 
 const teams: Team[] = [
-    { id: 'team1', name: 'Red Team' },
-    { id: 'team2', name: 'Blue Squad' },
+    { id: 'team1', name: 'Red Team', color:'crimson' },
+    { id: 'team2', name: 'Blue Squad', color: 'skyblue' },
 ]
 
 const battle = new Battle(container, teams, figures, cells, panel)
