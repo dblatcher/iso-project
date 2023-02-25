@@ -89,13 +89,20 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     changeSpriteFrames() {
-        if (this.animationInProgress) { return }
         this.figures.forEach(figure => {
             const { sprite, facing, frameIndex: currentFrameIndex = 0 } = figure
             const { images } = sprite.getView(facing, this.renderOrientation)
+            if (images.length === 1) {
+                return
+            }
             figure.frameIndex = currentFrameIndex + 1 >= images.length ? 0 : currentFrameIndex + 1
+            if (figure.frameRectangles) {
+                figure.frameRectangles.forEach((frame, index) => {
+                    frame.getElement().style.display = index === figure.frameIndex ? 'block' : 'none';
+                })
+            }
         })
-        this.render(this.renderOrientation)
+        
     }
 
     prefixCssClassNames(classNames: string[]): string[] {
@@ -188,8 +195,8 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
 
         const { images, planeView } = sprite.getView(facing, this.renderOrientation)
         const height = this.heightAt(x, y)
-        const { group: newImage } = renderIsometricImage({
-            imageUrl: images[frameIndex],
+        const { group: newImage, frameRectangles } = renderIsometricImage({
+            imageUrls: images,
             planeView,
             classes: [...this.prefixCssClassNames(['figure']), ...classNames],
             coords: [gridX, gridY, height],
@@ -206,6 +213,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         this.addChildren(newShadow, newImage)
         figure.spriteIsoGroup = newImage
         figure.shadowIsoGroup = newShadow
+        figure.frameRectangles = frameRectangles
     }
 
     rotateGrid(grid: GridOfCells): GridOfCells {
@@ -255,6 +263,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         figures.forEach(unrenderedFigure => {
             unrenderedFigure.spriteIsoGroup = undefined
             unrenderedFigure.shadowIsoGroup = undefined
+            unrenderedFigure.frameRectangles = undefined
         })
 
         if (this.config.renderCompass) {

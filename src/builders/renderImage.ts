@@ -1,49 +1,52 @@
 import { PlaneView, IsometricRectangle, IsometricGroup } from "@elchininet/isometric";
 
 export const renderIsometricImage = (input: {
-    imageUrl: string,
+    imageUrls: string[],
     planeView: PlaneView,
     coords: [number, number, number],
     width?: number,
     height?: number,
     classes?: string[]
 }) => {
-    const { imageUrl, planeView, width = 1, height = 1, classes = [], coords } = input
+    const { imageUrls, planeView, width = 1, height = 1, classes = [], coords } = input
     const [right, left, top] = coords
     const group = new IsometricGroup({ top, right, left, })
 
     const commonTextureProps = {
-        url: imageUrl,
         height,
         width,
         pixelated: true
     };
 
-    const sprite = new IsometricRectangle({
+    const positionProps = planeView == 'SIDE' ? {
+        right: (-width / 2) + .5,
+        left: .5,
+    } : planeView === 'FRONT' ? {
+        right: .5,
+        left: 0,
+    } : {
+        right: (-width / 2) + .5,
+        left: (-width / 2) + .5,
+    }
+
+    const frameRectangles = imageUrls.map(url => new IsometricRectangle({
         planeView,
         height,
         width,
-        texture: commonTextureProps,
+        texture: { ...commonTextureProps, url },
         strokeColor: 'none',
-    });
+        ...positionProps
+    }));
 
-    switch (planeView) {
-        case 'SIDE':
-            sprite.right = (-width / 2) + .5
-            sprite.left = .5
-            break;
-        case 'FRONT':
-            // sprite.left = (-width / 2) + .5
-            sprite.right = .5
-            break;
-        case 'TOP':
-            sprite.left = (-width / 2) + .5
-            sprite.right = (-width / 2) + .5
-            break;
 
-    }
+    frameRectangles.forEach(sprite => sprite.getElement().classList.add(...classes))
 
-    sprite.getElement().classList.add(...classes)
-    group.addChild(sprite)
-    return {group, sprite}
+    frameRectangles.forEach((sprite, index) => {
+        if (index > 0) {
+            sprite.getElement().style.display = 'none'
+        }
+    })
+
+    group.addChildren(...frameRectangles)
+    return { group, frameRectangles }
 }
