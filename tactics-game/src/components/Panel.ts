@@ -8,6 +8,7 @@ interface Props {
     team: Team;
     selectedFigure?: CharacterFigure;
     endTurn: { (): void }
+    nextFigure: { (reverse?:boolean): void }
     allFiguresMoved: boolean
 }
 
@@ -15,7 +16,7 @@ const buttonStyle = (highlight: boolean) => ({
     fontWeight: highlight ? 'bold' : 'normal',
 })
 
-export const Panel: FunctionalComponent<Props> = ({ team, selectedFigure, endTurn, allFiguresMoved }) => {
+export const Panel: FunctionalComponent<Props> = ({ team, selectedFigure, endTurn, nextFigure, allFiguresMoved }) => {
 
     return html`
     <div style=${{
@@ -35,6 +36,10 @@ export const Panel: FunctionalComponent<Props> = ({ team, selectedFigure, endTur
         ${selectedFigure && html`
             <${CharacterView} figure=${selectedFigure}/>
         `}
+        <div class="row">
+            <button style=${buttonStyle(false)} onclick=${() =>{nextFigure(false)}}>NEXT</button>
+            <button style=${buttonStyle(false)} onclick=${()=>{nextFigure(true)}}>PREV</button>
+        </div>
         <div class="row">
             <button style=${buttonStyle(allFiguresMoved)} onclick=${endTurn}>END OF TURN</button>
         </div>

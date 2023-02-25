@@ -55,12 +55,13 @@ export class Battle {
                 selectedFigure: selectedFigure,
                 allFiguresMoved,
                 endTurn: () => { this.endTurn() },
+                nextFigure: (reverse = false) => { this.selectNextFigureWithMoves(reverse) },
             }),
             this.panel
         );
     }
 
-    get allFiguresMoved():boolean {
+    get allFiguresMoved(): boolean {
         return this.canvas.figures.every(figure => figure.remainingMoves === 0 || !figure.isOnCurrentTeam)
     }
 
@@ -68,8 +69,10 @@ export class Battle {
         return this.canvas.figures.find(figure => figure.selected)
     }
 
-    set selectedFigure(selectedFigure: CharacterFigure) {
-        if (this.canvas.figures.includes(selectedFigure)) {
+    set selectedFigure(selectedFigure: CharacterFigure | undefined) {
+        if (!selectedFigure) {
+            this.canvas.figures.forEach(figure => figure.selected = false)
+        } else if (this.canvas.figures.includes(selectedFigure)) {
             this.canvas.figures.forEach(figure => figure.selected = figure === selectedFigure)
         }
         this.redraw()
@@ -80,11 +83,25 @@ export class Battle {
         this.updatePanel()
     }
 
+    selectNextFigureWithMoves(reverse = false) {
+        const { selectedFigure } = this
+        const { figures } = this.canvas
+        const list = reverse ? [...figures].reverse() : figures
+        const currentSelectedIndex = list.indexOf(selectedFigure)
+        const nextAfter = list.slice(currentSelectedIndex + 1).find(figure => figure.isOnCurrentTeam && figure.remainingMoves > 0)
+        if (nextAfter) {
+            this.selectedFigure = nextAfter
+            return
+        }
+        this.selectedFigure = list.find(figure => figure.isOnCurrentTeam && figure.remainingMoves > 0)
+    }
+
     endTurn() {
         const teamindex = this.teams.indexOf(this.currentTeam)
-        this.currentTeam = this.teams[teamindex+1] || this.teams[0]
-        this.selectedFigure = undefined
+        this.currentTeam = this.teams[teamindex + 1] || this.teams[0]
         this.canvas.figures.map(figure => figure.remainingMoves = figure.attributes.move)
+        this.selectedFigure = undefined
+        this.selectNextFigureWithMoves()
         this.redraw()
     }
 
