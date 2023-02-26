@@ -5,6 +5,7 @@ import { h, render } from 'preact'
 import { MapCell } from "../../src/MapCell";
 import { findPathFrom } from "./lib/pathFind";
 import { shiftFigure } from "../../src/animations/shiftFigure";
+import { followPath } from "../../src/animations/followPath";
 
 
 export type Team = {
@@ -174,16 +175,7 @@ export class Battle {
                     selectedFigure.remainingMoves = selectedFigure.remainingMoves - this.figureRoute.length
                     this.selectedCell = undefined
                     this.markCells([])
-
-                    await canvas.executeAnimation(async () => {
-                        const routeCoords = this.figureRoute.map(cell => this.canvas.getCellCoords(cell))
-                        while (routeCoords.length > 0) {
-                            const nextCoords = routeCoords.shift()
-                            const { x, y } = selectedFigure
-                            await shiftFigure(canvas)(selectedFigure, nextCoords.x - x, nextCoords.y - y)
-                        }
-                    })
-
+                    await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
                     this.figureRoute = undefined
                     this.redraw()
                 }
