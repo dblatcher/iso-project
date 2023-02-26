@@ -1,6 +1,6 @@
 import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
-import { DIRECTION, CardinalDirection, clockwise, antiClockwise } from "./CardinalDirection"
+import { DIRECTION, CardinalDirection } from "./CardinalDirection"
 import { BaseFigure } from "./BaseFigure"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"
@@ -9,8 +9,6 @@ import { buildCompass } from "./builders/compass"
 import { shiftFigure } from "./animations/shiftFigure"
 import { jumpFigure } from "./animations/jump"
 import { turnFigure } from "./animations/turn"
-import { pause } from "./animations/util"
-import { spinFigure } from "./animations/spin"
 
 
 export interface MapCell {
