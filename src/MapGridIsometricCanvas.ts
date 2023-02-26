@@ -117,13 +117,15 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         })
     }
 
-    addCellClass(cell: MapCell, className: string) {
+    addCellClass(cell: MapCell | undefined, className: string) {
+        if (!cell) { return }
         if (!this.cells.flat().includes(cell)) {
             return
         }
         addClassToCell(cell, className)
     }
-    removeCellClass(cell: MapCell, className: string) {
+    removeCellClass(cell: MapCell | undefined, className: string) {
+        if (!cell) { return }
         if (!this.cells.flat().includes(cell)) {
             return
         }

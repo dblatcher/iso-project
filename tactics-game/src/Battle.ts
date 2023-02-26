@@ -3,12 +3,18 @@ import { CharacterFigure } from "./CharacterFigure";
 import { Panel } from "./components/Panel";
 import { h, render } from 'preact'
 import { MapCell } from "../../src/MapCell";
+import { findPathFrom } from "./lib/pathFind";
 
 
 export type Team = {
     id: string,
     name: string,
     color: string,
+}
+
+const CELL_CLASS = {
+    marked: 'marked',
+    selected: 'selected',
 }
 
 export class Battle {
@@ -80,12 +86,46 @@ export class Battle {
         this.redraw()
     }
 
+    get selectedCell(): MapCell | undefined {
+        return this.canvas.cells.flat().find(cell => cell.classes?.includes(CELL_CLASS.selected))
+    }
+
+    set selectedCell(selectedCell: MapCell | undefined) {
+        if (!selectedCell) {
+            this.canvas.cells.flat().forEach(cell => {
+                if (!cell) { return }
+                this.canvas.removeCellClass(cell, CELL_CLASS.selected)
+            })
+        } else {
+            this.canvas.cells.flat().forEach(cell => {
+                if (!cell) { return }
+                if (cell === selectedCell) {
+                    this.canvas.addCellClass(cell, CELL_CLASS.selected)
+                } else {
+                    this.canvas.removeCellClass(cell, CELL_CLASS.selected)
+                }
+            })
+        }
+    }
+
+    markCells(cellsToMark: MapCell[]) {
+        this.canvas.cells.flat().forEach(cell => {
+            if (cellsToMark.includes(cell)) {
+                this.canvas.addCellClass(cell, CELL_CLASS.marked)
+            } else {
+                this.canvas.removeCellClass(cell, CELL_CLASS.marked)
+            }
+        })
+    }
+
     private redraw() {
         this.canvas.render(this.canvas.renderOrientation)
         this.updatePanel()
     }
 
     selectNextFigureWithMoves(reverse = false) {
+        this.selectedCell = undefined
+        this.markCells([])
         const { selectedFigure } = this
         const { figures } = this.canvas
         const list = reverse ? [...figures].reverse() : figures
@@ -110,18 +150,34 @@ export class Battle {
     manageFigureClick = (canvas: MapGridIsometricCanvas) => async (figure: CharacterFigure) => {
         if (figure.isOnCurrentTeam) {
             this.selectedFigure = figure
+            this.selectedCell = undefined
+            this.markCells([])
             this.redraw()
         }
         return true
     }
     manageCellClick = (canvas: MapGridIsometricCanvas) => async (cell: MapCell) => {
-        const { selectedFigure } = this
+        const { selectedFigure, selectedCell } = this
+        const { x, y } = canvas.getCellCoords(cell)
+
         if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remainingMoves > 0) {
-            const { x, y } = canvas.getCellCoords(cell)
-            selectedFigure.remainingMoves--
-            await canvas.moveSingleFigure(selectedFigure, x - selectedFigure.x, y - selectedFigure.y)
-            this.redraw()
+            if (x == selectedFigure.x && y === selectedFigure.y) {
+                this.selectedCell = undefined
+                this.markCells([])
+            }
+            else if (selectedCell && cell === selectedCell) {
+                this.selectedCell = undefined
+                this.markCells([])
+                selectedFigure.remainingMoves--
+                await canvas.moveSingleFigure(selectedFigure, x - selectedFigure.x, y - selectedFigure.y)
+                this.redraw()
+            } else {
+                const cellsInPath = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
+                this.selectedCell = cell
+                this.markCells(cellsInPath)
+            }
         }
         return true
     }
+
 }

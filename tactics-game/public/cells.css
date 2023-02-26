@@ -8,11 +8,30 @@
     }
 }
 
+@keyframes marchingStroke {
+    from {
+        stroke-dashoffset: 0;
+    }
+
+    to {
+        stroke-dashoffset: 4;
+    }
+}
+
 path.top:hover {
     animation: highlight 1s infinite;
 }
 
 path.top.marked {
+    stroke: white;
+    stroke-width: 2;
+}
+path.top.selected {
     stroke: red;
     stroke-width: 4;
+    stroke-dasharray: 2,2;
+}
+
+path.top.selected.marked {
+    animation: marchingStroke .5s infinite linear;
 }
