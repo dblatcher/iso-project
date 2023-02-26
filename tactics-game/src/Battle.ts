@@ -1,7 +1,8 @@
-import { MapCell, MapGridIsometricCanvas, MapGridCanvasConfig } from "../../src/MapGridIsometricCanvas";
+import { MapGridIsometricCanvas, MapGridCanvasConfig } from "../../src/MapGridIsometricCanvas";
 import { CharacterFigure } from "./CharacterFigure";
 import { Panel } from "./components/Panel";
 import { h, render } from 'preact'
+import { MapCell } from "../../src/MapCell";
 
 
 export type Team = {

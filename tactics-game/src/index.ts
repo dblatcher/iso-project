@@ -1,5 +1,5 @@
 import { DIRECTION } from "../../src/CardinalDirection"
-import { MapCell } from "../../src/MapGridIsometricCanvas"
+import { MapCell } from "../../src/MapCell"
 import { Battle, Team } from "./Battle"
 import { CharacterFigure } from "./CharacterFigure"
 import { barrelSprite, duckSprite, manSprite } from "./sprites"
@@ -39,6 +39,8 @@ const cells: MapCell[][] = [
     regularRow(),
 ]
 
+cells[3][3].classes=['marked']
+
 const figures = [
     new CharacterFigure({ x: 2, y: 2, sprite: manSprite, facing: DIRECTION.south, }, 'team1', { name: 'Bob', move: 4 }),
     new CharacterFigure({ x: 3, y: 2, sprite: barrelSprite, facing: DIRECTION.south }, 'team1', { name: 'Tun', move: 2 }),
@@ -58,5 +60,8 @@ const battle = new Battle(container, panel, teams, figures, cells, {
     defaultBlockTopColor: 'lightgreen',
     defaultBlockSideColor: 'rosybrown',
 })
+
+const windowWithBattle = window as Window & {battle?:Battle};
+windowWithBattle.battle = battle
 
 

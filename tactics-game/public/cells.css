@@ -11,3 +11,8 @@
 path.top:hover {
     animation: highlight 1s infinite;
 }
+
+path.top.marked {
+    stroke: red;
+    stroke-width: 4;
+}

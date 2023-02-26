@@ -9,15 +9,8 @@ import { buildCompass } from "./builders/compass"
 import { shiftFigure } from "./animations/shiftFigure"
 import { jumpFigure } from "./animations/jump"
 import { turnFigure } from "./animations/turn"
+import { addClassToCell, MapCell, removeClassFromCell } from "./MapCell"
 
-
-export interface MapCell {
-    height: number,
-    textureTop?: string,
-    textureSide?: string,
-    colorTop?: string,
-    colorSide?: string,
-}
 
 type GridOfCells = Array<Array<MapCell | undefined>>
 
@@ -124,6 +117,19 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         })
     }
 
+    addCellClass(cell: MapCell, className: string) {
+        if (!this.cells.flat().includes(cell)) {
+            return
+        }
+        addClassToCell(cell, className)
+    }
+    removeCellClass(cell: MapCell, className: string) {
+        if (!this.cells.flat().includes(cell)) {
+            return
+        }
+        removeClassFromCell(cell, className)
+    }
+
     prefixCssClassNames(classNames: string[]): string[] {
         if (!this.config.cssPrefix) { return classNames }
         return classNames.map(className => `${this.config.cssPrefix}${className}`)
@@ -183,18 +189,19 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     renderCell(cell: MapCell, gridX: number, gridY: number) {
-        const { defaultBlockSideColor, defaultBlockTextureTop, defaultBlockTopColor, defaultBlockTextureSide } = this.config
+        const { defaultBlockSideColor, defaultBlockTextureTop, defaultBlockTopColor, defaultBlockTextureSide, } = this.config
+        const { classes = [], colorSide, colorTop, textureSide, textureTop, height } = cell
 
-        const { group: cuboid, topPiece } = buildCuboid({
+        const { group, topPiece } = buildCuboid({
             coords: [gridX, gridY, 0],
             size: 1,
-            height: cell.height,
-            topImage: (cell.colorTop && !cell.textureTop) ? undefined : cell.textureTop || defaultBlockTextureTop,
-            sideImage: (cell.colorSide && !cell.textureSide) ? undefined : cell.textureSide || defaultBlockTextureSide,
-            sideColor: cell.colorSide || defaultBlockSideColor,
-            topColor: cell.colorTop || defaultBlockTopColor,
-            groupClasses: this.prefixCssClassNames(['block']),
-            topClasses: this.prefixCssClassNames(['top']),
+            height: height,
+            topImage: (colorTop && !textureTop) ? undefined : textureTop || defaultBlockTextureTop,
+            sideImage: (colorSide && !textureSide) ? undefined : textureSide || defaultBlockTextureSide,
+            sideColor: colorSide || defaultBlockSideColor,
+            topColor: colorTop || defaultBlockTopColor,
+            groupClasses: [...this.prefixCssClassNames(['block']), ...classes],
+            topClasses: [...this.prefixCssClassNames(['top']), ...classes],
         })
 
         topPiece.addEventListener('click', () => {
@@ -202,8 +209,11 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         })
 
         this.addChild(
-            cuboid
+            group
         )
+
+        cell.isoGroup = group
+        cell.isoTop = topPiece
     }
 
     renderFigureSprite(figure: Figure, gridX: number, gridY: number,) {
