@@ -14,7 +14,6 @@ export const findPathFrom = (figure: CharacterFigure, target: { x: number, y: nu
     let { x, y, remainingMoves } = figure
 
     const cellsInPath: MapCell[] = [
-        grid[x][y]
     ]
 
     // TO DO - proper path finding

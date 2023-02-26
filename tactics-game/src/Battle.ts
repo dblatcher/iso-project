@@ -22,6 +22,7 @@ export class Battle {
     panel: HTMLElement
     teams: Team[]
     currentTeam: Team
+    figureRoute?: MapCell[]
 
     constructor(
         container: HTMLElement,
@@ -166,13 +167,20 @@ export class Battle {
                 this.markCells([])
             }
             else if (selectedCell && cell === selectedCell) {
-                this.selectedCell = undefined
-                this.markCells([])
-                selectedFigure.remainingMoves--
-                await canvas.moveSingleFigure(selectedFigure, x - selectedFigure.x, y - selectedFigure.y)
-                this.redraw()
+                const routeIsValid = this.figureRoute?.includes(selectedCell)
+
+                if (routeIsValid) {
+                    selectedFigure.remainingMoves = selectedFigure.remainingMoves - this.figureRoute.length
+                    this.selectedCell = undefined
+                    this.markCells([])
+                    await canvas.moveSingleFigure(selectedFigure, x - selectedFigure.x, y - selectedFigure.y)
+                    this.figureRoute = undefined
+                    this.redraw()
+                }
+
             } else {
                 const cellsInPath = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
+                this.figureRoute = cellsInPath
                 this.selectedCell = cell
                 this.markCells(cellsInPath)
             }
