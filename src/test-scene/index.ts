@@ -1,6 +1,6 @@
 import { antiClockwise, clockwise, DIRECTION } from '../CardinalDirection';
 import { createScene } from './createScene';
-import { moveSelectedFigureToCell, selectOrRotateFigure } from './interactions';
+import { danceParty, moveSelectedFigureToCell, selectOrRotateFigure } from './interactions';
 
 const container = document.createElement('div')
 document.body.appendChild(container)
@@ -13,7 +13,7 @@ anticlockwiseButton.innerText = '↻';
 document.body.appendChild(anticlockwiseButton);
 
 const magicButton = document.createElement('button')
-magicButton.innerText = 'moveAll';
+magicButton.innerText = 'Everybody dance now!';
 document.body.appendChild(magicButton);
 
 const mapGrid = createScene(DIRECTION.west, container);
@@ -27,7 +27,7 @@ anticlockwiseButton.addEventListener('click', () => {
     mapGrid.render(antiClockwise(mapGrid.renderOrientation))
 })
 magicButton.addEventListener('click', () => {
-    mapGrid.moveAllFigures()
+    mapGrid.executeAnimation(() => danceParty(mapGrid)())
 })
 
 const enhancedWindow = window as Record<string, any>

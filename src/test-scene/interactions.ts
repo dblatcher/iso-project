@@ -1,3 +1,7 @@
+import { jumpFigure } from '../animations/jump'
+import { shiftFigure } from '../animations/shiftFigure'
+import { spinFigure } from '../animations/spin'
+import { turnFigure } from '../animations/turn'
 import { clockwise } from '../CardinalDirection'
 import type { FigureClickHandler, CellClickHandler, MapGridIsometricCanvas } from '../MapGridIsometricCanvas'
 import { MyFigure } from "./MyFigure"
@@ -33,4 +37,16 @@ export const selectOrRotateFigure: FigureClickHandler<void, MyFigure> = (that) =
         setSelectedFigure(figure, that)
         console.log(`${figure.name || 'nameless figure'} selected`)
     }
+}
+
+export const danceParty = (that: MapGridIsometricCanvas<MyFigure>) => async (): Promise<boolean[]> => {
+    return Promise.all(that.figures.map(async (figure) => {
+        await shiftFigure(that)(figure, 0, -1)
+        await jumpFigure(that)(figure, 2)
+        await spinFigure(that)(figure, 2, 150, true)
+        await spinFigure(that)(figure, 1, 300,)
+        await shiftFigure(that)(figure, 0, 1)
+        await turnFigure(that)(figure, clockwise(figure.facing))
+        return true
+    }))
 }
