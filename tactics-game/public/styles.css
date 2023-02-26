@@ -23,28 +23,3 @@ body {
 .panel p {
     margin: 0;
 }
-
-@keyframes outline {
-    from {
-        stroke-width: 0;
-        stroke: white;
-
-    }
-    
-    to {
-        stroke-width: 3;
-        stroke: white;
-    }
-}
-
-.shadow.current-team.current-team:not(.no-moves) {
-    animation: infinite outline 2s linear 0s alternate;
-}
-
-.shadow.current-team.selected:not(.no-moves) {
-    animation: infinite outline .5s linear 0s alternate;
-}
-
-.figure.no-moves {
-    filter: grayscale(1);
-}

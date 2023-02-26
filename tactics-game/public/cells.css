@@ -1,0 +1,13 @@
+@keyframes highlight {
+    from {
+        filter: hue-rotate(0deg);
+    }
+
+    to {
+        filter: hue-rotate(60deg);
+    }
+}
+
+path.top:hover {
+    animation: highlight 1s infinite;
+}
