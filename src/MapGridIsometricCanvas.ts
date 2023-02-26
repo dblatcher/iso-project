@@ -1,6 +1,6 @@
 import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
-import { DIRECTION, CardinalDirection } from "./CardinalDirection"
+import { DIRECTION, CardinalDirection, clockwise, antiClockwise } from "./CardinalDirection"
 import { BaseFigure } from "./BaseFigure"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"
@@ -9,6 +9,7 @@ import { buildCompass } from "./builders/compass"
 import { shiftFigure } from "./animations/shiftFigure"
 import { jumpFigure } from "./animations/jump"
 import { turnFigure } from "./animations/turn"
+import { pause } from "./animations/util"
 
 
 export interface MapCell {
@@ -296,36 +297,36 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         }
     }
 
-    async turnSingleFigure(figure: Figure, direction: CardinalDirection) {
+    executeAnimation = async function <T>(animationFunction: { (): Promise<T> }): Promise<T> {
         this.animationInProgress = true
-        const result = await turnFigure(this)(figure, direction)
+        const result = await animationFunction()
         this.render(this.renderOrientation)
         this.animationInProgress = false
         return result
+    }
+
+    async turnSingleFigure(figure: Figure, direction: CardinalDirection) {
+        return this.executeAnimation(() => turnFigure(this)(figure, direction))
     }
 
     async bounceSingleFigure(figure: Figure, height: number) {
-        this.animationInProgress = true
-        const result = await jumpFigure(this)(figure, height)
-        this.render(this.renderOrientation)
-        this.animationInProgress = false
-        return result
+        return this.executeAnimation(() => jumpFigure(this)(figure, height))
     }
 
     async moveSingleFigure(figure: Figure, xDist: number, yDist: number) {
-        this.animationInProgress = true
-        const result = await shiftFigure(this)(figure, xDist, yDist)
-        this.render(this.renderOrientation)
-        this.animationInProgress = false
-        return result
+        return this.executeAnimation(() => shiftFigure(this)(figure, xDist, yDist))
     }
 
     async moveAllFigures() {
-        this.animationInProgress = true
-        await Promise.all(this.figures.map(figure => {
-            return shiftFigure(this)(figure, 0, -1)
-        }))
-        this.render(this.renderOrientation)
-        this.animationInProgress = false
+        if (this.animationInProgress) { return }
+        this.executeAnimation(() => Promise.all(this.figures.map(async (figure) => {
+            await shiftFigure(this)(figure, 0, -1)
+            await jumpFigure(this)(figure, 2)
+            await shiftFigure(this)(figure, 0, 1)
+            await turnFigure(this)(figure, clockwise(figure.facing))
+            this.render()
+            await pause(1000)
+            return turnFigure(this)(figure, clockwise(figure.facing))
+        })))
     }
 }
