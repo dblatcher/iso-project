@@ -10,6 +10,7 @@ import { shiftFigure } from "./animations/shiftFigure"
 import { jumpFigure } from "./animations/jump"
 import { turnFigure } from "./animations/turn"
 import { pause } from "./animations/util"
+import { spinFigure } from "./animations/spin"
 
 
 export interface MapCell {
@@ -322,11 +323,10 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         this.executeAnimation(() => Promise.all(this.figures.map(async (figure) => {
             await shiftFigure(this)(figure, 0, -1)
             await jumpFigure(this)(figure, 2)
+            await spinFigure(this)(figure, 2, 150, true)
+            await spinFigure(this)(figure, 1, 300, )
             await shiftFigure(this)(figure, 0, 1)
             await turnFigure(this)(figure, clockwise(figure.facing))
-            this.render()
-            await pause(1000)
-            return turnFigure(this)(figure, clockwise(figure.facing))
         })))
     }
 }
