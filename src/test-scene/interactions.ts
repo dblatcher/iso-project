@@ -27,7 +27,7 @@ export const moveSelectedFigureToCell: CellClickHandler<boolean> = (that) => asy
 
 export const selectOrRotateFigure: FigureClickHandler<void, MyFigure> = (that) => async (figure) => {
     if (getSelectedFigure(that) === figure) {
-        that.rotateSingleFigure(figure, clockwise(figure.facing))
+        that.turnSingleFigure(figure, clockwise(figure.facing))
         console.log(`${figure.name || 'nameless figure'} is facing ${figure.facing.label}`)
     } else {
         setSelectedFigure(figure, that)

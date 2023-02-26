@@ -1,11 +1,14 @@
 import { IsometricCanvas, type IsometricCanvasProps } from "@elchininet/isometric"
 import { buildCuboid } from "./builders/cuboids"
-import { DIRECTION, CardinalDirection, rotateVector } from "./CardinalDirection"
+import { DIRECTION, CardinalDirection } from "./CardinalDirection"
 import { BaseFigure } from "./BaseFigure"
 import { renderIsometricImage } from "./builders/renderImage"
 import { renderIsometricShadow } from "./builders/renderIsometricShadow"
 import { buildBackgrounds } from "./builders/backgrounds"
 import { buildCompass } from "./builders/compass"
+import { shiftFigure } from "./animations/shiftFigure"
+import { jumpFigure } from "./animations/jump"
+import { turnFigure } from "./animations/turn"
 
 
 export interface MapCell {
@@ -179,7 +182,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         )
     }
 
-    renderBlock(cell: MapCell, gridX: number, gridY: number) {
+    renderCell(cell: MapCell, gridX: number, gridY: number) {
         const { defaultBlockSideColor, defaultBlockTextureTop, defaultBlockTopColor, defaultBlockTextureSide } = this.config
 
         const { group: cuboid, topPiece } = buildCuboid({
@@ -269,7 +272,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
                 if (!cell) {
                     return
                 }
-                this.renderBlock(cell, gridX, gridY)
+                this.renderCell(cell, gridX, gridY)
                 const { x: realX, y: realY } = this.getCellCoords(cell)
                 const figuresHere = figures.filter(figure => figure.x === realX && figure.y == realY)
                 figuresHere.forEach(figureHere => {
@@ -293,90 +296,34 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         }
     }
 
-    private async shiftFigure(figure: Figure, xDist: number, yDist: number): Promise<boolean> {
-        const { x: startX, y: startY, spriteIsoGroup, shadowIsoGroup } = figure
-
-        figure.x += xDist
-        figure.y += yDist
-
-        if (!spriteIsoGroup || !this.children.includes(spriteIsoGroup)) {
-            return false
-        }
-
-        const { x, y } = rotateVector(xDist, yDist, this.renderOrientation)
-        // to do - find the shadow better?
-        // should it be a separate property of figure?
-
-
-        // TO DO - change ordering at each step
-        if (shadowIsoGroup) {
-            this.bringChildToFront(shadowIsoGroup)
-        }
-        this.bringChildToFront(spriteIsoGroup)
-        const { top, left, right } = figure.spriteIsoGroup
-        const zDist = this.heightAt(figure.x, figure.y) - top
-
-        const hop = (step: number, totalSteps: number, hopHeight: number): number => {
-            const d = step / totalSteps
-            return ((-2 * d ** 2) + (2 * d)) * hopHeight
-        }
-
-        const step = (step: number, totalSteps: number) => {
-            const altitude = hop(step, totalSteps, .5 + Math.abs(zDist * 2)) + (step * zDist / totalSteps)
-            spriteIsoGroup.right = right + (step * x / totalSteps)
-            spriteIsoGroup.left = left + (step * y / totalSteps)
-            spriteIsoGroup.top = top + altitude
-
-            if (shadowIsoGroup) {
-
-                shadowIsoGroup.right = right + (step * x / totalSteps)
-                shadowIsoGroup.left = left + (step * y / totalSteps)
-
-                const cellX = Math.round(startX + (step * xDist / totalSteps))
-                const cellY = Math.round(startY + (step * yDist / totalSteps))
-                const floorLevel = this.heightAt(cellX, cellY)
-                shadowIsoGroup.top = floorLevel
-            }
-        }
-
-        const pause = async (t: number) => await new Promise(resolve => {
-            setTimeout(resolve, t)
-        })
-
-        const totalSteps = 100
-
-        for (let i = 0; i++, i < totalSteps;) {
-            await step(i, totalSteps)
-            await pause(5)
-        }
-
-        return true
-    }
-
-    async rotateSingleFigure(figure: Figure, direction: CardinalDirection) {
-        if (!this.figures.includes(figure)) {
-            return false
-        }
+    async turnSingleFigure(figure: Figure, direction: CardinalDirection) {
         this.animationInProgress = true
-        figure.facing = direction
+        const result = await turnFigure(this)(figure, direction)
         this.render(this.renderOrientation)
         this.animationInProgress = false
+        return result
+    }
+
+    async bounceSingleFigure(figure: Figure, height: number) {
+        this.animationInProgress = true
+        const result = await jumpFigure(this)(figure, height)
+        this.render(this.renderOrientation)
+        this.animationInProgress = false
+        return result
     }
 
     async moveSingleFigure(figure: Figure, xDist: number, yDist: number) {
-        if (!this.figures.includes(figure)) {
-            return false
-        }
         this.animationInProgress = true
-        await this.shiftFigure(figure, xDist, yDist)
+        const result = await shiftFigure(this)(figure, xDist, yDist)
         this.render(this.renderOrientation)
         this.animationInProgress = false
+        return result
     }
 
     async moveAllFigures() {
         this.animationInProgress = true
         await Promise.all(this.figures.map(figure => {
-            return this.shiftFigure(figure, 0, -1)
+            return shiftFigure(this)(figure, 0, -1)
         }))
         this.render(this.renderOrientation)
         this.animationInProgress = false
