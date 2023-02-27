@@ -1,22 +1,23 @@
-@keyframes outline {
+@keyframes marchingOutline {
     from {
-        stroke-width: 0;
-        stroke: white;
-
+        stroke-dashoffset: 0;
     }
     
     to {
-        stroke-width: 3;
-        stroke: white;
+        stroke-dashoffset: 5;
     }
 }
 
 .shadow.current-team.current-team:not(.no-moves) {
-    animation: infinite outline 2s linear 0s alternate;
+    stroke: white;
+    stroke-width: 2;
+    stroke-dasharray: 4,1;
+    transform-origin: unset;
+    transform: scale(1.25);
 }
 
 .shadow.current-team.selected:not(.no-moves) {
-    animation: infinite outline .5s linear 0s alternate;
+    animation: infinite marchingOutline .5s linear 0s;
 }
 
 .figure.no-moves {
