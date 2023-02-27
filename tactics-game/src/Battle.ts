@@ -5,13 +5,9 @@ import { h, render } from 'preact'
 import { MapCell } from "../../src/MapCell";
 import { findPathFrom } from "./lib/pathFind";
 import { followPath } from "../../src/animations/followPath";
+import { CommandType, Team } from "./types";
+import { jumpFigure } from "../../src/animations/jump";
 
-
-export type Team = {
-    id: string,
-    name: string,
-    color: string,
-}
 
 const CELL_CLASS = {
     marked: 'marked',
@@ -24,6 +20,7 @@ export class Battle {
     teams: Team[]
     currentTeam: Team
     figureRoute?: MapCell[]
+    commandType: CommandType
 
     constructor(
         container: HTMLElement,
@@ -48,10 +45,10 @@ export class Battle {
             characterFigures,
             mapGridCanvasConfig,
         )
+        this.commandType = 'MOVE'
 
         this.canvas.onClick.figure = this.manageFigureClick
         this.canvas.onClick.cell = this.manageCellClick
-
         this.panel = panel
         this.updatePanel()
     }
@@ -64,8 +61,10 @@ export class Battle {
                 team: currentTeam,
                 selectedFigure: selectedFigure,
                 allFiguresMoved,
+                commandType: this.commandType,
                 endTurn: () => { this.endTurn() },
                 nextFigure: (reverse = false) => { this.selectNextFigureWithMoves(reverse) },
+                setCommandType: (commandType: CommandType) => { this.setCommandType(commandType) },
             }),
             this.panel
         );
@@ -125,6 +124,11 @@ export class Battle {
         this.updatePanel()
     }
 
+    setCommandType(commandType: CommandType) {
+        this.commandType = commandType
+        this.updatePanel()
+    }
+
     selectNextFigureWithMoves(reverse = false) {
         this.selectedCell = undefined
         this.markCells([])
@@ -159,34 +163,51 @@ export class Battle {
         return true
     }
     manageCellClick = (canvas: MapGridIsometricCanvas) => async (cell: MapCell) => {
-        const { selectedFigure, selectedCell } = this
+        const { selectedFigure, selectedCell, commandType } = this
         const { x, y } = canvas.getCellCoords(cell)
 
-        if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
-            if (x == selectedFigure.x && y === selectedFigure.y) {
-                this.selectedCell = undefined
-                this.markCells([])
-            }
-            else if (selectedCell && cell === selectedCell) {
-                const routeIsValid = this.figureRoute?.includes(selectedCell)
-
-                if (routeIsValid) {
-                    selectedFigure.remaining.move = selectedFigure.remaining.move - this.figureRoute.length
-                    this.selectedCell = undefined
-                    this.markCells([])
-                    await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
-                    this.figureRoute = undefined
+        switch (commandType) {
+            case 'ACTION':
+                if (selectedFigure.remaining.action > 0) {
+                    selectedFigure.remaining.action--
+                    await canvas.executeAnimation(() => {
+                        return jumpFigure(canvas)(selectedFigure, 2)
+                    })
                     this.redraw()
                 }
+                break
+            case 'MOVE': {
+                if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
+                    if (x == selectedFigure.x && y === selectedFigure.y) {
+                        this.selectedCell = undefined
+                        this.markCells([])
+                    }
+                    else if (selectedCell && cell === selectedCell) {
+                        const routeIsValid = this.figureRoute?.includes(selectedCell)
 
-            } else {
-                const cellsInPath = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
-                this.figureRoute = cellsInPath
-                this.selectedCell = cell
-                this.markCells(cellsInPath)
+                        if (routeIsValid) {
+                            selectedFigure.remaining.move = selectedFigure.remaining.move - this.figureRoute.length
+                            this.selectedCell = undefined
+                            this.markCells([])
+                            await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
+                            this.figureRoute = undefined
+                            this.redraw()
+                        }
+
+                    } else {
+                        const cellsInPath = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
+                        this.figureRoute = cellsInPath
+                        this.selectedCell = cell
+                        this.markCells(cellsInPath)
+                    }
+                }
+                break
             }
         }
+
         return true
     }
 
 }
+
+export { Team };

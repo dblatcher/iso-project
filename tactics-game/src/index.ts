@@ -1,8 +1,9 @@
 import { DIRECTION } from "../../src/CardinalDirection"
 import { MapCell } from "../../src/MapCell"
-import { Battle, Team } from "./Battle"
+import { Battle } from "./Battle"
 import { CharacterFigure } from "./CharacterFigure"
 import { barrelSprite, duckSprite, manSprite } from "./sprites"
+import { Team } from "./types"
 
 const container = document.createElement('div')
 document.body.appendChild(container)
@@ -38,8 +39,6 @@ const cells: MapCell[][] = [
     regularRow(),
     regularRow(),
 ]
-
-cells[3][3].classes = ['marked']
 
 const figures = [
     new CharacterFigure({ x: 2, y: 2, sprite: manSprite, facing: DIRECTION.south, }, 'team1', { name: 'Bob', move: 4, health: 5, action: 1 }),
