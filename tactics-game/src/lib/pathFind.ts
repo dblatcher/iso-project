@@ -11,14 +11,15 @@ const getCellAt = (x: number, y: number, grid: (MapCell | undefined)[][]): MapCe
 
 export const findPathFrom = (figure: CharacterFigure, target: { x: number, y: number }, grid: (MapCell | undefined)[][]): MapCell[] => {
 
-    let { x, y, remainingMoves } = figure
+    let { x, y, remaining } = figure
+    let { move: remainingMoves } = remaining
 
     const cellsInPath: MapCell[] = [
     ]
 
     // TO DO - proper path finding
     // checking if accessible! (function will need more data!)
-    const changeCoords = () =>{
+    const changeCoords = () => {
         if (y < target.y) {
             return y++
         }

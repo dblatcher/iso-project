@@ -7,6 +7,8 @@ import type { Battle } from "./Battle";
 export type Attributes = {
     name: string;
     move: number;
+    action: number;
+    health: number;
 }
 
 const CSS_CLASSES = {
@@ -24,7 +26,11 @@ export class CharacterFigure implements BaseFigure {
     attributes: Attributes
     teamId: string
     selected: boolean;
-    remainingMoves: number;
+    remaining: {
+        move: number,
+        action: number,
+        health: number,
+    }
     battle?: Battle
     constructor(base: BaseFigure, teamId: string, attributes: Attributes) {
         const { x, y, facing, sprite } = base
@@ -35,7 +41,11 @@ export class CharacterFigure implements BaseFigure {
         this.teamId = teamId
         this.attributes = attributes
         this.selected = false
-        this.remainingMoves = attributes.move
+        this.remaining = {
+            move: attributes.move,
+            action: attributes.action,
+            health: attributes.health,
+        }
     }
 
     get isOnCurrentTeam() {
@@ -46,7 +56,12 @@ export class CharacterFigure implements BaseFigure {
         const classNames = []
         if (this.isOnCurrentTeam) { classNames.push(CSS_CLASSES.ourTurn) }
         if (this.selected) { classNames.push(CSS_CLASSES.selected) }
-        if (this.remainingMoves === 0) { classNames.push(CSS_CLASSES.noMovesLeft) }
+        if (this.remaining.move === 0) { classNames.push(CSS_CLASSES.noMovesLeft) }
         return classNames
+    }
+
+    resetForTurn() {
+        this.remaining.move =  this.attributes.move;
+        this.remaining.action =  this.attributes.action;
     }
 }

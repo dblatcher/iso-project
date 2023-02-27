@@ -4,7 +4,6 @@ import { Panel } from "./components/Panel";
 import { h, render } from 'preact'
 import { MapCell } from "../../src/MapCell";
 import { findPathFrom } from "./lib/pathFind";
-import { shiftFigure } from "../../src/animations/shiftFigure";
 import { followPath } from "../../src/animations/followPath";
 
 
@@ -73,7 +72,7 @@ export class Battle {
     }
 
     get allFiguresMoved(): boolean {
-        return this.canvas.figures.every(figure => figure.remainingMoves === 0 || !figure.isOnCurrentTeam)
+        return this.canvas.figures.every(figure => figure.remaining.move === 0 || !figure.isOnCurrentTeam)
     }
 
     get selectedFigure(): CharacterFigure | undefined {
@@ -133,18 +132,18 @@ export class Battle {
         const { figures } = this.canvas
         const list = reverse ? [...figures].reverse() : figures
         const currentSelectedIndex = list.indexOf(selectedFigure)
-        const nextAfter = list.slice(currentSelectedIndex + 1).find(figure => figure.isOnCurrentTeam && figure.remainingMoves > 0)
+        const nextAfter = list.slice(currentSelectedIndex + 1).find(figure => figure.isOnCurrentTeam && figure.remaining.move > 0)
         if (nextAfter) {
             this.selectedFigure = nextAfter
             return
         }
-        this.selectedFigure = list.find(figure => figure.isOnCurrentTeam && figure.remainingMoves > 0)
+        this.selectedFigure = list.find(figure => figure.isOnCurrentTeam && figure.remaining.move > 0)
     }
 
     endTurn() {
         const teamindex = this.teams.indexOf(this.currentTeam)
         this.currentTeam = this.teams[teamindex + 1] || this.teams[0]
-        this.canvas.figures.map(figure => figure.remainingMoves = figure.attributes.move)
+        this.canvas.figures.map(figure => figure.resetForTurn())
         this.selectedFigure = undefined
         this.selectNextFigureWithMoves()
         this.redraw()
@@ -163,7 +162,7 @@ export class Battle {
         const { selectedFigure, selectedCell } = this
         const { x, y } = canvas.getCellCoords(cell)
 
-        if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remainingMoves > 0) {
+        if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
             if (x == selectedFigure.x && y === selectedFigure.y) {
                 this.selectedCell = undefined
                 this.markCells([])
@@ -172,7 +171,7 @@ export class Battle {
                 const routeIsValid = this.figureRoute?.includes(selectedCell)
 
                 if (routeIsValid) {
-                    selectedFigure.remainingMoves = selectedFigure.remainingMoves - this.figureRoute.length
+                    selectedFigure.remaining.move = selectedFigure.remaining.move - this.figureRoute.length
                     this.selectedCell = undefined
                     this.markCells([])
                     await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
