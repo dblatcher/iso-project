@@ -56,12 +56,12 @@ export class CharacterFigure implements BaseFigure {
         const classNames = []
         if (this.isOnCurrentTeam) { classNames.push(CSS_CLASSES.ourTurn) }
         if (this.selected) { classNames.push(CSS_CLASSES.selected) }
-        if (this.remaining.move === 0) { classNames.push(CSS_CLASSES.noMovesLeft) }
+        if (this.remaining.move === 0 && this.remaining.action === 0) { classNames.push(CSS_CLASSES.noMovesLeft) }
         return classNames
     }
 
     resetForTurn() {
-        this.remaining.move =  this.attributes.move;
-        this.remaining.action =  this.attributes.action;
+        this.remaining.move = this.attributes.move;
+        this.remaining.action = this.attributes.action;
     }
 }

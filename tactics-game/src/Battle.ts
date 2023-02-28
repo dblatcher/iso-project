@@ -191,6 +191,9 @@ export class Battle {
                             this.markCells([])
                             await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
                             this.figureRoute = undefined
+                            if (selectedFigure.remaining.move <= 0) {
+                                this.setCommandType('ACTION')
+                            }
                             this.redraw()
                         }
 
