@@ -2,7 +2,9 @@ import { IsometricGroup } from "@elchininet/isometric";
 import type { BaseFigure } from "../../src/BaseFigure";
 import type { CardinalDirection } from "../../src/CardinalDirection";
 import type { DirectionalSprite } from "../../src/DirectionalSprite";
+import { Action } from "./Action";
 import type { Battle } from "./Battle";
+import { ACTIONS } from "./data/actions";
 
 export type Attributes = {
     name: string;
@@ -27,10 +29,11 @@ export class CharacterFigure implements BaseFigure {
     teamId: string
     selected: boolean;
     remaining: {
-        move: number,
-        action: number,
-        health: number,
+        move: number;
+        action: number;
+        health: number;
     }
+    selectedAction?: Action
     battle?: Battle
     constructor(base: BaseFigure, teamId: string, attributes: Attributes) {
         const { x, y, facing, sprite } = base
@@ -46,6 +49,7 @@ export class CharacterFigure implements BaseFigure {
             action: attributes.action,
             health: attributes.health,
         }
+        this.selectedAction = undefined
     }
 
     get isOnCurrentTeam() {
@@ -58,6 +62,14 @@ export class CharacterFigure implements BaseFigure {
         if (this.selected) { classNames.push(CSS_CLASSES.selected) }
         if (this.remaining.move === 0 && this.remaining.action === 0) { classNames.push(CSS_CLASSES.noMovesLeft) }
         return classNames
+    }
+
+    get availableActions(): Action[] {
+        const actions: Action[] = [
+            ACTIONS.wait,
+            ACTIONS.jump,
+        ]
+        return actions
     }
 
     resetForTurn() {

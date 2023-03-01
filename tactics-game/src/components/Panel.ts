@@ -4,6 +4,7 @@ import {CharacterView} from './CharacterView'
 import { CharacterFigure } from '../CharacterFigure';
 import { CommandType, Team } from '../types';
 import { CommandMenu } from './CommandMenu';
+import { Action } from '../Action';
 
 interface Props {
     team: Team;
@@ -13,6 +14,7 @@ interface Props {
     endTurn: { (): void }
     nextFigure: { (reverse?:boolean): void }
     setCommandType: { (commandType:CommandType):void}
+    setFigureAction: {(action:Action):void}
 }
 
 const buttonStyle = (highlight: boolean) => ({
@@ -25,6 +27,7 @@ export const Panel: FunctionalComponent<Props> = ({
     endTurn,    
     nextFigure, 
     setCommandType,
+    setFigureAction,
     allFiguresMoved,
     commandType
 }) => {
@@ -57,7 +60,8 @@ export const Panel: FunctionalComponent<Props> = ({
                 <${CommandMenu} 
                     figure=${selectedFigure} 
                     setCommandType=${setCommandType}
-                    commandType=${commandType}/>
+                    commandType=${commandType}
+                    setFigureAction=${setFigureAction}/>
             </${Fragment}>
         `}
 

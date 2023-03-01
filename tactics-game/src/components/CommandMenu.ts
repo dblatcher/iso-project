@@ -1,12 +1,14 @@
-import { FunctionalComponent } from 'preact';
+import { Fragment, FunctionalComponent } from 'preact';
 import { html } from 'htm/preact'
 import { CharacterFigure } from '../CharacterFigure';
 import { CommandType } from '../types';
+import { Action } from '../Action';
 
 interface Props {
     figure?: CharacterFigure;
     commandType: CommandType;
     setCommandType: { (commandType:CommandType):void};
+    setFigureAction: {(action:Action):void};
 }
 
 const buttonStyle = (highlight: boolean) => ({
@@ -14,11 +16,12 @@ const buttonStyle = (highlight: boolean) => ({
 })
 
 
-export const CommandMenu: FunctionalComponent<Props> = ({ figure, commandType, setCommandType }) => {
-    const { remaining } = figure
+export const CommandMenu: FunctionalComponent<Props> = ({ figure, commandType, setCommandType, setFigureAction }) => {
+    const { remaining, availableActions } = figure
     const { move, action } = figure.attributes
 
     return html`
+    <${Fragment}>
     <div class="row">
         <button 
             style="${buttonStyle(commandType === 'ACTION')}"
@@ -32,6 +35,22 @@ export const CommandMenu: FunctionalComponent<Props> = ({ figure, commandType, s
         >
             ${remaining.move} / ${move} moves
         </button>
+
     </div>
+    ${commandType==='ACTION' && html`
+    <div class="row">
+        <ul>
+            ${availableActions.map(action => html`
+            <li>
+                <button
+                    onclick=${()=>{setFigureAction(action)}}
+                    style="${buttonStyle(figure.selectedAction?.name === action.name)}"
+                >${action.name}</button>
+            </li>
+            `)}
+        </ul>
+    </div>
+    `}
+    </${Fragment}>
     `
 }

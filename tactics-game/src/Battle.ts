@@ -7,6 +7,7 @@ import { findPathFrom } from "./lib/pathFind";
 import { followPath } from "../../src/animations/followPath";
 import { CommandType, Team } from "./types";
 import { jumpFigure } from "../../src/animations/jump";
+import { Action } from "./Action";
 
 
 const CELL_CLASS = {
@@ -65,6 +66,7 @@ export class Battle {
                 endTurn: () => { this.endTurn() },
                 nextFigure: (reverse = false) => { this.selectNextFigureWithMoves(reverse) },
                 setCommandType: (commandType: CommandType) => { this.setCommandType(commandType) },
+                setFigureAction: (action:Action) => {this.setFigureAction(selectedFigure, action)}
             }),
             this.panel
         );
@@ -129,6 +131,12 @@ export class Battle {
         this.updatePanel()
     }
 
+    setFigureAction(figure:CharacterFigure, action:Action) {
+        figure.selectedAction = action
+        //to do = mark target squares for action
+        this.redraw()
+    }
+
     selectNextFigureWithMoves(reverse = false) {
         this.selectedCell = undefined
         this.markCells([])
@@ -168,6 +176,7 @@ export class Battle {
 
         switch (commandType) {
             case 'ACTION':
+                console.log(selectedFigure.selectedAction)
                 if (selectedFigure.remaining.action > 0) {
                     selectedFigure.remaining.action--
                     await canvas.executeAnimation(() => {
