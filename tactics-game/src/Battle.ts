@@ -66,7 +66,7 @@ export class Battle {
                 endTurn: () => { this.endTurn() },
                 nextFigure: (reverse = false) => { this.selectNextFigureWithMoves(reverse) },
                 setCommandType: (commandType: CommandType) => { this.setCommandType(commandType) },
-                setFigureAction: (action:Action) => {this.setFigureAction(selectedFigure, action)}
+                setFigureAction: (action: Action) => { this.setFigureAction(selectedFigure, action) }
             }),
             this.panel
         );
@@ -128,12 +128,21 @@ export class Battle {
 
     setCommandType(commandType: CommandType) {
         this.commandType = commandType
+        this.selectedCell = undefined
         this.updatePanel()
+        if (commandType === 'ACTION' && this.selectedFigure) {
+            this.setFigureAction(this.selectedFigure, this.selectedFigure.selectedAction || this.selectedFigure.availableActions[0])
+        }
+        if (commandType === 'MOVE') {
+            this.markCells([])
+        }
     }
 
-    setFigureAction(figure:CharacterFigure, action:Action) {
+    setFigureAction(figure: CharacterFigure, action: Action) {
         figure.selectedAction = action
-        //to do = mark target squares for action
+        if (figure === this.selectedFigure) {
+            this.markCells(action.getTargetCells(figure, this))
+        }
         this.redraw()
     }
 
@@ -178,11 +187,16 @@ export class Battle {
             case 'ACTION':
                 console.log(selectedFigure.selectedAction)
                 if (selectedFigure.remaining.action > 0) {
-                    selectedFigure.remaining.action--
-                    await canvas.executeAnimation(() => {
-                        return jumpFigure(canvas)(selectedFigure, 2)
-                    })
-                    this.redraw()
+
+                    const targets = selectedFigure.selectedAction.getTargetCells(selectedFigure, this)
+
+                    if (targets.includes(cell)) {
+                        selectedFigure.remaining.action--
+                        await canvas.executeAnimation(() => {
+                            return jumpFigure(canvas)(selectedFigure, 2)
+                        })
+                        this.redraw()
+                    }
                 }
                 break
             case 'MOVE': {
