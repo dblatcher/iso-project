@@ -185,18 +185,16 @@ export class Battle {
 
         switch (commandType) {
             case 'ACTION':
-                console.log(selectedFigure.selectedAction)
                 if (selectedFigure.remaining.action > 0) {
-
                     const targets = selectedFigure.selectedAction.getTargetCells(selectedFigure, this)
 
                     if (targets.includes(cell)) {
                         selectedFigure.remaining.action--
-                        await canvas.executeAnimation(() => {
-                            return jumpFigure(canvas)(selectedFigure, 2)
-                        })
+                        await selectedFigure.selectedAction.perform(selectedFigure, cell, this)
                         this.redraw()
                     }
+                } else {
+                    console.log(`out of range to ${selectedFigure.selectedAction.name}`)
                 }
                 break
             case 'MOVE': {

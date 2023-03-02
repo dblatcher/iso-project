@@ -1,3 +1,4 @@
+import { jumpFigure } from "../../src/animations/jump"
 import { MapCell } from "../../src/MapCell"
 import { Battle } from "./Battle"
 import { CharacterFigure } from "./CharacterFigure"
@@ -7,12 +8,16 @@ export enum ActionRange {
     Close,
 }
 
+type ExcutionFunction = { (actor: CharacterFigure, targetFigure: CharacterFigure | undefined, targetCell: MapCell, battle: Battle): Promise<void> }
+
 export class Action {
     name: string
     range: ActionRange
-    constructor(name: string, range: ActionRange) {
+    execute: ExcutionFunction
+    constructor(name: string, range: ActionRange, execute: ExcutionFunction) {
         this.name = name
         this.range = range
+        this.execute = execute
     }
 
     getTargetCells(figure: CharacterFigure, Battle: Battle): MapCell[] {
@@ -29,5 +34,17 @@ export class Action {
                     Battle.canvas.cells[figure.x][figure.y + 1],
                 ]
         }
+    }
+
+    async perform(actor: CharacterFigure, targetCell: MapCell, battle: Battle) {
+        const { canvas } = battle
+        const { x, y } = canvas.getCellCoords(targetCell)
+        const targetFigure = canvas.figures.find(figure => figure.x === x && figure.y === y)
+        console.log(`${actor.attributes.name} is going to ${this.name} at [${x} , ${y}]`)
+        if (targetFigure) {
+            console.log(`${targetFigure.attributes.name} is in that cell.`)
+        }
+
+        return await this.execute(actor, targetFigure, targetCell, battle)
     }
 }

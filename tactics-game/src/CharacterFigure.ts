@@ -68,6 +68,7 @@ export class CharacterFigure implements BaseFigure {
         const actions: Action[] = [
             ACTIONS.wait,
             ACTIONS.jump,
+            ACTIONS.throwInAir,
         ]
         return actions
     }
