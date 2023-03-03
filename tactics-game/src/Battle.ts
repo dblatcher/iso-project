@@ -172,17 +172,26 @@ export class Battle {
 
     async doAction(cell: MapCell) {
         const { selectedFigure } = this
-        if (selectedFigure.remaining.action > 0) {
-            const targets = selectedFigure.selectedAction.getTargetCells(selectedFigure, this)
-
-            if (targets.includes(cell)) {
-                selectedFigure.remaining.action--
-                await selectedFigure.selectedAction.perform(selectedFigure, cell, this)
-                this.redraw()
-            }
-        } else {
-            console.log(`out of range to ${selectedFigure.selectedAction.name}`)
+        const { selectedAction } = selectedFigure
+        if (selectedFigure.remaining.action <= 0) {
+            console.log(`${selectedFigure.attributes.name} has no actions left`)
+            return
         }
+        const targets = selectedFigure.selectedAction.getTargetCells(selectedFigure, this)
+
+        if (!targets.includes(cell)) {
+            console.log(`out of range to ${selectedFigure.selectedAction.name}`)
+            return
+        }
+
+        if (!selectedAction.isValidTarget(selectedFigure, cell, this)) {
+            console.log(`Not valid target to ${selectedAction.name}`)
+            return
+        }
+
+        selectedFigure.remaining.action--
+        await selectedFigure.selectedAction.perform(selectedFigure, cell, this)
+        this.redraw()
     }
 
     manageFigureClick = (canvas: MapGridIsometricCanvas) => async (figure: CharacterFigure) => {
