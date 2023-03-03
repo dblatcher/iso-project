@@ -170,32 +170,46 @@ export class Battle {
         this.redraw()
     }
 
-    manageFigureClick = (canvas: MapGridIsometricCanvas) => async (figure: CharacterFigure) => {
-        if (figure.isOnCurrentTeam) {
-            this.selectedFigure = figure
-            this.selectedCell = undefined
-            this.markCells([])
-            this.redraw()
+    async doAction(cell: MapCell) {
+        const { selectedFigure } = this
+        if (selectedFigure.remaining.action > 0) {
+            const targets = selectedFigure.selectedAction.getTargetCells(selectedFigure, this)
+
+            if (targets.includes(cell)) {
+                selectedFigure.remaining.action--
+                await selectedFigure.selectedAction.perform(selectedFigure, cell, this)
+                this.redraw()
+            }
+        } else {
+            console.log(`out of range to ${selectedFigure.selectedAction.name}`)
         }
-        return true
     }
+
+    manageFigureClick = (canvas: MapGridIsometricCanvas) => async (figure: CharacterFigure) => {
+        const { commandType } = this
+        const cell = canvas.cells[figure.x][figure.y]
+
+        switch (commandType) {
+            case 'MOVE':
+                if (figure.isOnCurrentTeam) {
+                    this.selectedFigure = figure
+                    this.selectedCell = undefined
+                    this.markCells([])
+                    this.redraw()
+                }
+                return true;
+            case 'ACTION':
+                return await this.doAction(cell)
+        }
+    }
+
     manageCellClick = (canvas: MapGridIsometricCanvas) => async (cell: MapCell) => {
         const { selectedFigure, selectedCell, commandType } = this
         const { x, y } = canvas.getCellCoords(cell)
 
         switch (commandType) {
             case 'ACTION':
-                if (selectedFigure.remaining.action > 0) {
-                    const targets = selectedFigure.selectedAction.getTargetCells(selectedFigure, this)
-
-                    if (targets.includes(cell)) {
-                        selectedFigure.remaining.action--
-                        await selectedFigure.selectedAction.perform(selectedFigure, cell, this)
-                        this.redraw()
-                    }
-                } else {
-                    console.log(`out of range to ${selectedFigure.selectedAction.name}`)
-                }
+                this.doAction(cell)
                 break
             case 'MOVE': {
                 if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
