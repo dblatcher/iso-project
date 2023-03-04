@@ -54,3 +54,13 @@ export const rotateVector = (x: number, y: number, orientation: CardinalDirectio
             }
     }
 }
+
+export const getDirectionTowards = (from: { x: number, y: number }, to: { x: number, y: number }): CardinalDirection => {
+    const xDist = to.x - from.x
+    const yDist = to.y - from.y
+    if (Math.abs(xDist) > Math.abs(yDist)) {
+        return xDist > 0 ? DIRECTION.east : DIRECTION.west
+    } else {
+        return yDist > 0 ? DIRECTION.south : DIRECTION.north
+    }
+}
