@@ -44,6 +44,9 @@ export class Battle {
             },
             terrain,
             characterFigures,
+            [
+                
+            ],
             mapGridCanvasConfig,
         )
         this.commandType = 'MOVE'

@@ -11,6 +11,8 @@ import { jumpFigure } from "./animations/jump"
 import { turnFigure } from "./animations/turn"
 import { addClassToCell, MapCell, removeClassFromCell } from "./MapCell"
 import { findPositionInRotatedGrid, getGridDimensions, rotateGridByDirection } from "./grids"
+import { makeObstacleShape } from "./builders/obstacleShape"
+import { BaseObstacle } from "./BaseObstacle"
 
 
 type GridOfCells = Array<Array<MapCell | undefined>>
@@ -40,6 +42,7 @@ export type MapGridCanvasConfig = {
 export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> extends IsometricCanvas {
     cells: GridOfCells
     figures: Figure[]
+    obstacles: BaseObstacle[]
     renderOrientation: CardinalDirection
     private config: MapGridCanvasConfig
     private frameTimer: number | undefined
@@ -54,12 +57,14 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         canvasProps: IsometricCanvasProps,
         cells: GridOfCells,
         figures: Figure[],
+        obstacles: BaseObstacle[],
         config: MapGridCanvasConfig
     ) {
         super(canvasProps)
         const { renderOrientation = DIRECTION.north } = config
         this.cells = cells
         this.figures = figures
+        this.obstacles = obstacles
         this.renderOrientation = renderOrientation
         this.onClick = {}
         this.handleClickOnCell = this.handleClickOnCell.bind(this)
@@ -138,10 +143,10 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         return classNames.map(className => `${this.config.cssPrefix}${className}`)
     }
 
-    heightAt(right: number, left: number): number {
-        return this.cells[right]
-            ? this.cells[right][left]
-                ? this.cells[right][left].height
+    heightAt(x: number, y: number): number {
+        return this.cells[x]
+            ? this.cells[x][y]
+                ? this.cells[x][y].height
                 : 0
             : 0;
     }
@@ -257,11 +262,22 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         figure.frameRectangles = frameRectangles
     }
 
+    renderFakeObstable(obstacle: BaseObstacle) {
+        const { x, y } = obstacle
+        const g = findPositionInRotatedGrid({ x, y }, ...getGridDimensions(this.cells), this.renderOrientation)
+        const block = makeObstacleShape({ 
+            coords: [g.x, g.y, this.heightAt(x, y)],
+            obstacle,
+        })
+        this.addChild(block)
+    }
+
     render(orientation = this.renderOrientation) {
         this.renderOrientation = orientation
         this.clear()
         this.renderBackGrounds()
         const figures = [...this.figures]
+        const obstacles = [...this.obstacles]
         rotateGridByDirection(this.cells, orientation).map((row, gridX) => {
             row.map((cell, gridY) => {
                 if (!cell) {
@@ -273,6 +289,12 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
                 figuresHere.forEach(figureHere => {
                     this.renderFigureSprite(figureHere)
                     figures.splice(figures.indexOf(figureHere), 1)
+                })
+
+                const obstaclesHere = obstacles.filter(obstacle => obstacle.x === realX && obstacle.y == realY)
+                obstaclesHere.forEach(obstacleHere => {
+                    this.renderFakeObstable(obstacleHere)
+                    obstacles.splice(obstacles.indexOf(obstacleHere), 1)
                 })
             })
         })

@@ -1,20 +1,32 @@
 import { IsometricPath, IsometricRectangle, PlaneView, Axis, IsometricGroup } from '@elchininet/isometric'
+import { BaseObstacle } from '../BaseObstacle';
 
-export const makeBlock = (coords: [number, number, number]) => {
-    const [right, left, top] = coords
+interface ObstableShapeConfig {
+    coords: [number, number, number];
+    obstacle: BaseObstacle;
+}
+
+
+const makeTextures = (url: string) => {
     const commonTextureProps = {
         height: 1,
         width: 1,
         pixelated: true
     };
 
-    const textureSides = {
-        url: 'assets/brick_wall.png',
+    const side = {
+        url,
+        PlaneView: PlaneView.SIDE,
+        ...commonTextureProps
+    };
+    const front = {
+        url,
+        PlaneView: PlaneView.FRONT,
         ...commonTextureProps
     };
 
-    const textureTop = {
-        url: 'assets/brick_wall.png',
+    const top = {
+        url,
         planeView: PlaneView.TOP,
         rotation: {
             axis: Axis.LEFT,
@@ -22,34 +34,43 @@ export const makeBlock = (coords: [number, number, number]) => {
         },
         ...commonTextureProps
     };
+    return {
+        front, side, top
+    }
+}
+
+export const makeObstacleShape = (config: ObstableShapeConfig) => {
+    const { coords, obstacle } = config
+    const [right, left, top] = coords
 
     const side = new IsometricPath({
-        texture: {
-            planeView: PlaneView.SIDE,
-            ...textureSides
-        }
+        fillColor: obstacle.fillColor
     });
 
     const front = new IsometricRectangle({
         planeView: PlaneView.FRONT,
         height: 0.5,
         width: 1,
-        texture: textureSides
+        fillColor: obstacle.fillColor,
     });
 
     const chop = new IsometricPath({
-        texture: textureTop
+        fillColor: obstacle.fillColor
     });
 
-    side.draw('M1 1 0 L1 1 0.5 L0 1 1 L0 1 0');
+
+    side
+        .moveTo(1, 1, 0)
+        .lineTo(1, 1, .5)
+        .lineTo(0, 1, 1)
+        .lineTo(0, 1, 0)
     chop.draw('M1 1 0.5 L0 1 1 L0 0 1 L1 0 0.5');
 
-    side.moveTo(0, 1, 0)
+
     front.right = 1;
 
     const group = new IsometricGroup({ top, right, left, })
     group.addChildren(side, front, chop)
 
     return group
-
 }

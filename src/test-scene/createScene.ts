@@ -46,6 +46,12 @@ export function createScene(orientation: CardinalDirection, container: string | 
         [
             ...myDucks
         ],
+        [
+            { x: 1, y: 1, facing: DIRECTION.north, fillColor: 'whitesmoke' },
+            { x: 0, y: 1, facing: DIRECTION.north, fillColor: 'pink' },
+            { x: 0, y: 2, facing: DIRECTION.north, fillColor: 'yellow' },
+            { x: 0, y: 3, facing: DIRECTION.north, fillColor: 'crimson' },
+        ],
         {
             renderOrientation: orientation,
             defaultBlockSideColor: 'brown',
