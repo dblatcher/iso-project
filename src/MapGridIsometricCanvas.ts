@@ -10,7 +10,7 @@ import { shiftFigure } from "./animations/shiftFigure"
 import { jumpFigure } from "./animations/jump"
 import { turnFigure } from "./animations/turn"
 import { addClassToCell, MapCell, removeClassFromCell } from "./MapCell"
-import { rotateGridByDirection } from "./grids"
+import { findPositionInRotatedGrid, getGridDimensions, rotateGridByDirection } from "./grids"
 
 
 type GridOfCells = Array<Array<MapCell | undefined>>
@@ -219,13 +219,11 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         cell.isoTop = topPiece
     }
 
-    renderFigureSprite(figure: Figure, rotatedGridPosition: { gridX: number, gridY: number },) {
-        const { gridX, gridY } = rotatedGridPosition
-        // const { renderOrientation } = this
+    renderFigureSprite(figure: Figure) {
+        const { renderOrientation } = this
         const { sprite, facing, x, y, classNames = [], spriteIsoGroup: iso } = figure
-        // console.table({ gridX, gridY, x, y, renderOrientation })
-
-        // TO DO - calculate gridX from instance properties, so rotatedGridPosition is optional
+        const [rowCount, columnCount] = getGridDimensions(this.cells)
+        const { x: gridX, y: gridY } = findPositionInRotatedGrid(figure, rowCount, columnCount, renderOrientation)
 
         if (iso && this.children.includes(iso)) {
             this.removeChild(iso)
@@ -270,7 +268,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
                 const { x: realX, y: realY } = this.getCellCoords(cell)
                 const figuresHere = figures.filter(figure => figure.x === realX && figure.y == realY)
                 figuresHere.forEach(figureHere => {
-                    this.renderFigureSprite(figureHere, { gridX, gridY })
+                    this.renderFigureSprite(figureHere)
                     figures.splice(figures.indexOf(figureHere), 1)
                 })
             })
