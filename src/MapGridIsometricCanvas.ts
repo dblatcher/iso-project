@@ -10,6 +10,7 @@ import { shiftFigure } from "./animations/shiftFigure"
 import { jumpFigure } from "./animations/jump"
 import { turnFigure } from "./animations/turn"
 import { addClassToCell, MapCell, removeClassFromCell } from "./MapCell"
+import { rotateGridByDirection } from "./grids"
 
 
 type GridOfCells = Array<Array<MapCell | undefined>>
@@ -218,8 +219,14 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         cell.isoTop = topPiece
     }
 
-    renderFigureSprite(figure: Figure, gridX: number, gridY: number,) {
-        const { sprite, facing, x, y, classNames = [], spriteIsoGroup: iso, frameIndex = 0 } = figure
+    renderFigureSprite(figure: Figure, rotatedGridPosition: { gridX: number, gridY: number },) {
+        const { gridX, gridY } = rotatedGridPosition
+        // const { renderOrientation } = this
+        const { sprite, facing, x, y, classNames = [], spriteIsoGroup: iso } = figure
+        // console.table({ gridX, gridY, x, y, renderOrientation })
+
+        // TO DO - calculate gridX from instance properties, so rotatedGridPosition is optional
+
         if (iso && this.children.includes(iso)) {
             this.removeChild(iso)
         }
@@ -249,37 +256,12 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
         figure.frameRectangles = frameRectangles
     }
 
-    rotateGrid(grid: GridOfCells): GridOfCells {
-        const maxColLength = grid.reduce<number>((previous, currentCol) => { return Math.max(previous, currentCol.length) }, 0)
-        const newGrid: GridOfCells = []
-        let colToRotate = maxColLength
-        while (colToRotate >= 0) {
-            newGrid.push(grid.map(row => row[colToRotate]))
-            colToRotate--
-        }
-        return newGrid
-    }
-    rotateGridBy(orientation: CardinalDirection): GridOfCells {
-        switch (orientation.rotation) {
-            case 0:
-                return [...this.cells]
-            case 1:
-                return this.rotateGrid(this.cells)
-            case 2:
-                return this.rotateGrid(this.rotateGrid(this.cells))
-            case 3:
-                return this.rotateGrid(this.rotateGrid(this.rotateGrid(this.cells)))
-            default:
-                return []
-        }
-    }
-
     render(orientation = this.renderOrientation) {
         this.renderOrientation = orientation
         this.clear()
         this.renderBackGrounds()
         const figures = [...this.figures]
-        this.rotateGridBy(orientation).map((row, gridX) => {
+        rotateGridByDirection(this.cells, orientation).map((row, gridX) => {
             row.map((cell, gridY) => {
                 if (!cell) {
                     return
@@ -288,7 +270,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
                 const { x: realX, y: realY } = this.getCellCoords(cell)
                 const figuresHere = figures.filter(figure => figure.x === realX && figure.y == realY)
                 figuresHere.forEach(figureHere => {
-                    this.renderFigureSprite(figureHere, gridX, gridY)
+                    this.renderFigureSprite(figureHere, { gridX, gridY })
                     figures.splice(figures.indexOf(figureHere), 1)
                 })
             })

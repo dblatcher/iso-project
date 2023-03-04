@@ -1,30 +1,31 @@
 import { MapCell } from "../../../src/MapCell"
 
-const irregularRow = (): MapCell[] => {
+const irregularRow = (l = 10): MapCell[] => {
     const row: MapCell[] = []
-    for (let i = 0; i < 10; i++) {
-        const height = Math.floor(Math.random() * 10) / 25
-        row.push({ height: .8 + height })
+    for (let i = 0; i < l; i++) {
+        const height = .8 + Math.floor(Math.random() * 10) / 25
+        row.push({ height })
     }
     return row
 }
 
-const regularRow = (): MapCell[] => {
+const regularRow = (l = 10): MapCell[] => {
     const row: MapCell[] = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < l; i++) {
         row.push({ height: 1 })
     }
     return row
 }
 
 export const buildGrid = (): MapCell[][] => [
+    irregularRow(5),
+    irregularRow(8),
     irregularRow(),
     irregularRow(),
     irregularRow(),
     irregularRow(),
     irregularRow(),
-    irregularRow(),
-    irregularRow(),
-    regularRow(),
-    regularRow(),
+    regularRow(5),
+    regularRow(5),
+    regularRow(8),
 ]

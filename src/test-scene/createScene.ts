@@ -17,30 +17,30 @@ const sandy = { colorSide: 'sandybrown', colorTop: 'yellow', }
 export function createScene(orientation: CardinalDirection, container: string | HTMLElement): MapGridIsometricCanvas {
 
     const myDucks: MyFigure[] = [
-        { sprite: duckSprite, x: 3, y: 1, facing: DIRECTION.south, name: 'Bob' },
-        { sprite: duckSprite, x: 1, y: 3, facing: DIRECTION.west },
-        { sprite: barrelSprite, x: 3, y: 3, facing: DIRECTION.north },
-        { sprite: duckSprite, x: 3, y: 2, facing: DIRECTION.west },
-        { sprite: duckSprite, x: 0, y: 0, facing: DIRECTION.east },
+        { sprite: duckSprite, x: 0, y: 0, facing: DIRECTION.south, name: 'Bob' },
+        // { sprite: duckSprite, x: 1, y: 3, facing: DIRECTION.west },
+        // { sprite: barrelSprite, x: 3, y: 3, facing: DIRECTION.north },
+        // { sprite: duckSprite, x: 3, y: 2, facing: DIRECTION.west },
+        // { sprite: duckSprite, x: 0, y: 0, facing: DIRECTION.east },
     ];
 
     const cells: MapCell[][] = [
         [{ height: 1 }, { height: 1.2 }, { height: 1.4 }, { height: 1.6 }, { height: 1.8 }, { height: 2 }],
-        [{ height: 2 }, { height: 1 }, { height: 1 }, { height: 1 }],
-        [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 3.5, ...stoney }],
-        [{ height: 1 }, { height: 1 }, { height: 1 }, { height: 1 }],
-        [{ height: 0.8 }, { height: 0.8, ...stoney }],
-        [, { height: 0.6, ...sandy }, { height: 0.8, ...sandy }],
-        [, { height: 0.6, ...sandy }, { height: 0.8, ...sandy }],
+        [{ height: 1.2 }, { height: 1 }, { height: 1 }, { height: 1 }],
+        [{ height: 1.4 }, { height: 1 }, { height: 1 }, { height: 3.5, ...stoney }],
+        [{ height: 1.6 }, { height: 1 }, { height: 1 }, { height: 1 }],
+        [{ height: 1.8 }, { height: 0.8, ...stoney }],
+        [{ height: 2 }, { height: 0.6, ...sandy }, { height: 0.8, ...sandy }],
+        [{ height: 2.2 }, { height: 0.6, ...sandy }, { height: 0.8, ...sandy }],
     ]
 
     const mapGrid = new MapGridIsometricCanvas<MyFigure>(
         {
             container,
             backgroundColor: '#CCC',
-            scale: 40,
-            width: 1000,
-            height: 1000,
+            scale: 30,
+            width: 600,
+            height: 600,
         },
         cells,
         [
