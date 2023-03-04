@@ -221,12 +221,15 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
 
     renderFigureSprite(figure: Figure) {
         const { renderOrientation } = this
-        const { sprite, facing, x, y, classNames = [], spriteIsoGroup: iso } = figure
+        const { sprite, facing, x, y, classNames = [], spriteIsoGroup, shadowIsoGroup } = figure
         const [rowCount, columnCount] = getGridDimensions(this.cells)
         const { x: gridX, y: gridY } = findPositionInRotatedGrid(figure, rowCount, columnCount, renderOrientation)
 
-        if (iso && this.children.includes(iso)) {
-            this.removeChild(iso)
+        if (spriteIsoGroup && this.children.includes(spriteIsoGroup)) {
+            this.removeChild(spriteIsoGroup)
+        }
+        if (shadowIsoGroup && this.children.includes(shadowIsoGroup)) {
+            this.removeChild(shadowIsoGroup)
         }
 
         const { images, planeView } = sprite.getView(facing, this.renderOrientation)

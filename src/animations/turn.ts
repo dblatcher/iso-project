@@ -10,5 +10,6 @@ export const turnFigure = (that: MapGridIsometricCanvas) =>
         }
 
         figure.facing = direction
+        that.renderFigureSprite(figure) 
         return true
     }

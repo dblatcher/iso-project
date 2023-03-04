@@ -17,7 +17,7 @@ export const spinFigure = (that: MapGridIsometricCanvas) =>
 
         const step = (step: number, totalSteps: number) => {
             figure.facing = goAntiClockwise ? antiClockwise(figure.facing) : clockwise(figure.facing)
-            that.render() // NOT GOOD TO USE THE RENDER FUNCTION HERE. SHOULD JUST BE UPDATING THE SPRITE SOMEHOW
+            that.renderFigureSprite(figure) 
         }
 
         await repeatStep(step, timesRound * 4, delay)

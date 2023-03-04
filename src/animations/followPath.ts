@@ -15,7 +15,6 @@ export const followPath = (that: MapGridIsometricCanvas) =>
             if (!keepDirection) {
                 const direction = getDirectionTowards(figure, nextCoords)
                 await turnFigure(that)(figure,direction)
-                that.render()
             }
 
             await shiftFigure(that)(figure, nextCoords.x - x, nextCoords.y - y)
