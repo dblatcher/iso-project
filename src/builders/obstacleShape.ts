@@ -1,9 +1,12 @@
 import { IsometricPath, IsometricRectangle, PlaneView, Axis, IsometricGroup } from '@elchininet/isometric'
 import { BaseObstacle } from '../BaseObstacle';
+import { CardinalDirection } from '../CardinalDirection';
+import { findPositionInRotatedGrid } from '../grids';
 
 interface ObstableShapeConfig {
     coords: [number, number, number];
     obstacle: BaseObstacle;
+    orientation: CardinalDirection;
 }
 
 
@@ -39,10 +42,9 @@ const makeTextures = (url: string) => {
     }
 }
 
-export const makeObstacleShape = (config: ObstableShapeConfig) => {
+const makeDefaultShape = (config: ObstableShapeConfig) => {
     const { coords, obstacle } = config
     const [right, left, top] = coords
-
     const side = new IsometricPath({
         fillColor: obstacle.fillColor
     });
@@ -70,7 +72,55 @@ export const makeObstacleShape = (config: ObstableShapeConfig) => {
     front.right = 1;
 
     const group = new IsometricGroup({ top, right, left, })
-    group.addChildren(side, front, chop)
+
+    group.addChildren(
+        side,
+        front,
+        chop,
+    )
+
+    return group
+}
+
+const spreadPoint = (point: { x: number, y: number, z: number }): [number, number, number] => [point.x, point.y, point.z]
+
+export const makeObstacleShape = (config: ObstableShapeConfig) => {
+    const { coords, obstacle, orientation } = config
+    const { paths } = obstacle
+
+    if (!paths) {
+        return makeDefaultShape(config)
+    }
+    const [right, left, top] = coords
+
+
+    // TO DO - order the side by render priority
+    // draw furthest back first, so the nearer are 'on top'
+    const sides = paths.map(path => {
+        const side = new IsometricPath({
+            fillColor: path.fillColor || obstacle.fillColor || 'transparent'
+        });
+
+        const rotatedPoints = path.points.map(point => {
+            const { x, y } = findPositionInRotatedGrid(point, 2, 2, orientation)
+            return { x, y, z: point.z }
+        })
+
+        const [firstPoint, ...restOfPoints] = rotatedPoints
+
+        side.moveTo(...spreadPoint(firstPoint));
+
+        [...restOfPoints, firstPoint].forEach(point => side.lineTo(...spreadPoint(point)))
+        return side
+    })
+
+
+
+    const group = new IsometricGroup({ top, right, left, })
+
+    group.addChildren(
+        ...sides,
+    )
 
     return group
 }

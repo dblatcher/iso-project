@@ -1,6 +1,15 @@
 import { IsometricGroup, } from '@elchininet/isometric'
 import { CardinalDirection } from './CardinalDirection';
 
+type PathDef = {
+    points: {
+        x: number,
+        y: number,
+        z: number,
+    }[]
+    fillColor?: string,
+}
+
 export interface BaseObstacle {
     x: number;
     y: number;
@@ -8,4 +17,5 @@ export interface BaseObstacle {
     textureUrl?: string,
     fillColor?: string,
     isoGroup?: IsometricGroup;
+    paths?: PathDef[]
 }

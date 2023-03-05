@@ -265,9 +265,10 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     renderFakeObstable(obstacle: BaseObstacle) {
         const { x, y } = obstacle
         const g = findPositionInRotatedGrid({ x, y }, ...getGridDimensions(this.cells), this.renderOrientation)
-        const block = makeObstacleShape({ 
+        const block = makeObstacleShape({
             coords: [g.x, g.y, this.heightAt(x, y)],
             obstacle,
+            orientation: this.renderOrientation
         })
         this.addChild(block)
     }

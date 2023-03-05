@@ -47,10 +47,55 @@ export function createScene(orientation: CardinalDirection, container: string | 
             ...myDucks
         ],
         [
-            { x: 1, y: 1, facing: DIRECTION.north, fillColor: 'whitesmoke' },
-            { x: 0, y: 1, facing: DIRECTION.north, fillColor: 'pink' },
-            { x: 0, y: 2, facing: DIRECTION.north, fillColor: 'yellow' },
+            {
+                x: 7, y: 0, facing: DIRECTION.north,
+                paths: [
+                    {
+                        fillColor: 'white',
+                        points: [
+                            { x: 0, y: 0, z: 0 },
+                            { x: .5, y: 1, z: 0 },
+                            { x: 1, y: 0, z: 0 },
+                        ],
+                    },
+                    {
+                        fillColor: 'blue',
+                        points: [
+                            { x: 0, y: 0, z: 0 },
+                            { x: .5, y: 0, z: .75 },
+                            { x: 1, y: 0, z: 0 },
+                        ],
+                    }
+                ]
+            },
+            {
+                x: 0, y: 2, facing: DIRECTION.north, fillColor: 'yellow',
+                paths: [
+                    {
+                        points: [
+                            { x: 0, y: 0, z: 0 },
+                            { x: 0, y: 0, z: 2 },
+                            { x: .5, y: 0, z: 2 },
+                            { x: .5, y: 0, z: 1 },
+                            { x: 1, y: 0, z: 1 },
+                            { x: 1, y: 0, z: 0 },
+                        ],
+                    },
+                    {
+                        fillColor: 'goldenrod',
+                        points: [
+                            { x: 0, y: 0, z: 0 },
+                            { x: 0, y: 0, z: 2 },
+                            { x: 0, y: .5, z: 2 },
+                            { x: 0, y: .5, z: 1 },
+                            { x: 0, y: 1, z: 1 },
+                            { x: 0, y: 1, z: 0 },
+                        ],
+                    },
+                ]
+            },
             { x: 0, y: 3, facing: DIRECTION.north, fillColor: 'crimson' },
+            { x: 0, y: 4, facing: DIRECTION.north, fillColor: 'pink' },
         ],
         {
             renderOrientation: orientation,
