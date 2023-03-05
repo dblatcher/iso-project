@@ -1,7 +1,7 @@
 import { IsometricGroup, } from '@elchininet/isometric'
 import { CardinalDirection } from './CardinalDirection';
 
-type PathDef = {
+export type PathDef = {
     points: {
         x: number,
         y: number,

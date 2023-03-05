@@ -69,9 +69,10 @@ export function createScene(orientation: CardinalDirection, container: string | 
                 ]
             },
             {
-                x: 0, y: 2, facing: DIRECTION.north, fillColor: 'yellow',
+                x: 0, y: 2, facing: DIRECTION.north,
                 paths: [
                     {
+                        fillColor: 'rgba(200,200,0,.75)',
                         points: [
                             { x: 0, y: 0, z: 0 },
                             { x: 0, y: 0, z: 2 },
@@ -90,6 +91,16 @@ export function createScene(orientation: CardinalDirection, container: string | 
                             { x: 0, y: .5, z: 1 },
                             { x: 0, y: 1, z: 1 },
                             { x: 0, y: 1, z: 0 },
+                        ],
+                    },
+                    {
+                        fillColor: 'pink',
+                        points: [
+                            { x: 1, y: 0, z: 0 },
+                            { x: 1, y: 1, z: 0 },
+                            { x: 1, y: 1, z: .5 },
+                            { x: 1, y: 0, z: .5 },
+
                         ],
                     },
                 ]

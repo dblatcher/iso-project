@@ -1,5 +1,5 @@
 import { IsometricPath, IsometricRectangle, PlaneView, Axis, IsometricGroup } from '@elchininet/isometric'
-import { BaseObstacle } from '../BaseObstacle';
+import { BaseObstacle, PathDef } from '../BaseObstacle';
 import { CardinalDirection } from '../CardinalDirection';
 import { findPositionInRotatedGrid } from '../grids';
 
@@ -84,6 +84,23 @@ const makeDefaultShape = (config: ObstableShapeConfig) => {
 
 const spreadPoint = (point: { x: number, y: number, z: number }): [number, number, number] => [point.x, point.y, point.z]
 
+const getLowestXCoord = (path: PathDef): number => {
+    return path.points.reduce<number>((currentLowest, nextPoint) => {
+        return Math.min(currentLowest, nextPoint.x)
+    }, 1000)
+}
+const getLowestYCoord = (path: PathDef): number => {
+    return path.points.reduce<number>((currentLowest, nextPoint) => {
+        return Math.min(currentLowest, nextPoint.y)
+    }, 1000)
+}
+
+const sortByFurthestBack = (pathA: PathDef, pathB: PathDef): number => {
+    const xDiff = getLowestXCoord(pathA) - getLowestXCoord(pathB)
+    if (xDiff!==0) {return xDiff}
+    return getLowestYCoord(pathA) - getLowestYCoord(pathB)
+}
+
 export const makeObstacleShape = (config: ObstableShapeConfig) => {
     const { coords, obstacle, orientation } = config
     const { paths } = obstacle
@@ -93,25 +110,29 @@ export const makeObstacleShape = (config: ObstableShapeConfig) => {
     }
     const [right, left, top] = coords
 
-
-    // TO DO - order the side by render priority
-    // draw furthest back first, so the nearer are 'on top'
-    const sides = paths.map(path => {
-        const side = new IsometricPath({
-            fillColor: path.fillColor || obstacle.fillColor || 'transparent'
-        });
-
+    const rotatedPaths = obstacle.paths.map((path): PathDef => {
         const rotatedPoints = path.points.map(point => {
             const { x, y } = findPositionInRotatedGrid(point, 2, 2, orientation)
             return { x, y, z: point.z }
         })
 
-        const [firstPoint, ...restOfPoints] = rotatedPoints
+        return {
+            ...path,
+            points: rotatedPoints
+        }
+    })
 
-        side.moveTo(...spreadPoint(firstPoint));
+    rotatedPaths.sort(sortByFurthestBack)
 
-        [...restOfPoints, firstPoint].forEach(point => side.lineTo(...spreadPoint(point)))
-        return side
+    const sideIsoPaths = rotatedPaths.map(path => {
+        const sideIsoPath = new IsometricPath({
+            fillColor: path.fillColor || obstacle.fillColor || 'transparent'
+        });
+
+        const [firstPoint, ...restOfPoints] = path.points
+        sideIsoPath.moveTo(...spreadPoint(firstPoint));
+        [...restOfPoints, firstPoint].forEach(point => sideIsoPath.lineTo(...spreadPoint(point)))
+        return sideIsoPath
     })
 
 
@@ -119,7 +140,7 @@ export const makeObstacleShape = (config: ObstableShapeConfig) => {
     const group = new IsometricGroup({ top, right, left, })
 
     group.addChildren(
-        ...sides,
+        ...sideIsoPaths,
     )
 
     return group
