@@ -4,6 +4,7 @@ import { IMAGES } from "./images";
 import { MapGridIsometricCanvas } from "../MapGridIsometricCanvas";
 import { MyFigure } from "./MyFigure";
 import { MapCell } from "../MapCell";
+import { pyramid } from "../obstacles/pyramid";
 
 export const duckSprite = new DirectionalSprite({
     frontImage: [IMAGES.duck, IMAGES.duck2, IMAGES.duck3, IMAGES.duck4],
@@ -103,8 +104,10 @@ export function createScene(orientation: CardinalDirection, container: string | 
 
                         ],
                     },
-                ]
+                ],
             },
+            pyramid(1, 2, 1.5, 'rgba(255,0,0,.5)'),
+            pyramid(4, 3, 3, 'rgba(255,0,0,.5)'),
         ],
         {
             renderOrientation: orientation,
