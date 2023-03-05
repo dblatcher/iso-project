@@ -17,5 +17,5 @@ export interface BaseObstacle {
     textureUrl?: string,
     fillColor?: string,
     isoGroup?: IsometricGroup;
-    paths?: PathDef[]
+    paths: PathDef[]
 }

@@ -1,4 +1,4 @@
-import { IsometricPath, IsometricRectangle, PlaneView, Axis, IsometricGroup } from '@elchininet/isometric'
+import { IsometricPath, PlaneView, Axis, IsometricGroup } from '@elchininet/isometric'
 import { BaseObstacle, PathDef } from '../BaseObstacle';
 import { CardinalDirection } from '../CardinalDirection';
 import { findPositionInRotatedGrid } from '../grids';
@@ -42,46 +42,6 @@ const makeTextures = (url: string) => {
     }
 }
 
-const makeDefaultShape = (config: ObstableShapeConfig) => {
-    const { coords, obstacle } = config
-    const [right, left, top] = coords
-    const side = new IsometricPath({
-        fillColor: obstacle.fillColor
-    });
-
-    const front = new IsometricRectangle({
-        planeView: PlaneView.FRONT,
-        height: 0.5,
-        width: 1,
-        fillColor: obstacle.fillColor,
-    });
-
-    const chop = new IsometricPath({
-        fillColor: obstacle.fillColor
-    });
-
-
-    side
-        .moveTo(1, 1, 0)
-        .lineTo(1, 1, .5)
-        .lineTo(0, 1, 1)
-        .lineTo(0, 1, 0)
-    chop.draw('M1 1 0.5 L0 1 1 L0 0 1 L1 0 0.5');
-
-
-    front.right = 1;
-
-    const group = new IsometricGroup({ top, right, left, })
-
-    group.addChildren(
-        side,
-        front,
-        chop,
-    )
-
-    return group
-}
-
 const spreadPoint = (point: { x: number, y: number, z: number }): [number, number, number] => [point.x, point.y, point.z]
 
 const getLowestXCoord = (path: PathDef): number => {
@@ -103,11 +63,6 @@ const sortByFurthestBack = (pathA: PathDef, pathB: PathDef): number => {
 
 export const makeObstacleShape = (config: ObstableShapeConfig) => {
     const { coords, obstacle, orientation } = config
-    const { paths } = obstacle
-
-    if (!paths) {
-        return makeDefaultShape(config)
-    }
     const [right, left, top] = coords
 
     const rotatedPaths = obstacle.paths.map((path): PathDef => {
@@ -121,7 +76,6 @@ export const makeObstacleShape = (config: ObstableShapeConfig) => {
             points: rotatedPoints
         }
     })
-
     rotatedPaths.sort(sortByFurthestBack)
 
     const sideIsoPaths = rotatedPaths.map(path => {
@@ -135,13 +89,9 @@ export const makeObstacleShape = (config: ObstableShapeConfig) => {
         return sideIsoPath
     })
 
-
-
     const group = new IsometricGroup({ top, right, left, })
-
     group.addChildren(
         ...sideIsoPaths,
     )
-
     return group
 }

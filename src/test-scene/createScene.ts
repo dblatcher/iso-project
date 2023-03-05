@@ -105,8 +105,6 @@ export function createScene(orientation: CardinalDirection, container: string | 
                     },
                 ]
             },
-            { x: 0, y: 3, facing: DIRECTION.north, fillColor: 'crimson' },
-            { x: 0, y: 4, facing: DIRECTION.north, fillColor: 'pink' },
         ],
         {
             renderOrientation: orientation,
