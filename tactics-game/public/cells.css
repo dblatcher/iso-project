@@ -25,10 +25,22 @@ path.top.marked {
     stroke-width: 2;
 }
 
+path.top.reachable {
+    stroke: black;
+    stroke-dasharray: 1,2;
+    stroke-width: 2;
+}
+
 path.top.selected {
     filter: hue-rotate(60deg);
 }
 
+path.top.reachable.marked {
+    stroke: white;
+    stroke-width: 3;
+    stroke-dasharray: 2,2;
+    animation: marchingStroke .5s infinite linear;
+}
 path.top.selected.marked {
     stroke: white;
     stroke-width: 3;

@@ -9,6 +9,23 @@ const getCellAt = (x: number, y: number, grid: (MapCell | undefined)[][]): MapCe
     return row[y]
 }
 
+export const findReachableCells = (figure: CharacterFigure, grid: (MapCell | undefined)[][]): MapCell[] => {
+    const reachable: MapCell[] = []
+    for (let y = 0; y < grid.length; y++) {
+        for (let x = 0; x < grid[y].length; x++) {
+            const cell = grid[x][y]
+            const distance = Math.abs(x - figure.x) + Math.abs(y - figure.y)
+            if (distance <= figure.remaining.move) {
+                reachable.push(cell)
+            }
+        }
+    }
+    return reachable
+}
+
+/**
+ * Returns the array of cells to get the figure to the target. Returns undefined if the target is not reachable
+ */
 export const findPathFrom = (figure: CharacterFigure, target: { x: number, y: number }, grid: (MapCell | undefined)[][]): MapCell[] => {
 
     let { x, y, remaining } = figure

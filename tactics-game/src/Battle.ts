@@ -3,7 +3,7 @@ import { CharacterFigure } from "./CharacterFigure";
 import { Panel } from "./components/Panel";
 import { h, render } from 'preact'
 import { MapCell } from "../../src/MapCell";
-import { findPathFrom } from "./lib/pathFind";
+import { findPathFrom, findReachableCells } from "./lib/pathFind";
 import { followPath } from "../../src/animations/followPath";
 import { CommandType, Team } from "./types";
 import { Action } from "./Action";
@@ -13,6 +13,7 @@ import { TurnPanel } from "./components/TurnPanel";
 const CELL_CLASS = {
     marked: 'marked',
     selected: 'selected',
+    reachable: 'reachable',
 }
 
 export class Battle {
@@ -122,12 +123,12 @@ export class Battle {
         }
     }
 
-    markCells(cellsToMark: MapCell[]) {
+    markCells(cellsToMark: MapCell[], cssClass: string) {
         this.canvas.cells.flat().forEach(cell => {
             if (cellsToMark.includes(cell)) {
-                this.canvas.addCellClass(cell, CELL_CLASS.marked)
+                this.canvas.addCellClass(cell, cssClass)
             } else {
-                this.canvas.removeCellClass(cell, CELL_CLASS.marked)
+                this.canvas.removeCellClass(cell, cssClass)
             }
         })
     }
@@ -144,23 +145,28 @@ export class Battle {
         this.updateActionPanel()
         if (commandType === 'ACTION' && this.selectedFigure) {
             this.setFigureAction(this.selectedFigure, this.selectedFigure.selectedAction || this.selectedFigure.availableActions[0])
+            this.markCells([], CELL_CLASS.reachable)
         }
         if (commandType === 'MOVE') {
-            this.markCells([])
+            this.markCells([], CELL_CLASS.marked)
+            if (this.selectedFigure) {
+                const reachable = findReachableCells(this.selectedFigure, this.canvas.cells)
+                this.markCells(reachable, CELL_CLASS.reachable)
+            }
         }
     }
 
     setFigureAction(figure: CharacterFigure, action: Action) {
         figure.selectedAction = action
         if (figure === this.selectedFigure) {
-            this.markCells(action.getTargetCells(figure, this))
+            this.markCells(action.getTargetCells(figure, this), CELL_CLASS.marked)
         }
         this.redraw()
     }
 
     selectNextFigureWithMoves(reverse = false) {
         this.selectedCell = undefined
-        this.markCells([])
+        this.markCells([], CELL_CLASS.marked)
         const { selectedFigure } = this
         const { figures } = this.canvas
         const list = reverse ? [...figures].reverse() : figures
@@ -168,9 +174,11 @@ export class Battle {
         const nextAfter = list.slice(currentSelectedIndex + 1).find(figure => figure.isOnCurrentTeam && figure.remaining.move > 0)
         if (nextAfter) {
             this.selectedFigure = nextAfter
+            this.setCommandType('MOVE')
             return
         }
         this.selectedFigure = list.find(figure => figure.isOnCurrentTeam && figure.remaining.move > 0)
+        this.setCommandType('MOVE')
     }
 
     endTurn() {
@@ -215,7 +223,7 @@ export class Battle {
                 if (figure.isOnCurrentTeam) {
                     this.selectedFigure = figure
                     this.selectedCell = undefined
-                    this.markCells([])
+                    this.markCells([], CELL_CLASS.marked)
                     this.redraw()
                 }
                 return true;
@@ -236,7 +244,7 @@ export class Battle {
                 if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
                     if (x == selectedFigure.x && y === selectedFigure.y) {
                         this.selectedCell = undefined
-                        this.markCells([])
+                        this.markCells([], CELL_CLASS.marked)
                     }
                     else if (selectedCell && cell === selectedCell) {
                         const routeIsValid = this.figureRoute?.includes(selectedCell)
@@ -244,7 +252,7 @@ export class Battle {
                         if (routeIsValid) {
                             selectedFigure.remaining.move = selectedFigure.remaining.move - this.figureRoute.length
                             this.selectedCell = undefined
-                            this.markCells([])
+                            this.markCells([], CELL_CLASS.marked)
                             await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
                             this.figureRoute = undefined
                             if (selectedFigure.remaining.move <= 0) {
@@ -257,7 +265,7 @@ export class Battle {
                         const cellsInPath = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
                         this.figureRoute = cellsInPath
                         this.selectedCell = cell
-                        this.markCells(cellsInPath)
+                        this.markCells(cellsInPath, CELL_CLASS.marked)
                     }
                 }
                 break
