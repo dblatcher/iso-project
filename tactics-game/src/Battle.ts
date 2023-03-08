@@ -224,6 +224,8 @@ export class Battle {
                     this.selectedFigure = figure
                     this.selectedCell = undefined
                     this.markCells([], CELL_CLASS.marked)
+                    const reachable = findReachableCells(this.selectedFigure, this.canvas.cells)
+                    this.markCells(reachable, CELL_CLASS.reachable)
                     this.redraw()
                 }
                 return true;
@@ -257,6 +259,9 @@ export class Battle {
                             this.figureRoute = undefined
                             if (selectedFigure.remaining.move <= 0) {
                                 this.setCommandType('ACTION')
+                            } else {
+                                const reachable = findReachableCells(this.selectedFigure, this.canvas.cells)
+                                this.markCells(reachable, CELL_CLASS.reachable)
                             }
                             this.redraw()
                         }
