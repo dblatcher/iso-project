@@ -6,8 +6,8 @@ import { MapCell } from "../../src/MapCell";
 import { findPathFrom } from "./lib/pathFind";
 import { followPath } from "../../src/animations/followPath";
 import { CommandType, Team } from "./types";
-import { jumpFigure } from "../../src/animations/jump";
 import { Action } from "./Action";
+import { TurnPanel } from "./components/TurnPanel";
 
 
 const CELL_CLASS = {
@@ -17,7 +17,8 @@ const CELL_CLASS = {
 
 export class Battle {
     canvas: MapGridIsometricCanvas<CharacterFigure>
-    panel: HTMLElement
+    actionPanelElement: HTMLElement
+    turnPanelElement: HTMLElement
     teams: Team[]
     currentTeam: Team
     figureRoute?: MapCell[]
@@ -25,7 +26,8 @@ export class Battle {
 
     constructor(
         container: HTMLElement,
-        panel: HTMLElement,
+        actionPanelElement: HTMLElement,
+        turnPanelElement: HTMLElement,
         teams: Team[],
         characterFigures: CharacterFigure[],
         terrain: MapCell[][],
@@ -45,7 +47,7 @@ export class Battle {
             terrain,
             characterFigures,
             [
-                
+
             ],
             mapGridCanvasConfig,
         )
@@ -53,11 +55,14 @@ export class Battle {
 
         this.canvas.onClick.figure = this.manageFigureClick
         this.canvas.onClick.cell = this.manageCellClick
-        this.panel = panel
-        this.updatePanel()
+        this.actionPanelElement = actionPanelElement
+        this.updateActionPanel()
+
+        this.turnPanelElement = turnPanelElement
+        this.updateTurnPanel()
     }
 
-    updatePanel() {
+    updateActionPanel() {
         const { selectedFigure, currentTeam, allFiguresMoved } = this
 
         render(
@@ -71,8 +76,14 @@ export class Battle {
                 setCommandType: (commandType: CommandType) => { this.setCommandType(commandType) },
                 setFigureAction: (action: Action) => { this.setFigureAction(selectedFigure, action) }
             }),
-            this.panel
+            this.actionPanelElement
         );
+    }
+
+    updateTurnPanel() {
+        render(h(TurnPanel, {
+            battle: this
+        }), this.turnPanelElement)
     }
 
     get allFiguresMoved(): boolean {
@@ -126,13 +137,14 @@ export class Battle {
 
     private redraw() {
         this.canvas.render(this.canvas.renderOrientation)
-        this.updatePanel()
+        this.updateActionPanel()
+        this.updateTurnPanel()
     }
 
     setCommandType(commandType: CommandType) {
         this.commandType = commandType
         this.selectedCell = undefined
-        this.updatePanel()
+        this.updateActionPanel()
         if (commandType === 'ACTION' && this.selectedFigure) {
             this.setFigureAction(this.selectedFigure, this.selectedFigure.selectedAction || this.selectedFigure.availableActions[0])
         }

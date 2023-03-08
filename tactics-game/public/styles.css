@@ -1,25 +1,34 @@
 body {
     background-color: beige;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
 }
 
 .panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
     background-color: white;
     padding: .25rem;
-    position: absolute;
+}
+
+.action.panel {
     top: 0;
     right: 0;
     min-width: 12rem;
     min-height: 12rem;
-    display: flex;
-    flex-direction: column;
 }
 
-.panel .row {
+.turn.panel {
+    left: 0;
+    top: 0;
+}
+
+.action.panel .row {
     display: flex;
     margin: .125rem 0;
 }
 
-.panel p {
+.action.panel p {
     margin: 0;
 }
