@@ -63,16 +63,13 @@ export class Battle {
     }
 
     updateActionPanel() {
-        const { selectedFigure, currentTeam, allFiguresMoved } = this
+        const { selectedFigure, currentTeam } = this
 
         render(
             h(Panel, {
                 team: currentTeam,
                 selectedFigure: selectedFigure,
-                allFiguresMoved,
                 commandType: this.commandType,
-                endTurn: () => { this.endTurn() },
-                nextFigure: (reverse = false) => { this.selectNextFigureWithMoves(reverse) },
                 setCommandType: (commandType: CommandType) => { this.setCommandType(commandType) },
                 setFigureAction: (action: Action) => { this.setFigureAction(selectedFigure, action) }
             }),

@@ -9,27 +9,18 @@ import { Action } from '../Action';
 interface Props {
     team: Team;
     selectedFigure?: CharacterFigure;
-    allFiguresMoved: boolean
     commandType: CommandType
-    endTurn: { (): void }
-    nextFigure: { (reverse?:boolean): void }
     setCommandType: { (commandType:CommandType):void}
     setFigureAction: {(action:Action):void}
 }
 
-const buttonStyle = (highlight: boolean) => ({
-    fontWeight: highlight ? 'bold' : 'normal',
-})
 
 export const Panel: FunctionalComponent<Props> = ({ 
     team, 
     selectedFigure, 
-    endTurn,    
-    nextFigure, 
+    commandType,
     setCommandType,
     setFigureAction,
-    allFiguresMoved,
-    commandType
 }) => {
 
     return html`
@@ -48,11 +39,6 @@ export const Panel: FunctionalComponent<Props> = ({
             <span>${team.name}</span>
         </div>
 
-        <div class="row">
-            <button style=${buttonStyle(false)} onclick=${() =>{nextFigure(false)}}>NEXT</button>
-            <button style=${buttonStyle(false)} onclick=${()=>{nextFigure(true)}}>PREV</button>
-        </div>
-
         ${selectedFigure && html`
             <${Fragment}>
                 <${CharacterView} 
@@ -64,10 +50,6 @@ export const Panel: FunctionalComponent<Props> = ({
                     setFigureAction=${setFigureAction}/>
             </${Fragment}>
         `}
-
-        <div class="row">
-            <button style=${buttonStyle(allFiguresMoved)} onclick=${endTurn}>END OF TURN</button>
-        </div>
     </div>
     `
 }
