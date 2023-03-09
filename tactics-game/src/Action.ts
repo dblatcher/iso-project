@@ -29,7 +29,7 @@ export class Action {
         this.execute = execute
     }
 
-    getTargetCells(figure: CharacterFigure, Battle: Battle): MapCell[] {
+    getCellsInRange(figure: CharacterFigure, Battle: Battle): MapCell[] {
         switch (this.range) {
             case ActionRange.Self:
                 return [

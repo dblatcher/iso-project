@@ -139,7 +139,7 @@ export class Battle {
             if (!selectedAction) {
                 return []
             }
-            return selectedAction.getTargetCells(selectedFigure,this)
+            return selectedAction.getCellsInRange(selectedFigure,this)
         }
         return []
     }
@@ -213,7 +213,7 @@ export class Battle {
             console.log(`${selectedFigure.attributes.name} has no actions left`)
             return
         }
-        const targets = selectedFigure.selectedAction.getTargetCells(selectedFigure, this)
+        const targets = selectedFigure.selectedAction.getCellsInRange(selectedFigure, this)
 
         if (!targets.includes(cell)) {
             console.log(`out of range to ${selectedFigure.selectedAction.name}`)
