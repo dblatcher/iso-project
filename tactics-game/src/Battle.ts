@@ -214,6 +214,41 @@ export class Battle {
         this.redraw()
     }
 
+    async doMove(cell: MapCell) {
+        const { selectedFigure, selectedCell, canvas } = this
+        const { x, y } = canvas.getCellCoords(cell)
+        if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
+            if (x == selectedFigure.x && y === selectedFigure.y) {
+                this.selectedCell = undefined
+                this.markCells([], CELL_CLASS.marked)
+            }
+            else if (selectedCell && cell === selectedCell) {
+                const routeIsValid = this.figureRoute?.includes(selectedCell)
+
+                if (routeIsValid) {
+                    selectedFigure.remaining.move = selectedFigure.remaining.move - this.figureRoute.length
+                    this.selectedCell = undefined
+                    this.markCells([], CELL_CLASS.marked)
+                    await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
+                    this.figureRoute = undefined
+                    if (selectedFigure.remaining.move <= 0) {
+                        this.setCommandType('ACTION')
+                    } else {
+                        const reachable = findReachableCells(this.selectedFigure, this.canvas.cells)
+                        this.markCells(reachable, CELL_CLASS.reachable)
+                    }
+                    this.redraw()
+                }
+
+            } else {
+                const cellsInPath = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
+                this.figureRoute = cellsInPath
+                this.selectedCell = cell
+                this.markCells(cellsInPath, CELL_CLASS.marked)
+            }
+        }
+    }
+
     manageFigureClick = (canvas: MapGridIsometricCanvas) => async (figure: CharacterFigure) => {
         const { commandType } = this
         const cell = canvas.cells[figure.x][figure.y]
@@ -235,49 +270,16 @@ export class Battle {
     }
 
     manageCellClick = (canvas: MapGridIsometricCanvas) => async (cell: MapCell) => {
-        const { selectedFigure, selectedCell, commandType } = this
-        const { x, y } = canvas.getCellCoords(cell)
-
+        const {  commandType } = this
         switch (commandType) {
             case 'ACTION':
                 this.doAction(cell)
                 break
             case 'MOVE': {
-                if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
-                    if (x == selectedFigure.x && y === selectedFigure.y) {
-                        this.selectedCell = undefined
-                        this.markCells([], CELL_CLASS.marked)
-                    }
-                    else if (selectedCell && cell === selectedCell) {
-                        const routeIsValid = this.figureRoute?.includes(selectedCell)
-
-                        if (routeIsValid) {
-                            selectedFigure.remaining.move = selectedFigure.remaining.move - this.figureRoute.length
-                            this.selectedCell = undefined
-                            this.markCells([], CELL_CLASS.marked)
-                            await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
-                            this.figureRoute = undefined
-                            if (selectedFigure.remaining.move <= 0) {
-                                this.setCommandType('ACTION')
-                            } else {
-                                const reachable = findReachableCells(this.selectedFigure, this.canvas.cells)
-                                this.markCells(reachable, CELL_CLASS.reachable)
-                            }
-                            this.redraw()
-                        }
-
-                    } else {
-                        const cellsInPath = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
-                        this.figureRoute = cellsInPath
-                        this.selectedCell = cell
-                        this.markCells(cellsInPath, CELL_CLASS.marked)
-                    }
-                }
+                this.doMove(cell)
                 break
             }
         }
-
-        return true
     }
 
 }
