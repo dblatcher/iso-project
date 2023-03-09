@@ -11,7 +11,7 @@ import { TurnPanel } from "./components/TurnPanel";
 
 
 const CELL_CLASS = {
-    marked: 'marked',
+    path: 'marked',
     selected: 'selected',
     reachable: 'reachable',
 }
@@ -123,6 +123,28 @@ export class Battle {
         }
     }
 
+    get cellsInRange(): MapCell[] {
+        const { selectedFigure, commandType } = this
+        if (!selectedFigure) {
+            return []
+        }
+        if (commandType === 'MOVE') {
+            return findReachableCells(this.selectedFigure, this.canvas.cells)
+        }
+        if (commandType === 'ACTION') {
+            if (selectedFigure.remaining.action <= 0) {
+                return []
+            }
+            const { selectedAction } = selectedFigure
+            if (!selectedAction) {
+                return []
+            }
+            return selectedAction.getTargetCells(selectedFigure,this)
+        }
+        return []
+    }
+
+
     markCells(cellsToMark: MapCell[], cssClass: string) {
         this.canvas.cells.flat().forEach(cell => {
             if (cellsToMark.includes(cell)) {
@@ -142,31 +164,25 @@ export class Battle {
     setCommandType(commandType: CommandType) {
         this.commandType = commandType
         this.selectedCell = undefined
-        this.updateActionPanel()
+        this.markCells([], CELL_CLASS.path)
         if (commandType === 'ACTION' && this.selectedFigure) {
             this.setFigureAction(this.selectedFigure, this.selectedFigure.selectedAction || this.selectedFigure.availableActions[0])
-            this.markCells([], CELL_CLASS.reachable)
         }
-        if (commandType === 'MOVE') {
-            this.markCells([], CELL_CLASS.marked)
-            if (this.selectedFigure) {
-                const reachable = findReachableCells(this.selectedFigure, this.canvas.cells)
-                this.markCells(reachable, CELL_CLASS.reachable)
-            }
-        }
+        this.markCells(this.cellsInRange, CELL_CLASS.reachable)
+        this.updateActionPanel()
     }
 
     setFigureAction(figure: CharacterFigure, action: Action) {
         figure.selectedAction = action
         if (figure === this.selectedFigure) {
-            this.markCells(action.getTargetCells(figure, this), CELL_CLASS.marked)
+            this.markCells(this.cellsInRange, CELL_CLASS.reachable)
         }
         this.redraw()
     }
 
     selectNextFigureWithMoves(reverse = false) {
         this.selectedCell = undefined
-        this.markCells([], CELL_CLASS.marked)
+        this.markCells([], CELL_CLASS.path)
         const { selectedFigure } = this
         const { figures } = this.canvas
         const list = reverse ? [...figures].reverse() : figures
@@ -211,6 +227,7 @@ export class Battle {
 
         selectedFigure.remaining.action--
         await selectedFigure.selectedAction.perform(selectedFigure, cell, this)
+        this.markCells(this.cellsInRange, CELL_CLASS.reachable)
         this.redraw()
     }
 
@@ -218,33 +235,32 @@ export class Battle {
         const { selectedFigure, selectedCell, canvas } = this
         const { x, y } = canvas.getCellCoords(cell)
         if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
+            // if user clicks on the selected figure, unselect the selected cell
             if (x == selectedFigure.x && y === selectedFigure.y) {
                 this.selectedCell = undefined
-                this.markCells([], CELL_CLASS.marked)
+                this.markCells([], CELL_CLASS.path)
             }
+            // user clicks on the cell they selected to confirm the move
             else if (selectedCell && cell === selectedCell) {
                 const routeIsValid = this.figureRoute?.includes(selectedCell)
-
                 if (routeIsValid) {
                     selectedFigure.remaining.move = selectedFigure.remaining.move - this.figureRoute.length
                     this.selectedCell = undefined
-                    this.markCells([], CELL_CLASS.marked)
+                    this.markCells([], CELL_CLASS.path)
                     await canvas.executeAnimation(() => followPath(this.canvas)(selectedFigure, this.figureRoute))
                     this.figureRoute = undefined
                     if (selectedFigure.remaining.move <= 0) {
                         this.setCommandType('ACTION')
                     } else {
-                        const reachable = findReachableCells(this.selectedFigure, this.canvas.cells)
-                        this.markCells(reachable, CELL_CLASS.reachable)
+                        this.markCells(this.cellsInRange, CELL_CLASS.reachable)
                     }
                     this.redraw()
                 }
-
+            // user clicks on the cell to select
             } else {
-                const cellsInPath = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
-                this.figureRoute = cellsInPath
+                this.figureRoute = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
                 this.selectedCell = cell
-                this.markCells(cellsInPath, CELL_CLASS.marked)
+                this.markCells(this.figureRoute, CELL_CLASS.path)
             }
         }
     }
@@ -258,9 +274,8 @@ export class Battle {
                 if (figure.isOnCurrentTeam) {
                     this.selectedFigure = figure
                     this.selectedCell = undefined
-                    this.markCells([], CELL_CLASS.marked)
-                    const reachable = findReachableCells(this.selectedFigure, this.canvas.cells)
-                    this.markCells(reachable, CELL_CLASS.reachable)
+                    this.markCells([], CELL_CLASS.path)
+                    this.markCells(this.cellsInRange, CELL_CLASS.reachable)
                     this.redraw()
                 }
                 return true;
@@ -270,7 +285,7 @@ export class Battle {
     }
 
     manageCellClick = (canvas: MapGridIsometricCanvas) => async (cell: MapCell) => {
-        const {  commandType } = this
+        const { commandType } = this
         switch (commandType) {
             case 'ACTION':
                 this.doAction(cell)
