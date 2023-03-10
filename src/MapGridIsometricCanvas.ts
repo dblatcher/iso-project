@@ -144,11 +144,15 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
     }
 
     heightAt(x: number, y: number): number {
+        return this.cellAt(x, y)?.height || 0
+    }
+
+    cellAt(x: number, y: number): MapCell | undefined {
         return this.cells[x]
             ? this.cells[x][y]
-                ? this.cells[x][y].height
-                : 0
-            : 0;
+                ? this.cells[x][y]
+                : undefined
+            : undefined;
     }
 
     getCellCoords(cell: MapCell): { x: number, y: number } {

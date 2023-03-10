@@ -5,6 +5,7 @@ import { CharacterFigure } from "./CharacterFigure"
 export enum ActionRange {
     Self,
     Close,
+    OneAway,
 }
 
 export enum ActionTarget {
@@ -33,15 +34,22 @@ export class Action {
         switch (this.range) {
             case ActionRange.Self:
                 return [
-                    Battle.canvas.cells[figure.x][figure.y]
-                ]
+                    Battle.canvas.cellAt(figure.x, figure.y)
+                ].filter(item => item)
             case ActionRange.Close:
                 return [
-                    Battle.canvas.cells[figure.x - 1][figure.y],
-                    Battle.canvas.cells[figure.x + 1][figure.y],
-                    Battle.canvas.cells[figure.x][figure.y - 1],
-                    Battle.canvas.cells[figure.x][figure.y + 1],
-                ]
+                    Battle.canvas.cellAt(figure.x - 1, figure.y),
+                    Battle.canvas.cellAt(figure.x + 1, figure.y),
+                    Battle.canvas.cellAt(figure.x, figure.y - 1),
+                    Battle.canvas.cellAt(figure.x, figure.y + 1),
+                ].filter(item => item)
+            case ActionRange.OneAway:
+                return [
+                    Battle.canvas.cellAt(figure.x - 2, figure.y),
+                    Battle.canvas.cellAt(figure.x + 2, figure.y),
+                    Battle.canvas.cellAt(figure.x, figure.y - 2),
+                    Battle.canvas.cellAt(figure.x, figure.y + 2),
+                ].filter(item => item)
         }
     }
 
