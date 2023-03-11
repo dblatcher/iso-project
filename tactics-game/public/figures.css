@@ -23,3 +23,7 @@
 .figure.no-moves {
     filter: grayscale(1);
 }
+
+.figure.blacked-out {
+    filter: brightness(0) !important;
+}

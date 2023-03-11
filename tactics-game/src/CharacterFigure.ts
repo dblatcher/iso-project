@@ -18,6 +18,7 @@ const CSS_CLASSES = {
     selected: 'selected',
     ourTurn: 'current-team',
     noMovesLeft: 'no-moves',
+    down: 'blacked-out',
 }
 
 export class CharacterFigure implements BaseFigure {
@@ -62,6 +63,7 @@ export class CharacterFigure implements BaseFigure {
         if (this.isOnCurrentTeam) { classNames.push(CSS_CLASSES.ourTurn) }
         if (this.selected) { classNames.push(CSS_CLASSES.selected) }
         if (this.remaining.move === 0 && this.remaining.action === 0) { classNames.push(CSS_CLASSES.noMovesLeft) }
+        if (this.isOut) { classNames.push(CSS_CLASSES.down) }
         return classNames
     }
 
@@ -75,8 +77,17 @@ export class CharacterFigure implements BaseFigure {
         return actions
     }
 
+    get isOut(): boolean {
+        return this.remaining.health <= 0
+    }
+
     async takeDamage(amount: number) {
         this.remaining.health = this.remaining.health - amount
+        if (this.isOut) {
+            this.remaining.action = 0
+            this.remaining.move = 0
+        }
+
         const { battle, spriteIsoGroup, sprite } = this
         const { height = 1 } = sprite
 
@@ -92,7 +103,7 @@ export class CharacterFigure implements BaseFigure {
     }
 
     resetForTurn() {
-        this.remaining.move = this.attributes.move;
-        this.remaining.action = this.attributes.action;
+        this.remaining.move = this.isOut ? 0 : this.attributes.move;
+        this.remaining.action = this.isOut ? 0 : this.attributes.action;
     }
 }
