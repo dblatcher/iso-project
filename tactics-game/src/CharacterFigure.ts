@@ -1,5 +1,6 @@
 import { IsometricGroup } from "@elchininet/isometric";
 import type { BaseFigure } from "../../src/BaseFigure";
+import { floatingMessage } from "../../src/builders/floatingMessage";
 import type { CardinalDirection } from "../../src/CardinalDirection";
 import type { DirectionalSprite } from "../../src/DirectionalSprite";
 import { Action } from "./Action";
@@ -67,10 +68,27 @@ export class CharacterFigure implements BaseFigure {
     get availableActions(): Action[] {
         const actions: Action[] = [
             ACTIONS.wait,
+            ACTIONS.punch,
             ACTIONS.jump,
             ACTIONS.throwInAir,
         ]
         return actions
+    }
+
+    async takeDamage(amount: number) {
+        this.remaining.health = this.remaining.health - amount
+        const { battle, spriteIsoGroup, sprite } = this
+        const { height = 1 } = sprite
+
+        return floatingMessage(battle.canvas, {
+            text: `-${amount.toString()}`,
+            top: spriteIsoGroup.top + height,
+            left: spriteIsoGroup.left,
+            right: spriteIsoGroup.right,
+            rise: 2,
+            fillColor: 'red',
+            pauseSeconds: 1.5,
+        });
     }
 
     resetForTurn() {
