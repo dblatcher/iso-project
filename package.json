@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "watch-game": "watchify ./tactics-game/src/index.ts -p [ tsify --noImplicitAny ] -o ./tactics-game/dist/game-bundle.js",
-    "watch": "watchify ./src/test-scene/index.ts -p [ tsify --noImplicitAny ] -o bundle.js",
+    "watch-game": "watchify ./tactics-game/src/index.ts -p [ tsify --noImplicitAny ] -v -o ./tactics-game/dist/game-bundle.js",
+    "watch": "watchify ./src/test-scene/index.ts -p [ tsify --noImplicitAny ] -v -o bundle.js",
     "build": "browserify ./src/test-scene/index.ts -p [ tsify --noImplicitAny ] > bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
