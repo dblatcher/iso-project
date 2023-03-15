@@ -1,9 +1,9 @@
 import { jumpFigure } from "../../../src/animations/jump";
 import { shiftFigure } from "../../../src/animations/shiftFigure";
+import { slideFigure } from "../../../src/animations/slide";
 import { spinFigure } from "../../../src/animations/spin";
 import { turnFigure } from "../../../src/animations/turn";
-import { pause } from "../../../src/animations/util";
-import { getDirectionTowards } from "../../../src/CardinalDirection";
+import { getDirectionTowards, rotateFunnyVector } from "../../../src/CardinalDirection";
 import { Action, ActionRange, ActionTarget } from "../Action";
 
 const wait = new Action('wait', ActionRange.Self, ActionTarget.Any,
@@ -45,12 +45,18 @@ const punch = new Action('punch', ActionRange.Close, ActionTarget.Enemy,
         if (!targetFigure) {
             return
         }
+        const direction = getDirectionTowards(actor, targetFigure)
+        const towards = rotateFunnyVector(0, -0.5, direction)
         const { canvas } = battle
-        await turnFigure(canvas)(actor, getDirectionTowards(actor, targetFigure))
-        await jumpFigure(canvas)(actor, .5)
+
+        await turnFigure(canvas)(actor, direction)
+        await slideFigure(canvas)(actor, { x: towards.x * -1, y: towards.y * -1 }, 50)
+        await slideFigure(canvas)(actor, { x: towards.x * 1.4, y: towards.y * 1.4 }, 25)
+        await slideFigure(canvas)(actor, { x: towards.x * -.4, y: towards.y * -.4 }, 25)
+        await slideFigure(canvas)(targetFigure, { x: towards.x * .5, y: towards.y * .5 }, 15)
+        await slideFigure(canvas)(targetFigure, { x: towards.x * -.5, y: towards.y * -.5 }, 15)
+
         await targetFigure.takeDamage(1)
-        await jumpFigure(canvas)(targetFigure, .75)
-        console.log(targetFigure.remaining)
     }
 )
 

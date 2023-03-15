@@ -55,6 +55,27 @@ export const rotateVector = (x: number, y: number, orientation: CardinalDirectio
     }
 }
 
+export const rotateFunnyVector = (x: number, y: number, orientation: CardinalDirection): { x: number, y: number } => {
+    switch (orientation.rotation) {
+        case 0:
+            return {
+                x, y
+            }
+        case 1:
+            return {
+                x: y, y: -x
+            }
+        case 2:
+            return {
+                x: -x, y: -y
+            }
+        case 3:
+            return {
+                x: -y, y: x
+            }
+    }
+}
+
 export const getDirectionTowards = (from: { x: number, y: number }, to: { x: number, y: number }): CardinalDirection => {
     const xDist = to.x - from.x
     const yDist = to.y - from.y
