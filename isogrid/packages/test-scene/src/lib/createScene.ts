@@ -1,10 +1,10 @@
-import { CardinalDirection, DIRECTION } from "../CardinalDirection";
-import { DirectionalSprite } from "../DirectionalSprite";
+import { CardinalDirection, DIRECTION } from "@isogrid/map-canvas";
+import { DirectionalSprite } from "@isogrid/map-canvas";
 import { IMAGES } from "./images";
-import { MapGridIsometricCanvas } from "../MapGridIsometricCanvas";
+import { MapGridIsometricCanvas } from "@isogrid/map-canvas";
 import { MyFigure } from "./MyFigure";
-import { MapCell } from "../MapCell";
-import { pyramid } from "../obstacles/pyramid";
+import { MapCell } from "@isogrid/map-canvas";
+import { pyramid } from "@isogrid/map-canvas";
 
 export const duckSprite = new DirectionalSprite({
     frontImage: [IMAGES.duck, IMAGES.duck2, IMAGES.duck3, IMAGES.duck4],

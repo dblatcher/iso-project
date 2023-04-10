@@ -1,4 +1,4 @@
-import { antiClockwise, clockwise, DIRECTION } from '../CardinalDirection';
+import { antiClockwise, clockwise, DIRECTION, MapGridIsometricCanvas } from "@isogrid/map-canvas";
 import { createScene } from './createScene';
 import { danceParty, moveSelectedFigureToCell, selectOrRotateFigure } from './interactions';
 
@@ -21,14 +21,14 @@ mapGrid.onClick.cell = moveSelectedFigureToCell
 mapGrid.onClick.figure = selectOrRotateFigure
 
 clockwiseButton.addEventListener('click', () => {
-    mapGrid.render(clockwise(mapGrid.renderOrientation))
+  mapGrid.render(clockwise(mapGrid.renderOrientation))
 })
 anticlockwiseButton.addEventListener('click', () => {
-    mapGrid.render(antiClockwise(mapGrid.renderOrientation))
+  mapGrid.render(antiClockwise(mapGrid.renderOrientation))
 })
 magicButton.addEventListener('click', () => {
-    mapGrid.executeAnimation(() => danceParty(mapGrid)())
+  mapGrid.executeAnimation(() => danceParty(mapGrid)())
 })
 
-const enhancedWindow = window as Record<string, any>
-enhancedWindow.mapGrid = mapGrid;
+const enhancedWindow = window as Window & { mapGrid?: MapGridIsometricCanvas }
+enhancedWindow['mapGrid'] = mapGrid;

@@ -1,0 +1,2 @@
+export { pyramid } from "./pyramid";
+
