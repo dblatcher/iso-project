@@ -22,7 +22,7 @@ export const slideFigure = (that: MapGridIsometricCanvas) =>
             that.bringChildToFront(shadowIsoGroup)
         }
         that.bringChildToFront(spriteIsoGroup)
-        const { left, right } = figure.spriteIsoGroup
+        const { left, right } = spriteIsoGroup
 
 
         const step = (step: number, totalSteps: number) => {
