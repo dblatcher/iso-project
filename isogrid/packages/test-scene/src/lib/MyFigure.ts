@@ -1,5 +1,4 @@
-import { BaseFigure } from "../BaseFigure";
-
+import { BaseFigure } from "@isogrid/map-canvas";
 
 
 export type MyFigure = BaseFigure & {

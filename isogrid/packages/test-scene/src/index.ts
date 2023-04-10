@@ -1,1 +1,1 @@
-export * from './lib/test-scene';
+export * from './lib/createScene';
