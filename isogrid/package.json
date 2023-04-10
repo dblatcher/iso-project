@@ -13,8 +13,6 @@
     "browserify": "^17.0.0",
     "core-js": "^3.6.5",
     "dotenv": "^16.0.2",
-    "ejs": "^3.1.9",
-    "express": "^4.18.1",
     "htm": "^3.1.1",
     "preact": "^10.12.1",
     "regenerator-runtime": "0.13.7",
@@ -27,7 +25,6 @@
   "devDependencies": {
     "@nrwl/cypress": "15.9.2",
     "@nrwl/eslint-plugin-nx": "15.9.2",
-    "@nrwl/express": "^15.9.2",
     "@nrwl/jest": "15.9.2",
     "@nrwl/js": "^15.9.2",
     "@nrwl/linter": "15.9.2",
