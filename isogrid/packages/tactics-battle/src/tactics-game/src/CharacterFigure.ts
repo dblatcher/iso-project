@@ -1,8 +1,6 @@
 import { IsometricGroup } from "@elchininet/isometric";
-import type { BaseFigure } from "../../src/BaseFigure";
-import { floatingMessage } from "../../src/builders/floatingMessage";
-import type { CardinalDirection } from "../../src/CardinalDirection";
-import type { DirectionalSprite } from "../../src/DirectionalSprite";
+import { floatingMessage } from "@isogrid/map-canvas";
+import type { CardinalDirection, BaseFigure, DirectionalSprite } from "@isogrid/map-canvas";
 import { Action } from "./Action";
 import type { Battle } from "./Battle";
 import { ACTIONS } from "./data/actions";

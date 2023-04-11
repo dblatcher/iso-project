@@ -1,7 +1,7 @@
-import { FunctionalComponent, Fragment } from 'preact';
+import { FunctionalComponent } from 'preact';
 import { html } from 'htm/preact'
 import { Battle } from '../Battle';
-import { clockwise, antiClockwise } from '../../../src/CardinalDirection';
+import { clockwise, antiClockwise } from '@isogrid/map-canvas';
 
 interface Props {
     battle: Battle

@@ -1,4 +1,4 @@
-import { DirectionalSprite } from "../../src/DirectionalSprite"
+import { DirectionalSprite } from "@isogrid/map-canvas"
 import { IMAGES } from "./images"
 
 export const duckSprite = new DirectionalSprite({

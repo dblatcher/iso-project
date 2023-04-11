@@ -1,4 +1,4 @@
-import { DIRECTION } from "../../../src/CardinalDirection";
+import { DIRECTION } from '@isogrid/map-canvas'
 import { Team } from "../types";
 import { CharacterFigure } from "../CharacterFigure";
 import { manSprite, barrelSprite, duckSprite } from "../sprites";

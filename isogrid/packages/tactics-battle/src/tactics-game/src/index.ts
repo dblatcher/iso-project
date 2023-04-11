@@ -1,4 +1,4 @@
-import { DIRECTION } from "../../src/CardinalDirection"
+import { DIRECTION } from "@isogrid/map-canvas"
 import { Battle } from "./Battle"
 import { figures, teams } from "./data/figures"
 import { buildGrid } from "./lib/buildGrid"

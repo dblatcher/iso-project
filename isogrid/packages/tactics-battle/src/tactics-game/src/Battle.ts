@@ -1,10 +1,8 @@
-import { MapGridIsometricCanvas, MapGridCanvasConfig } from "../../src/MapGridIsometricCanvas";
+import { MapGridIsometricCanvas, MapGridCanvasConfig, MapCell,followPath } from "@isogrid/map-canvas"
 import { CharacterFigure } from "./CharacterFigure";
 import { Panel } from "./components/Panel";
 import { h, render } from 'preact'
-import { MapCell } from "../../src/MapCell";
 import { findPathFrom, findReachableCells } from "./lib/pathFind";
-import { followPath } from "../../src/animations/followPath";
 import { CommandType, Team } from "./types";
 import { Action } from "./Action";
 import { TurnPanel } from "./components/TurnPanel";

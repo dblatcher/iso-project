@@ -1,4 +1,4 @@
-import { MapCell } from "../../../src/MapCell"
+import { MapCell } from '@isogrid/map-canvas'
 
 const irregularRow = (l = 10): MapCell[] => {
     const row: MapCell[] = []

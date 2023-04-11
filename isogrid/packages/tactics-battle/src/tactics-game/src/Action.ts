@@ -1,4 +1,4 @@
-import { MapCell } from "../../src/MapCell"
+import { MapCell } from "@isogrid/map-canvas"
 import { Battle } from "./Battle"
 import { CharacterFigure } from "./CharacterFigure"
 
