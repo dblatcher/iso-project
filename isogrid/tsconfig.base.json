@@ -16,6 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@isogrid/map-canvas": ["packages/map-canvas/src/index.ts"],
+      "@isogrid/tactics-battle": ["packages/tactics-battle/src/index.ts"],
       "@isogrid/test-scene": ["packages/test-scene/src/index.ts"]
     }
   },
