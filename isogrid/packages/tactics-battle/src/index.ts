@@ -1,1 +1,1 @@
-export * from './lib/tactics-battle';
+export * from './tactics-game/src/';
