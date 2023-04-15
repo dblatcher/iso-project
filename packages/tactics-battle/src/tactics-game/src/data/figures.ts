@@ -1,7 +1,7 @@
 import { DIRECTION } from '@isogrid/map-canvas'
 import { Team } from "../types";
 import { CharacterFigure } from "../CharacterFigure";
-import { manSprite, barrelSprite, duckSprite } from "../sprites";
+import { manSprite, barrelSprite, duckSprite } from "./sprites";
 
 export const teams: Team[] = [
     { id: 'team1', name: 'Red Team', color: 'crimson' },
