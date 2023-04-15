@@ -1,11 +1,11 @@
 import { MapGridIsometricCanvas, MapGridCanvasConfig, MapCell, followPath } from "@isogrid/map-canvas"
 import { CharacterFigure } from "./CharacterFigure";
-import { Panel } from "./components/Panel";
+import { Panel } from "./src/components/Panel";
 import { h, render } from 'preact'
-import { findPathFrom, findReachableCells } from "./lib/pathFind";
+import { findPathFrom, findReachableCells } from "./src/lib/pathFind";
 import { CommandType, Team } from "./types";
 import { Action } from "./Action";
-import { TurnPanel } from "./components/TurnPanel";
+import { TurnPanel } from "./src/components/TurnPanel";
 
 
 const CELL_CLASS = {

@@ -1,7 +1,7 @@
 import { DIRECTION } from "@isogrid/map-canvas"
 import { Battle } from "./Battle"
-import { figures, teams } from "./data/figures"
-import { buildGrid } from "./lib/buildGrid"
+import { figures, teams } from "./src/data/figures"
+import { buildGrid } from "./src/lib/buildGrid"
 
 
 export const addAppToDocument = (document: Document) => {

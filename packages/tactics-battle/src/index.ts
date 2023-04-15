@@ -1,1 +1,1 @@
-export * from './tactics-game/src/';
+export * from './tactics-game';

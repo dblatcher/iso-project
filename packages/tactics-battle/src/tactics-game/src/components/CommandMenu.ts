@@ -1,8 +1,8 @@
 import { Fragment, FunctionalComponent } from 'preact';
 import { html } from 'htm/preact'
-import { CharacterFigure } from '../CharacterFigure';
-import { CommandType } from '../types';
-import { Action } from '../Action';
+import { CharacterFigure } from '../../CharacterFigure';
+import { CommandType } from '../../types';
+import { Action } from '../../Action';
 
 interface Props {
     figure?: CharacterFigure;
@@ -23,13 +23,13 @@ export const CommandMenu: FunctionalComponent<Props> = ({ figure, commandType, s
     return html`
     <${Fragment}>
     <div class="row">
-        <button 
+        <button
             style="${buttonStyle(commandType === 'ACTION')}"
             onclick=${()=>{setCommandType('ACTION')}}
             >
             ${remaining.action} / ${action} action
         </button>
-        <button 
+        <button
             style="${buttonStyle(commandType === 'MOVE')}"
             onclick=${()=>{setCommandType('MOVE')}}
         >

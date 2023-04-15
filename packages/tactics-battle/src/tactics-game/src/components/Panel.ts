@@ -1,10 +1,10 @@
 import { FunctionalComponent, Fragment } from 'preact';
 import { html } from 'htm/preact'
 import {CharacterView} from './CharacterView'
-import { CharacterFigure } from '../CharacterFigure';
-import { CommandType, Team } from '../types';
+import { CharacterFigure } from '../../CharacterFigure';
+import { CommandType, Team } from '../../types';
 import { CommandMenu } from './CommandMenu';
-import { Action } from '../Action';
+import { Action } from '../../Action';
 
 interface Props {
     team: Team;
@@ -15,9 +15,9 @@ interface Props {
 }
 
 
-export const Panel: FunctionalComponent<Props> = ({ 
-    team, 
-    selectedFigure, 
+export const Panel: FunctionalComponent<Props> = ({
+    team,
+    selectedFigure,
     commandType,
     setCommandType,
     setFigureAction,
@@ -41,10 +41,10 @@ export const Panel: FunctionalComponent<Props> = ({
 
         ${selectedFigure && html`
             <${Fragment}>
-                <${CharacterView} 
+                <${CharacterView}
                     figure=${selectedFigure} />
-                <${CommandMenu} 
-                    figure=${selectedFigure} 
+                <${CommandMenu}
+                    figure=${selectedFigure}
                     setCommandType=${setCommandType}
                     commandType=${commandType}
                     setFigureAction=${setFigureAction}/>

@@ -1,6 +1,6 @@
 import { FunctionalComponent } from 'preact';
 import { html } from 'htm/preact'
-import { CharacterFigure } from '../CharacterFigure';
+import { CharacterFigure } from '../../CharacterFigure';
 
 interface Props {
     figure?: CharacterFigure;
