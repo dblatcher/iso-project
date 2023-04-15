@@ -1,10 +1,10 @@
 import { FunctionalComponent, Fragment } from 'preact';
 import { html } from 'htm/preact'
 import {CharacterView} from './CharacterView'
-import { CharacterFigure } from '../../CharacterFigure';
-import { CommandType, Team } from '../../types';
+import { CharacterFigure } from '../CharacterFigure';
+import { CommandType, Team } from '../types';
 import { CommandMenu } from './CommandMenu';
-import { Action } from '../../Action';
+import { Action } from '../Action';
 
 interface Props {
     team: Team;

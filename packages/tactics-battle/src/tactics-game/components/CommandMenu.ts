@@ -1,8 +1,8 @@
 import { Fragment, FunctionalComponent } from 'preact';
 import { html } from 'htm/preact'
-import { CharacterFigure } from '../../CharacterFigure';
-import { CommandType } from '../../types';
-import { Action } from '../../Action';
+import { CharacterFigure } from '../CharacterFigure';
+import { CommandType } from '../types';
+import { Action } from '../Action';
 
 interface Props {
     figure?: CharacterFigure;
