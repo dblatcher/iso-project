@@ -1,5 +1,5 @@
 import { getDirectionTowards, rotateFunnyVector, turnFigure, spinFigure, slideFigure, shiftFigure, jumpFigure } from "@isogrid/map-canvas"
-import { Action, ActionRange, ActionTarget } from "../../Action";
+import { Action, ActionRange, ActionTarget } from "../Action";
 
 const wait = new Action('wait', ActionRange.Self, ActionTarget.Any,
   async (actor, targetFigure, targetCell, battle) => {

@@ -3,7 +3,7 @@ import { floatingMessage } from "@isogrid/map-canvas";
 import type { CardinalDirection, BaseFigure, DirectionalSprite } from "@isogrid/map-canvas";
 import { Action } from "./Action";
 import type { Battle } from "./Battle";
-import { ACTIONS } from "./src/data/actions";
+import { ACTIONS } from "./data/actions";
 
 export type Attributes = {
     name: string;

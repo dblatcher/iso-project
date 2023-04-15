@@ -2,7 +2,7 @@ import { MapGridIsometricCanvas, MapGridCanvasConfig, MapCell, followPath } from
 import { CharacterFigure } from "./CharacterFigure";
 import { Panel } from "./components/Panel";
 import { h, render } from 'preact'
-import { findPathFrom, findReachableCells } from "./src/lib/pathFind";
+import { findPathFrom, findReachableCells } from "./lib/pathFind";
 import { CommandType, Team } from "./types";
 import { Action } from "./Action";
 import { TurnPanel } from "./components/TurnPanel";

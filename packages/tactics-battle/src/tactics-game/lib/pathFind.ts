@@ -1,5 +1,5 @@
 import { MapCell } from '@isogrid/map-canvas'
-import { CharacterFigure } from "../../CharacterFigure"
+import { CharacterFigure } from "../CharacterFigure"
 
 const getCellAt = (x: number, y: number, grid: (MapCell | undefined)[][]): MapCell | undefined => {
   const row = grid[x]
