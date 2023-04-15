@@ -89,6 +89,8 @@ export class CharacterFigure implements BaseFigure {
         const { battle, spriteIsoGroup, sprite } = this
         const { height = 1 } = sprite
 
+        if (!battle || ! spriteIsoGroup) {return undefined}
+
         return floatingMessage(battle.canvas, {
             text: `-${amount.toString()}`,
             top: spriteIsoGroup.top + height,

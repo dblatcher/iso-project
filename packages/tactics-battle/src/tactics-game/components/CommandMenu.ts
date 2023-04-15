@@ -17,6 +17,9 @@ const buttonStyle = (highlight: boolean) => ({
 
 
 export const CommandMenu: FunctionalComponent<Props> = ({ figure, commandType, setCommandType, setFigureAction }) => {
+    if (!figure) {
+      return null
+    }
     const { remaining, availableActions } = figure
     const { move, action } = figure.attributes
 

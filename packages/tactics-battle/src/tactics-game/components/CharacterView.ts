@@ -3,7 +3,7 @@ import { html } from 'htm/preact'
 import { CharacterFigure } from '../CharacterFigure';
 
 interface Props {
-    figure?: CharacterFigure;
+    figure: CharacterFigure;
 }
 
 export const CharacterView: FunctionalComponent<Props> = ({ figure }) => {

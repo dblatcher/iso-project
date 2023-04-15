@@ -70,7 +70,10 @@ export class Battle {
         selectedFigure: selectedFigure,
         commandType: this.commandType,
         setCommandType: (commandType: CommandType) => { this.setCommandType(commandType) },
-        setFigureAction: (action: Action) => { this.setFigureAction(selectedFigure, action) }
+        setFigureAction: (action: Action) => {
+          if (!selectedFigure) return
+          this.setFigureAction(selectedFigure, action)
+        }
       }),
       this.actionPanelElement
     );
@@ -100,7 +103,7 @@ export class Battle {
   }
 
   get selectedCell(): MapCell | undefined {
-    return this.canvas.cells.flat().find(cell => cell.classes?.includes(CELL_CLASS.selected))
+    return this.canvas.cells.flat().find(cell => cell?.classes?.includes(CELL_CLASS.selected))
   }
 
   set selectedCell(selectedCell: MapCell | undefined) {
@@ -127,7 +130,7 @@ export class Battle {
       return []
     }
     if (commandType === 'MOVE') {
-      return findReachableCells(this.selectedFigure, this.canvas.cells)
+      return findReachableCells(selectedFigure, this.canvas.cells)
     }
     if (commandType === 'ACTION') {
       if (selectedFigure.remaining.action <= 0) {
@@ -145,6 +148,7 @@ export class Battle {
 
   markCells(cellsToMark: MapCell[], cssClass: string) {
     this.canvas.cells.flat().forEach(cell => {
+      if (!cell) { return }
       if (cellsToMark.includes(cell)) {
         this.canvas.addCellClass(cell, cssClass)
       } else {
@@ -266,6 +270,7 @@ export class Battle {
   manageFigureClick = (canvas: MapGridIsometricCanvas) => async (figure: CharacterFigure) => {
     const { commandType } = this
     const cell = canvas.cells[figure.x][figure.y]
+    if (!cell) {return false}
 
     switch (commandType) {
       case 'MOVE':
