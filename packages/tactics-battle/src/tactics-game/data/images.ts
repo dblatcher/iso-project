@@ -1,7 +1,7 @@
 const ASSET_FOLDER = "../assets/"
-const MAN_SUB = "man/walk/"
 
 const SPRITE_SERVER_PATH = "/sprites/assets/"
+const SPRITE_CELL_PATH = "/sprites/cell/"
 
 export const IMAGES = {
     wall: `${SPRITE_SERVER_PATH}brick_wall.png`,
@@ -17,10 +17,11 @@ export const IMAGES = {
     duckBack2: `${ASSET_FOLDER}duck/walk/back/2.png`,
     duckBack3: `${ASSET_FOLDER}duck/walk/back/3.png`,
     duckBack4: `${ASSET_FOLDER}duck/walk/back/4.png`,
-    manf1: `${ASSET_FOLDER}${MAN_SUB}f1.png`,
-    manf2: `${ASSET_FOLDER}${MAN_SUB}f2.png`,
-    manf3: `${ASSET_FOLDER}${MAN_SUB}f3.png`,
-    manb1: `${ASSET_FOLDER}${MAN_SUB}b1.png`,
-    manb2: `${ASSET_FOLDER}${MAN_SUB}b2.png`,
-    manb3: `${ASSET_FOLDER}${MAN_SUB}b3.png`,
+    manf2: `${SPRITE_CELL_PATH}man/2/0`,
+    manf1: `${SPRITE_CELL_PATH}man/2/1`,
+    manf3: `${SPRITE_CELL_PATH}man/2/2`,
+    manb2: `${SPRITE_CELL_PATH}man/0/0`,
+    manb1: `${SPRITE_CELL_PATH}man/0/1`,
+    manb3: `${SPRITE_CELL_PATH}man/0/2`,
+
 } as const;

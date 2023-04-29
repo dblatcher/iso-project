@@ -5,6 +5,7 @@
 
 import express from 'express';
 import * as path from 'path';
+import { cellRouter } from './cell';
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.use('/sprites/assets', express.static(path.join(__dirname, 'assets')));
 app.get('/sprites', (req, res) => {
   res.send({ message: 'Welcome to sprite-server!' });
 });
+
+app.use('/sprites/cell', cellRouter)
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'sprite-server does not have this route', path: req.path });
