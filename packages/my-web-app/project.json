@@ -44,7 +44,8 @@
     "serve": {
       "executor": "@nrwl/webpack:dev-server",
       "options": {
-        "buildTarget": "my-web-app:build"
+        "buildTarget": "my-web-app:build",
+        "proxyConfig": "packages/my-web-app/proxy.conf.json"
       },
       "configurations": {
         "production": {
