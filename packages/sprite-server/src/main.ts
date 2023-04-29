@@ -18,11 +18,11 @@ app.get('/sprites', (req, res) => {
 app.use('/sprites/cell', cellRouter)
 
 app.get('*', (req, res) => {
-  res.status(404).send({ message: 'sprite-server does not have this route', path: req.path });
+  res.status(404).send({});
 });
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
+  console.log(`Listening at http://localhost:${port}/sprites`);
 });
 server.on('error', console.error);
