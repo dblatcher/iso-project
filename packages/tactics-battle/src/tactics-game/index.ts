@@ -2,6 +2,7 @@ import { DIRECTION } from "@isogrid/map-canvas"
 import { Battle } from "./Battle"
 import { figures, teams } from "./data/figures"
 import { buildGrid } from "./lib/buildGrid"
+import { IMAGES } from "./data/images"
 
 
 export const addAppToDocument = (document: Document) => {
@@ -23,8 +24,12 @@ export const addAppToDocument = (document: Document) => {
   const battle = new Battle(container, actionPanel, turnPanel, teams, figures, cells, {
     renderCompass: true,
     renderOrientation: DIRECTION.west,
-    defaultBlockTopColor: 'lightgreen',
+    defaultBlockTextureTop: IMAGES.grass,
     defaultBlockSideColor: 'rosybrown',
+    backdropImage: {
+      south: IMAGES.sky1,
+      west: IMAGES.sky1,
+    },
   })
 
   return battle
