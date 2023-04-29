@@ -1,19 +1,24 @@
 import { readFileSync } from "fs";
 import { join } from "path";
-import sharp, { Sharp } from "sharp";
-import { AssetData, ImageOptions } from "../types";
+import sharp, { Sharp, OverlayOptions } from "sharp";
+import { AssetData, CellData, ImageOptions } from "./types";
 
+export const filepathToSharp = async (
+  path: string
+): Promise<Sharp> => {
+  const url = join(__dirname, '/assets/', path)
+  const assetFile = await readFileSync(url)
+  return await sharp(assetFile)
+}
 export const assetToSharp = async (
   assetData: AssetData
 ): Promise<Sharp> => {
-  const url = join(__dirname, '/assets/', assetData.path)
-  const assetFile = await readFileSync(url)
-  return await sharp(assetFile)
+  return await filepathToSharp(assetData.path)
 }
 
 export const cutCell = async (
   source: Sharp,
-  assetData: AssetData,
+  assetData: CellData,
   row: number,
   col: number,
 ): Promise<Sharp> => {
@@ -40,4 +45,17 @@ export const applyOptions = (source: Sharp, options: ImageOptions = {}): Sharp =
     source.tint(tints[tint])
   }
   return source
+}
+
+
+const sharpToLayer = async (image: Sharp): Promise<sharp.OverlayOptions> => {
+  const input = await image.toBuffer()
+  return { input }
+}
+
+export const composeImages = async (sources: Sharp[]): Promise<sharp.Sharp> => {
+  const [first, ...rest] = sources
+  // to do - handle empty arrays
+  const layers: OverlayOptions[] = await Promise.all(rest.map(image => sharpToLayer(image)))
+  return first.composite(layers)
 }

@@ -7,6 +7,7 @@ import express from 'express';
 import * as path from 'path';
 import { cellRouter } from './cell';
 import { assets } from './assetData';
+import { compositeRouter } from './composite';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get('/sprites', (req, res) => {
 });
 
 app.use('/sprites/cell', cellRouter)
+app.use('/sprites/composite', compositeRouter)
 
 app.get('*', (req, res) => {
   res.status(404).send({});

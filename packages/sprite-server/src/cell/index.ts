@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { assets } from "../assetData";
-import { cutCell, assetToSharp, applyOptions } from "./util";
+import { cutCell, assetToSharp, applyOptions } from "../util";
 import { sendSharpAsImage, getOptionsFromQuery } from "../express-utils";
 
 const cellRouter = Router()
