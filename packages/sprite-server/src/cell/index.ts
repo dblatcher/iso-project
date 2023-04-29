@@ -1,6 +1,6 @@
 import { Router, Response } from "express";
 import { Sharp } from "sharp";
-import { assets } from "./assetData";
+import { assets } from "../assetData";
 import { cutCell } from "./util";
 
 const cellRouter = Router()

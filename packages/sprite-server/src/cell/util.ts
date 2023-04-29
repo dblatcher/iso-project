@@ -1,8 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
-
 import sharp from "sharp";
-import { AssetData } from "./assetData";
+import { AssetData } from "../assetData";
 
 export const cutCell = async (asset: AssetData, row: number, col: number) => {
   const { path, cellWidth, cellHeight } = asset
@@ -11,8 +10,8 @@ export const cutCell = async (asset: AssetData, row: number, col: number) => {
 
   return await sharp(assetFile)
     .extract({
-      top: cellHeight * (row),
-      left: cellWidth * (col),
+      top: cellHeight * row,
+      left: cellWidth * col,
       height: cellHeight,
       width: cellWidth,
     })

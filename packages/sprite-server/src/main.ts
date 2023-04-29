@@ -6,13 +6,14 @@
 import express from 'express';
 import * as path from 'path';
 import { cellRouter } from './cell';
+import { assets } from './assetData';
 
 const app = express();
 
 app.use('/sprites/assets', express.static(path.join(__dirname, 'assets')));
 
 app.get('/sprites', (req, res) => {
-  res.send({ message: 'Welcome to sprite-server!' });
+  res.json({ assets });
 });
 
 app.use('/sprites/cell', cellRouter)
