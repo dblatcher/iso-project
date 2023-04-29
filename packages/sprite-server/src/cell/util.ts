@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import sharp, { Sharp } from "sharp";
-import { AssetData } from "../assetData";
+import { AssetData, ImageOptions } from "../types";
 
 export const assetToSharp = async (
   assetData: AssetData
@@ -27,3 +27,17 @@ export const cutCell = async (
     })
 }
 
+const tints = {
+  red: { r: 255, g: 16, b: 16 },
+  green: { r: 16, g: 255, b: 16 },
+  blue: { r: 16, g: 16, b: 255 },
+  purple: { r: 150, g: 16, b: 155 },
+}
+
+export const applyOptions = (source: Sharp, options: ImageOptions = {}): Sharp => {
+  const { tint } = options
+  if (tint in tints) {
+    source.tint(tints[tint])
+  }
+  return source
+}

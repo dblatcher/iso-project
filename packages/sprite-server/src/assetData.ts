@@ -1,10 +1,4 @@
-
-export type AssetData = {
-  id: string,
-  path: string,
-  cellWidth: number,
-  cellHeight: number,
-}
+import { AssetData } from "./types"
 
 const man: AssetData = {
   id: 'man',
