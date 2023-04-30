@@ -1,33 +1,16 @@
 const ASSET_FOLDER = "../assets/"
-
 const SPRITE_SERVER_PATH = "/sprites/assets/"
 const SPRITE_CELL_PATH = "/sprites/cell/"
-
 const COMPOSITE_PATH = "/sprites/composite/"
-const SOLDIER_LAYERS = [
-  "body",
-  "legsPants",
-  "leatherArmour",
-  "headChain",
-]
 
 
-const lpcSet = (layers: string[]) => {
+export const lpcSet = (layers: string[]) => {
   const query = `?layers=${layers.join(',')}`;
   return {
     front: [0, 1, 2, 3, 4, 5, 6, 7, 8].map((number) => `${COMPOSITE_PATH}2/${number}${query}`),
     back: [0, 1, 2, 3, 4, 5, 6, 7, 8].map((number) => `${COMPOSITE_PATH}0/${number}${query}`),
   }
 }
-
-export const solider = lpcSet(SOLDIER_LAYERS)
-export const knight = lpcSet([
-  "body",
-  "legsPants",
-  "chainArmour",
-  "leatherBelt",
-  "hairBlonde",
-])
 
 
 export const IMAGES = {
