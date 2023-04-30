@@ -27,8 +27,8 @@ compositeRouter.get('/:row/:col', async (req, res) => {
     }
 
     const sources = await Promise.all(layerAssets.map(assetToSharp))
-    const cellImages = await Promise.all(sources.map(source =>
-      cutCell(source, { cellHeight: 64, cellWidth: 64 }, rowIndex, colIndex)
+    const cellImages = await Promise.all(sources.map((source, index) =>
+      cutCell(source, layerAssets[index], rowIndex, colIndex)
     ))
     const composite = await composeImages(cellImages)
     applyOptions(composite, options)
