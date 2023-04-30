@@ -1,4 +1,3 @@
-const ASSET_FOLDER = "../assets/"
 const SPRITE_SERVER_PATH = "/sprites/assets/"
 const SPRITE_CELL_PATH = "/sprites/cell/"
 const COMPOSITE_PATH = "/sprites/composite/"
@@ -19,14 +18,14 @@ export const IMAGES = {
   barrell: `${SPRITE_SERVER_PATH}barrell.png`,
   hillside: `${SPRITE_SERVER_PATH}hillside.png`,
   sky1: `${SPRITE_SERVER_PATH}sky1.png`,
-  duck: `${ASSET_FOLDER}duck/walk/front/1.png`,
-  duck2: `${ASSET_FOLDER}duck/walk/front/2.png`,
-  duck3: `${ASSET_FOLDER}duck/walk/front/3.png`,
-  duck4: `${ASSET_FOLDER}duck/walk/front/4.png`,
-  duckBack: `${ASSET_FOLDER}duck/walk/back/1.png`,
-  duckBack2: `${ASSET_FOLDER}duck/walk/back/2.png`,
-  duckBack3: `${ASSET_FOLDER}duck/walk/back/3.png`,
-  duckBack4: `${ASSET_FOLDER}duck/walk/back/4.png`,
+  duck: `${SPRITE_SERVER_PATH}duck/walk/front/1.png`,
+  duck2: `${SPRITE_SERVER_PATH}duck/walk/front/2.png`,
+  duck3: `${SPRITE_SERVER_PATH}duck/walk/front/3.png`,
+  duck4: `${SPRITE_SERVER_PATH}duck/walk/front/4.png`,
+  duckBack: `${SPRITE_SERVER_PATH}duck/walk/back/1.png`,
+  duckBack2: `${SPRITE_SERVER_PATH}duck/walk/back/2.png`,
+  duckBack3: `${SPRITE_SERVER_PATH}duck/walk/back/3.png`,
+  duckBack4: `${SPRITE_SERVER_PATH}duck/walk/back/4.png`,
   manf2: `${SPRITE_CELL_PATH}man/2/0`,
   manf1: `${SPRITE_CELL_PATH}man/2/1`,
   manf3: `${SPRITE_CELL_PATH}man/2/2`,
