@@ -1,5 +1,5 @@
 import { DirectionalSprite } from "@isogrid/map-canvas"
-import { IMAGES } from "./images"
+import { IMAGES, solider } from "./images"
 
 export const duckSprite = new DirectionalSprite({
     frontImage: [IMAGES.duck, IMAGES.duck2, IMAGES.duck3, IMAGES.duck4],
@@ -13,4 +13,9 @@ export const manSprite = new DirectionalSprite({
 export const barrelSprite = new DirectionalSprite({
     frontImage: [IMAGES.barrell],
     backImage: [IMAGES.barrell],
+})
+export const soldierSprite = new DirectionalSprite({
+  frontImage: solider.front,
+  backImage: solider.back,
+  height: 2,
 })
