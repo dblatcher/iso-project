@@ -45,4 +45,32 @@ compositeRouter.get('/:row/:col', async (req, res) => {
   }
 })
 
+compositeRouter.get('/', async (req, res) => {
+  try {
+    const options = getOptionsFromQuery(req)
+
+    const layerAssets = getLayerAssets(options, assets)
+    if (layerAssets.length === 0) {
+      return res.status(400).send(
+        'no valid layers'
+      )
+    }
+
+    const sources = await Promise.all(layerAssets.map(assetToSharp))
+
+    const composite = await composeImages(sources)
+    applyOptions(composite, options)
+    return sendSharpAsImage(composite, res)
+
+  } catch (err) {
+    const message = err instanceof Error
+      ? err.message
+      : typeof err === 'string'
+        ? err
+        : 'UNKNOWN ERROR'
+    console.warn(err)
+    return res.status(500).send({ message, errorIn: 'compositeRouter' })
+  }
+})
+
 export { compositeRouter }
