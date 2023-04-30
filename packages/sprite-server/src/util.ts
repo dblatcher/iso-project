@@ -5,6 +5,14 @@ import { AssetData, CellData, ImageOptions } from "./types";
 
 export const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(item => typeof item === 'string')
 
+export const thrownToString = (err: unknown): string => {
+  return err instanceof Error
+    ? err.message
+    : typeof err === 'string'
+      ? err
+      : 'UNKNOWN ERROR'
+}
+
 export const filepathToSharp = async (
   path: string
 ): Promise<Sharp> => {

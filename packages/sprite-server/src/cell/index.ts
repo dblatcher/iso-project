@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { assets } from "../assetData";
-import { cutCell, assetToSharp, applyOptions } from "../util";
+import { cutCell, assetToSharp, applyOptions, thrownToString } from "../util";
 import { sendSharpAsImage, getOptionsFromQuery } from "../express-utils";
 
 const cellRouter = Router()
@@ -32,12 +32,7 @@ cellRouter.get('/:assetId/:row/:col', async (req, res) => {
     applyOptions(source, option)
     return sendSharpAsImage(cellImage, res)
   } catch (err) {
-    const message = err instanceof Error
-      ? err.message
-      : typeof err === 'string'
-        ? err
-        : 'UNKNOWN ERROR'
-    console.warn(err)
+    const message = thrownToString(err)
     return res.status(500).send({ message, errorIn: 'cellRouter' })
   }
 })

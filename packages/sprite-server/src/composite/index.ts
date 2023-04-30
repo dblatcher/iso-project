@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cutCell, assetToSharp, composeImages, applyOptions, getLayerAssets } from "../util";
+import { cutCell, assetToSharp, composeImages, applyOptions, getLayerAssets, thrownToString } from "../util";
 import { sendSharpAsImage, getOptionsFromQuery } from "../express-utils";
 import { assets } from "../assetData";
 
@@ -35,13 +35,8 @@ compositeRouter.get('/:row/:col', async (req, res) => {
     return sendSharpAsImage(composite, res)
 
   } catch (err) {
-    const message = err instanceof Error
-      ? err.message
-      : typeof err === 'string'
-        ? err
-        : 'UNKNOWN ERROR'
-    console.warn(err)
-    return res.status(500).send({ message, errorIn: 'compositeRouter' })
+    const message = thrownToString(err)
+    return res.status(500).send({ message, errorIn: 'compositeRouter, cell' })
   }
 })
 
@@ -63,13 +58,8 @@ compositeRouter.get('/', async (req, res) => {
     return sendSharpAsImage(composite, res)
 
   } catch (err) {
-    const message = err instanceof Error
-      ? err.message
-      : typeof err === 'string'
-        ? err
-        : 'UNKNOWN ERROR'
-    console.warn(err)
-    return res.status(500).send({ message, errorIn: 'compositeRouter' })
+    const message = thrownToString(err)
+    return res.status(500).send({ message, errorIn: 'compositeRouter, sheet' })
   }
 })
 
