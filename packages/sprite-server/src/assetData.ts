@@ -19,6 +19,12 @@ const body: AssetData = {
   cellHeight: 64,
   cellWidth: 64,
 }
+const bodySkeleton: AssetData = {
+  id: 'bodySkeleton',
+  path: 'lpc/BODY_skeleton.png',
+  cellHeight: 64,
+  cellWidth: 64,
+}
 const legsPants: AssetData = {
   id: 'legsPants',
   path: 'lpc/LEGS_pants_greenish.png',
@@ -64,5 +70,5 @@ const leatherBelt: AssetData = {
 
 
 export const assets: Partial<Record<string, AssetData>> = {
-  man, dino, body, legsPants, headChain, leatherArmour, headLeather, chainArmour, hairBlonde,leatherBelt
+  man, dino, body, legsPants, headChain, leatherArmour, headLeather, chainArmour, hairBlonde,leatherBelt, bodySkeleton
 }
