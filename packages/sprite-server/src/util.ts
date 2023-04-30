@@ -3,6 +3,8 @@ import { join } from "path";
 import sharp, { Sharp, OverlayOptions } from "sharp";
 import { AssetData, CellData, ImageOptions } from "./types";
 
+export const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(item => typeof item === 'string')
+
 export const filepathToSharp = async (
   path: string
 ): Promise<Sharp> => {
@@ -54,8 +56,33 @@ const sharpToLayer = async (image: Sharp): Promise<sharp.OverlayOptions> => {
 }
 
 export const composeImages = async (sources: Sharp[]): Promise<sharp.Sharp> => {
+  if (sources.length === 0) {
+    console.warn('empty array passed to composeImages')
+    return sharp({
+      create: {
+        width: 10,
+        height: 10,
+        channels: 4,
+        background: { r: 255, g: 0, b: 0, alpha: 0.5 }
+      }
+    })
+  }
+
   const [first, ...rest] = sources
-  // to do - handle empty arrays
   const layers: OverlayOptions[] = await Promise.all(rest.map(image => sharpToLayer(image)))
   return first.composite(layers)
+}
+
+export const getLayerAssets = (options: ImageOptions, assets: Partial<Record<string, AssetData>>): AssetData[] => {
+  if (!options.layers) {
+    return []
+  }
+  const layerAssets: AssetData[] = []
+  options.layers.forEach(assetId => {
+    const asset = assets[assetId]
+    if (asset) {
+      layerAssets.push(asset)
+    }
+  })
+  return layerAssets
 }

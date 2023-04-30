@@ -10,5 +10,6 @@ export type AssetData = CellData & {
 
 
 export type ImageOptions = {
-  tint?: string
+  tint?: string,
+  layers?: string[]
 }

@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 import { Sharp } from "sharp";
 import { ImageOptions } from "./types";
+import { isStringArray } from "./util";
 
 export const sendSharpAsImage = async (image: Sharp, res: Response) => {
   const [buffer, metadata] = await Promise.all([image.toBuffer(), image.metadata()])
@@ -11,8 +12,9 @@ export const sendSharpAsImage = async (image: Sharp, res: Response) => {
 }
 
 export const getOptionsFromQuery = (req: Request): ImageOptions => {
-  const { tint } = req.query
+  const { tint, layers } = req.query
   return {
-    tint: typeof tint === 'string' ? tint : undefined
+    tint: typeof tint === 'string' ? tint : undefined,
+    layers: isStringArray(layers) ? layers : typeof layers === 'string' ? layers.split(',') : undefined
   }
 }
