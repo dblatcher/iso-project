@@ -37,6 +37,7 @@ export type MapGridCanvasConfig = {
   cssPrefix?: string
   frameChangeInterval?: number
   startWithoutAnimatedFrames?: boolean
+  backdropHeight?:number
 }
 
 export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> extends IsometricCanvas {
@@ -163,7 +164,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
   }
 
   renderBackGrounds() {
-    const { backdropImage = {} } = this.config
+    const { backdropImage = {}, backdropHeight } = this.config
     let backdropSide: string | undefined;
     let backdropFront: string | undefined;
 
@@ -191,6 +192,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
       backdropFront,
       backdropFloor: backdropImage.floor,
       floorRotation: 90 * this.renderOrientation.rotation,
+      backdropHeight,
     })
 
     this.addChildren(
@@ -311,7 +313,7 @@ export class MapGridIsometricCanvas<Figure extends BaseFigure = BaseFigure> exte
 
     if (this.config.renderCompass) {
       const { group: compass } = buildCompass(this.renderOrientation)
-      compass.top = 10
+      compass.top = this.config.backdropHeight || 5
       compass.left = 0
       compass.right = 10
       this.addChild(compass)
