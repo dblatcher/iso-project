@@ -1,4 +1,4 @@
-import { MapGridIsometricCanvas, MapGridCanvasConfig, MapCell, followPath, BaseFigure } from "@isogrid/map-canvas"
+import { MapGridIsometricCanvas, MapGridCanvasConfig, MapCell, followPath } from "@isogrid/map-canvas"
 import { CharacterFigure } from "./CharacterFigure";
 import { Panel } from "./components/Panel";
 import { h, render } from 'preact'
@@ -208,7 +208,7 @@ export class Battle {
     this.redraw()
   }
 
-  async doAction(cell: MapCell) {
+  async handleActionClick(cell: MapCell) {
     const { selectedFigure } = this
     if (!selectedFigure) { return }
     const { selectedAction } = selectedFigure
@@ -229,44 +229,47 @@ export class Battle {
       return
     }
 
-    selectedFigure.remaining.action--
-    await selectedAction.perform(selectedFigure, cell, this)
-    this.markCells(this.cellsInRange, CELL_CLASS.reachable)
+    await this.doAction(selectedFigure, cell, selectedAction)
     this.redraw()
   }
 
-  async doMove(cell: MapCell) {
+  async handleMoveCellClick(cell: MapCell) {
     const { selectedFigure, selectedCell, canvas, figureRoute = [] } = this
-    const { x, y } = canvas.getCellCoords(cell)
-    if (selectedFigure && selectedFigure.isOnCurrentTeam && selectedFigure.remaining.move > 0) {
-      // if user clicks on the selected figure, unselect the selected cell
-      if (x == selectedFigure.x && y === selectedFigure.y) {
-        this.selectedCell = undefined
-        this.markCells([], CELL_CLASS.path)
-      }
-      // user clicks on the cell they selected to confirm the move
-      else if (selectedCell && cell === selectedCell) {
-        const routeIsValid = figureRoute.includes(selectedCell)
-        if (routeIsValid) {
-          selectedFigure.remaining.move = selectedFigure.remaining.move - figureRoute.length
-          this.selectedCell = undefined
-          this.markCells([], CELL_CLASS.path)
-          await canvas.executeAnimation(() => followPath(canvas.castToBase())(selectedFigure, figureRoute))
-          this.figureRoute = undefined
-          if (selectedFigure.remaining.move <= 0) {
-            this.setCommandType('ACTION')
-          } else {
-            this.markCells(this.cellsInRange, CELL_CLASS.reachable)
-          }
-          this.redraw()
-        }
-        // user clicks on the cell to select
-      } else {
-        this.figureRoute = findPathFrom(selectedFigure, { x, y }, this.canvas.cells)
-        this.selectedCell = cell
-        this.markCells(this.figureRoute, CELL_CLASS.path)
-      }
+    const cellCoords = canvas.getCellCoords(cell)
+
+    if (!selectedFigure || !selectedFigure.isOnCurrentTeam || selectedFigure.remaining.move <= 0) {
+      return
     }
+
+    // if user clicked on the selected figure's cell, unselect the selected cell
+    if (cellCoords.x == selectedFigure.x && cellCoords.y === selectedFigure.y) {
+      this.selectedCell = undefined
+      this.markCells([], CELL_CLASS.path)
+      return
+    }
+
+    // if user clicked on the previously clicked selectedCell to confirm the move, execute the command
+    if (cell === selectedCell) {
+      const routeIsValid = figureRoute.includes(selectedCell)
+      if (routeIsValid) {
+
+        await this.doMove(selectedFigure, figureRoute)
+
+        this.figureRoute = undefined
+        if (selectedFigure.remaining.move <= 0) {
+          this.setCommandType('ACTION')
+        } else {
+          this.markCells(this.cellsInRange, CELL_CLASS.reachable)
+        }
+        this.redraw()
+      }
+      return
+    }
+
+    // If use clicks on any other cell, set it as the selectedCell
+    this.figureRoute = findPathFrom(selectedFigure, cellCoords, this.canvas.cells)
+    this.selectedCell = cell
+    this.markCells(this.figureRoute, CELL_CLASS.path)
   }
 
   manageFigureClick = (canvas: MapGridIsometricCanvas) => async (figure: CharacterFigure) => {
@@ -285,7 +288,7 @@ export class Battle {
         }
         return true;
       case 'ACTION':
-        return await this.doAction(cell)
+        return await this.handleActionClick(cell)
     }
   }
 
@@ -293,14 +296,29 @@ export class Battle {
     const { commandType } = this
     switch (commandType) {
       case 'ACTION':
-        this.doAction(cell)
+        this.handleActionClick(cell)
         break
       case 'MOVE': {
-        this.doMove(cell)
+        this.handleMoveCellClick(cell)
         break
       }
     }
   }
 
+
+  async doMove(figure: CharacterFigure, route: MapCell[]) {
+    const { canvas } = this
+    figure.remaining.move = figure.remaining.move - route.length
+    this.selectedCell = undefined
+    this.markCells([], CELL_CLASS.path)
+    return await canvas.executeAnimation(() => followPath(canvas.castToBase())(figure, route))
+  }
+
+
+  async doAction(figure: CharacterFigure, targetCell: MapCell, action: Action) {
+    figure.remaining.action--
+    this.markCells(this.cellsInRange, CELL_CLASS.reachable)
+    return await action.perform(figure, targetCell, this)
+  }
 }
 
