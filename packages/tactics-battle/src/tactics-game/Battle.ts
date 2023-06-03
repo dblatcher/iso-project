@@ -22,6 +22,7 @@ export class Battle {
   currentTeam: Team
   figureRoute?: MapCell[]
   commandType: CommandType
+  private _selectedCell?: MapCell
 
   constructor(
     container: HTMLElement,
@@ -51,6 +52,7 @@ export class Battle {
       mapGridCanvasConfig,
     )
     this.commandType = 'MOVE'
+    this._selectedCell = undefined
 
     this.canvas.onClick.figure = this.manageFigureClick
     this.canvas.onClick.cell = this.manageCellClick
@@ -103,7 +105,7 @@ export class Battle {
   }
 
   get selectedCell(): MapCell | undefined {
-    return this.canvas.cells.flat().find(cell => cell?.classes?.includes(CELL_CLASS.selected))
+    return this._selectedCell
   }
 
   set selectedCell(selectedCell: MapCell | undefined) {
@@ -122,6 +124,7 @@ export class Battle {
         }
       })
     }
+    this._selectedCell = selectedCell
   }
 
   get cellsInRange(): MapCell[] {
