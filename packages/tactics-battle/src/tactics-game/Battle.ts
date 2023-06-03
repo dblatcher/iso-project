@@ -304,4 +304,3 @@ export class Battle {
 
 }
 
-export { Team };
